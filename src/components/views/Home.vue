@@ -1,6 +1,6 @@
 <template>
   <img class="h-64 w-full" src="../../assets/quiz.png" alt="quiz image" />
-  <div class="max-w-6xl mx-auto px-4 py-4 my-7">
+  <div class="layout-default py-4 my-7">
     <div class="pb-5 border-b-4 border-b-yellow-800 font-bold text-4xl">
       🕹 게임하기
     </div>
@@ -16,11 +16,12 @@
     </div> -->
 
     <div class="flex justify-between flex-wrap">
-      <a
+      <router-link
+        to="/single_game"
         class="btn text-4xl flex-shrink-0 w-full sm:w-auto mb-4 sm:mb-0 inline-block bg-blue-500 hover:bg-blue-700 text-white"
       >
         🎮 싱글 플레이
-      </a>
+      </router-link>
       <a
         class="btn text-4xl flex-shrink-0 w-full sm:w-auto inline-block bg-green-500 hover:bg-green-700 text-white"
       >

@@ -6,14 +6,15 @@
       class="max-w-md w-full space-y-8 border-4 p-10 border-gray-600 rounded-2xl"
     >
       <div>
-        <h2 class="mt-6 text-center text-3xl font-bold font-mono italic">
-          QuizChallenge
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          회원가입
         </h2>
       </div>
       <form class="mt-8 space-y-6" action="#" method="POST">
+        <input type="hidden" name="remember" value="true" />
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
-            <label for="email-address" class="sr-only">Email address</label>
+            <label for="email-address" class="sr-only">이메일 주소</label>
             <input
               id="email-address"
               name="email"
@@ -21,19 +22,31 @@
               autocomplete="email"
               required
               class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="✉ 이메일을 입력하세요."
+              placeholder="✉ 이메일 주소"
             />
           </div>
           <div>
-            <label for="password" class="sr-only">Password</label>
+            <label for="password" class="sr-only">비밀번호</label>
             <input
               id="password"
               name="password"
               type="password"
               autocomplete="current-password"
               required
-              class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="🔓 비밀번호를 입력하세요."
+              class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-4"
+              placeholder="🔓 비밀번호"
+            />
+          </div>
+          <div>
+            <label for="password" class="sr-only">비밀번호 확인</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+              class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-4"
+              placeholder="🔓 비밀번호 확인"
             />
           </div>
         </div>
@@ -41,13 +54,13 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center">
             <input
-              id="remember-me"
-              name="remember-me"
+              id="remember_me"
+              name="remember_me"
               type="checkbox"
               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
             />
-            <label for="remember-me" class="ml-2 block text-sm text-gray-900">
-              Remember me
+            <label for="remember_me" class="ml-2 block text-sm text-gray-900">
+              회원가입 정보를 기억하기
             </label>
           </div>
 
@@ -56,7 +69,7 @@
               href="#"
               class="font-medium text-indigo-600 hover:text-indigo-500"
             >
-              Forgot your password?
+              회원가입
             </a>
           </div>
         </div>
@@ -66,10 +79,7 @@
             type="submit"
             class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-              <!-- Heroicon name: solid/lock-closed -->
-            </span>
-            로그인
+            회원가입
           </button>
         </div>
       </form>
@@ -79,6 +89,6 @@
 
 <script>
 export default {
-  name: "vue_login",
+  name: "vue_signup",
 };
 </script>

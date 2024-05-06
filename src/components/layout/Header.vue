@@ -1,10 +1,13 @@
 <template>
   <nav class="bg-white-100">
-    <div class="max-w-6xl mx-auto px-4">
+    <div class="layout-default">
       <div class="flex justify-between">
         <div class="flex space-x-4">
           <div>
-            <a href="#" class="flex items-center py-5 px-2 text-gray-700">
+            <router-link
+              to="/"
+              class="flex items-center py-5 px-2 text-gray-700"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -23,7 +26,7 @@
               <span class="font-bold font-mono italic text-2xl"
                 >QuizChallenge</span
               >
-            </a>
+            </router-link>
           </div>
           <div class="hidden md:flex items-center space-x-1">
             <a
@@ -47,12 +50,12 @@
           >
             로그인
           </router-link>
-          <a
-            href="#"
+          <router-link
+            to="/signup"
             class="font-bold py-2 px-3 hover:bg-gray-300 rounded transition duration-300"
           >
             회원가입
-          </a>
+          </router-link>
         </div>
         <div
           @click="change_menu_toggle_state"
