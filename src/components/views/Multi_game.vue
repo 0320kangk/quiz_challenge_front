@@ -27,7 +27,7 @@
             <div class="row-span-1">
               <img
                 class="w-full"
-                src="../../assets/bear.png"
+                src="../../assets/character/bear.png"
                 alt="Sunset in the mountains"
               />
               <div
@@ -40,7 +40,7 @@
             <div class="row-span-1">
               <img
                 class="w-full"
-                src="../../assets/bear.png"
+                src="../../assets/character/bear.png"
                 alt="Sunset in the mountains"
               />
               <div
@@ -53,7 +53,7 @@
             <div class="row-span-1">
               <img
                 class="w-full"
-                src="../../assets/bear.png"
+                src="../../assets/character/bear.png"
                 alt="Sunset in the mountains"
               />
               <div
@@ -66,7 +66,7 @@
             <div class="row-span-1">
               <img
                 class="w-full"
-                src="../../assets/bear.png"
+                src="../../assets/character/bear.png"
                 alt="Sunset in the mountains"
               />
               <div

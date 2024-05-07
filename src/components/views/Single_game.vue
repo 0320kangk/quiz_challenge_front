@@ -25,7 +25,7 @@
         <div class="max-w-sm rounded overflow-hidden shadow-lg">
           <img
             class="w-full"
-            src="../../assets/bear.png"
+            src="../../assets/character/bear.png"
             alt="Sunset in the mountains"
           />
           <div

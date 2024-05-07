@@ -23,7 +23,7 @@
         🎮 싱글 플레이
       </router-link>
       <router-link
-        to="/multi_game"
+        to="/game_rooms"
         class="btn text-4xl flex-shrink-0 w-full sm:w-auto inline-block bg-green-500 hover:bg-green-700 text-white"
       >
         ⚔ 멀티 플레이
