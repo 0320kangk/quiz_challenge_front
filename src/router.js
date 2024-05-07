@@ -3,6 +3,7 @@ import Home from "./components/views/Home.vue";
 import Login from "./components/views/Login.vue";
 import Signup from "./components/views/Signup.vue";
 import Single_game from "./components/views/Single_game.vue";
+import Multi_game from "./components/views/Multi_game.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -22,6 +23,10 @@ const router = createRouter({
     {
       path: "/single_game",
       component: Single_game,
+    },
+    {
+      path: "/multi_game",
+      component: Multi_game,
     },
   ],
 });

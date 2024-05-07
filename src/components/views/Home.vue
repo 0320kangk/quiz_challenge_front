@@ -22,11 +22,12 @@
       >
         🎮 싱글 플레이
       </router-link>
-      <a
+      <router-link
+        to="/multi_game"
         class="btn text-4xl flex-shrink-0 w-full sm:w-auto inline-block bg-green-500 hover:bg-green-700 text-white"
       >
         ⚔ 멀티 플레이
-      </a>
+      </router-link>
     </div>
     <!-- ... -->
   </div>
