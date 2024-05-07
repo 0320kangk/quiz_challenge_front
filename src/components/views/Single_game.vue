@@ -1,23 +1,125 @@
 <template>
-  <div class="h-96 w-96 bg-[url('./assets/board2.png')]">
-    awdadsasdds asdsda asasd
-  </div>
-  <!-- <div class="relative layout-default">
-    <img
-      src="../../assets/board2.png"
-      alt="Your Image"
-      class="h-auto max-w-full"
-    />
+  <div class="layout-default">
+    <div class="grid grid-cols-12">
+      <div class="col-span-12 sm:col-span-8 border border-red-700">
+        <div
+          class="ml-10 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
+        >
+          <span class="text-3xl">Q.</span> 스프링에서 트랜택션 관리를 위한
+          이노에션은 무엇인가?
+        </div>
+        <div
+          v-for="i in 4"
+          :key="i"
+          :class="{ 'bg-yellow-200': isClicked }"
+          @click="change_bg_color"
+          :id="'answer_' + i"
+          class="ml-10 my-10 p-5 bg-gray-200 rounded-xl font-bold shadow-xl"
+        >
+          스프링에서 트랜잭션 관리를 위한 이노에션은 무엇인가?
+        </div>
+      </div>
+      <div
+        class="col-span-12 sm:col-span-4 border border-red-600 flex justify-start"
+      >
+        <div class="max-w-sm rounded overflow-hidden shadow-lg">
+          <img
+            class="w-full"
+            src="../../assets/character.jpg"
+            alt="Sunset in the mountains"
+          />
+          <div class="px-6">
+            <div
+              class="font-bold text-xl text-center bg-gray-200 rounded-full px-3 py-1"
+            >
+              name: score
+            </div>
+          </div>
+          <div class="px-6 pt-4 pb-2">
+            <div class="h-64 bg-gray-100 flex flex-col justify-between">
+              <!-- 채팅창 메시지 영역 -->
+              <div class="flex-grow px-4 py-8 overflow-y-auto">
+                <!-- 메시지 -->
+                <div
+                  v-for="(message, index) in messages"
+                  :key="index"
+                  class="mb-4"
+                >
+                  <!-- 메시지 내용 -->
+                  <div v-if="message.isSent" class="flex justify-end">
+                    <div
+                      class="max-w-xs px-4 py-2 bg-blue-500 text-white rounded-lg"
+                    >
+                      {{ message.content }}
+                    </div>
+                  </div>
+                  <div v-else class="flex">
+                    <div
+                      class="max-w-xs px-4 py-2 bg-white border border-gray-300 rounded-lg"
+                    >
+                      {{ message.content }}
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-    <div class="absolute top-10 left-50 bg-black bg-opacity-75 text-white p-4">
-      <p>이미지 위에 표시되는 텍스트입니다.</p>
-      <p>추가적인 설명 등등...</p>
+              <!-- 채팅 입력창 -->
+              <div
+                class="flex justify-between items-center px-4 py-2 bg-white border-t border-gray-300"
+              >
+                <input
+                  type="text"
+                  v-model="newMessage"
+                  @keyup.enter="sendMessage"
+                  placeholder="메시지를 입력하세요..."
+                  class="w-full px-3 py-2 mr-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                />
+                <button
+                  @click="sendMessage"
+                  class="flex-grow px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none"
+                >
+                  보
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div> -->
+  </div>
 </template>
-<style></style>
+
 <script>
 export default {
   name: "single_game_vue",
+  data() {
+    return {
+      isClicked: false,
+      messages: [], // 채팅 메시지를 저장할 배열
+      newMessage: "", // 입력된 새로운 메시지
+    };
+  },
+  methods: {
+    change_bg_color(e) {
+      // 색상 변경 로직
+      const elements = document.querySelectorAll('[id^="answer_"]');
+      elements.forEach((element) => {
+        element.classList.remove("bg-yellow-200");
+      });
+      e.target.classList.add("bg-yellow-200");
+      console.log(e.target.className);
+    },
+    sendMessage() {
+      if (this.newMessage.trim() !== "") {
+        // 새로운 메시지를 배열에 추가
+        this.messages.push({
+          content: this.newMessage,
+          isSent: true, // 메시지가 보낸 것인지 여부
+        });
+        // 입력창 초기화
+        this.newMessage = "";
+      }
+    },
+  },
 };
 </script>
