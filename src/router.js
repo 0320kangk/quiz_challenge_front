@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "./components/views/Home.vue";
-import Login from "./components/views/Login.vue";
-import Signup from "./components/views/Signup.vue";
-import Single_game from "./components/views/Single_game.vue";
-import Multi_game from "./components/views/Multi_game.vue";
-import Game_rooms from "./components/views/Game_rooms.vue";
+import Home from "./components/views/home.vue";
+import Login from "./components/views/login.vue";
+import Signup from "./components/views/signup.vue";
+import Single_game from "./components/views/single_game.vue";
+import Multi_game from "./components/views/multi_game.vue";
+import Game_rooms from "./components/views/game_rooms.vue";
 
 const router = createRouter({
   history: createWebHistory(),
