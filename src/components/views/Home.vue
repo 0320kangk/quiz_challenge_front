@@ -18,15 +18,17 @@
     <div class="flex justify-between flex-wrap">
       <router-link
         to="/single_game"
-        class="btn text-4xl flex-shrink-0 w-full sm:w-auto mb-4 sm:mb-0 inline-block bg-blue-500 hover:bg-blue-700 text-white"
+        class="btn flex-shrink-0 w-full sm:w-auto mb-4 sm:mb-0 inline-block bg-blue-500 hover:bg-blue-700 text-white"
       >
-        🎮 싱글 플레이
+        <span class="text-9xl">🎮</span>
+        <div class="mt-6 text-4xl">싱글 플레이</div>
       </router-link>
       <router-link
         to="/game_rooms"
         class="btn text-4xl flex-shrink-0 w-full sm:w-auto inline-block bg-green-500 hover:bg-green-700 text-white"
       >
-        ⚔ 멀티 플레이
+        <span class="text-9xl">⚔</span>
+        <div class="mt-6 text-4xl">멀티 플레이</div>
       </router-link>
     </div>
     <!-- ... -->
@@ -35,7 +37,7 @@
 
 <style>
 .btn {
-  @apply font-bold my-5 text-center  py-24 sm:px-32 rounded-3xl shadow-2xl;
+  @apply font-bold my-5 text-center  py-20 sm:px-32 rounded-3xl shadow-2xl;
 }
 </style>
 <script>
