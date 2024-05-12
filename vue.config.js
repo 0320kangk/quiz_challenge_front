@@ -1,4 +1,7 @@
-const { defineConfig } = require('@vue/cli-service')
+const { defineConfig } = require("@vue/cli-service");
 module.exports = defineConfig({
-  transpileDependencies: true
-})
+  devServer: {
+    port: 3000, // 사용하고자 하는 새로운 포트 번호
+  },
+  transpileDependencies: true,
+});

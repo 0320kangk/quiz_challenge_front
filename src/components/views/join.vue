@@ -10,28 +10,42 @@
           회원가입
         </h2>
       </div>
-      <form class="mt-8 space-y-6" action="#" method="POST">
+      <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
         <input type="hidden" name="remember" value="true" />
         <div class="rounded-md shadow-sm -space-y-px">
+          <div>
+            <label for="member-name" class="sr-only">회원 이름</label>
+            <input
+              id="member-name"
+              name="member_name"
+              type="text"
+              v-model="member_name"
+              required
+              class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              placeholder="🎫 회원 이름"
+            />
+          </div>
           <div>
             <label for="email-address" class="sr-only">이메일 주소</label>
             <input
               id="email-address"
               name="email"
               type="email"
+              v-model="email"
               autocomplete="email"
               required
-              class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-4"
               placeholder="✉ 이메일 주소"
             />
           </div>
           <div>
             <label for="password" class="sr-only">비밀번호</label>
             <input
-              id="password"
+              id="password_origin"
               name="password"
               type="password"
               autocomplete="current-password"
+              v-model="password_origin"
               required
               class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-4"
               placeholder="🔓 비밀번호"
@@ -40,9 +54,10 @@
           <div>
             <label for="password" class="sr-only">비밀번호 확인</label>
             <input
-              id="password"
-              name="password"
+              id="password_check"
+              name="passwordCheck"
               type="password"
+              v-model="password_check"
               autocomplete="current-password"
               required
               class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-4"
@@ -90,5 +105,39 @@
 <script>
 export default {
   name: "vue_signup",
+  member_name: "",
+  email: "",
+  password_origin: "",
+  password_check: "",
+  methods: {
+    handleSubmit() {
+      if (this.password_origin !== this.password_check) {
+        this.passwordMismatch = true;
+        alert("비밀빈호가 다릅니다.");
+      } else {
+        // 비밀번호가 일치할 때의 로직을 작성합니다.
+        this.passwordMismatch = false;
+        // 여기서 submit을 처리합니다.
+        this.$axios
+          .post(this.$backend_origin + "/api/join", {
+            name: this.member_name,
+            email: this.email,
+            passwordOrigin: this.password_origin,
+            passwordCheck: this.password_check,
+            // 다른 필드들 추가
+          })
+          .then((response) => {
+            // 요청이 성공했을 때 처리할 로직
+            console.log(response);
+            window.location.href = "/";
+          })
+          .catch((error) => {
+            // 요청이 실패했을 때 처리할 로직
+            console.log("실패");
+            console.error("Error fetching data:", error);
+          });
+      }
+    },
+  },
 };
 </script>

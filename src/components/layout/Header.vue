@@ -51,7 +51,7 @@
             로그인
           </router-link>
           <router-link
-            to="/signup"
+            to="/join"
             class="font-bold py-2 px-3 hover:bg-gray-300 rounded transition duration-300"
           >
             회원가입

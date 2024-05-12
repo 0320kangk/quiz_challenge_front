@@ -43,5 +43,24 @@
 <script>
 export default {
   name: "vue_home",
+  mounted() {
+    // Spring Boot 백엔드에서 데이터를 요청하는 GET 요청 예시
+    this.$axios
+      .get("http://localhost:8080/api/test", {
+        auth: {
+          username: "user",
+          password: "f200f1e2-17ca-4651-803a-5ac634ff3882s00pers3cret",
+        },
+      })
+      .then((response) => {
+        // 요청이 성공했을 때 처리할 로직
+        console.log(response);
+      })
+      .catch((error) => {
+        // 요청이 실패했을 때 처리할 로직
+        console.log("실패");
+        console.error("Error fetching data:", error);
+      });
+  },
 };
 </script>
