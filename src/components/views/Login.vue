@@ -10,11 +10,17 @@
           QuizChallenge
         </h2>
       </div>
-      <form class="mt-8 space-y-6" action="#" method="POST">
+      <form
+        class="mt-8 space-y-6"
+        action="#"
+        method="POST"
+        @submit.prevent="login"
+      >
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
             <label for="email-address" class="sr-only">Email address</label>
             <input
+              v-model="email"
               id="email-address"
               name="email"
               type="email"
@@ -27,6 +33,7 @@
           <div>
             <label for="password" class="sr-only">Password</label>
             <input
+              v-model="password"
               id="password"
               name="password"
               type="password"
@@ -80,5 +87,23 @@
 <script>
 export default {
   name: "vue_login",
+  email: "",
+  password: "",
+  methods: {
+    login() {
+      console.log(this.email);
+      this.$axios
+        .post(this.$backend_origin + "/api/auth/login", {
+          email: this.email,
+          password: this.password,
+        })
+        .then((response) => {
+          if (response.data.token) {
+            localStorage.setItem("member", JSON.stringify(response.data));
+          }
+          console.log(response.data);
+        });
+    },
+  },
 };
 </script>

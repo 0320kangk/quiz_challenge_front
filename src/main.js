@@ -9,4 +9,8 @@ const app = createApp(App);
 app.config.globalProperties.$axios = axios;
 app.config.globalProperties.$backend_origin = "http://localhost:8080";
 
+const member = JSON.parse(localStorage.getItem("member"));
+if (member && member.token) {
+  axios.defaults.headers.common["Authorization"] = "Bearer " + member.token;
+}
 app.use(router).mount("#app");
