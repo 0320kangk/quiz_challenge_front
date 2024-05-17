@@ -45,7 +45,7 @@ export default {
   name: "vue_home",
   mounted() {
     this.$axios
-      .get(this.$backend_origin + "/api/member")
+      .get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/member`)
       .then((response) => {
         console.log(response.data);
       })

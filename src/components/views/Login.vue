@@ -87,13 +87,33 @@
 <script>
 export default {
   name: "vue_login",
+  // data() {
+  //   return {
+  //     email: "",
+  //     password: "",
+  //   };
+  // },
+  // methods: {
+  //   login() {
+  //     // Vuex 스토어의 login 액션 호출
+  //     this.$store.dispatch("login", {
+  //       email: this.email,
+  //       password: this.password,
+  //     }).then(() => {
+  //       // 로그인 성공 후 추가 작업 수행
+  //     }).catch((error) => {
+  //       // 로그인 실패 시 에러 처리
+  //       console.error("Failed to login", error);
+  //     });
+  //   },
+  // },
   email: "",
   password: "",
   methods: {
     login() {
       console.log(this.email);
       this.$axios
-        .post(this.$backend_origin + "/api/auth/login", {
+        .post(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/login`, {
           email: this.email,
           password: this.password,
         })
