@@ -1,6 +1,7 @@
 // store/index.js
 import { createStore } from "vuex";
 import axios from "axios"; // Axios import 추가
+import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
   state: {
@@ -18,12 +19,19 @@ export default createStore({
   actions: {
     login({ commit }, { email, password }) {
       return axios
-        .post(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/login`, {
-          email,
-          password,
-        })
+        .post(
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/login`,
+          {
+            email,
+            password,
+          },
+          {
+            withCredentials: true,
+          }
+        )
         .then((response) => {
           if (response.data.token) {
+            console.log("setToken");
             commit("setToken", response.data.token);
             localStorage.setItem("member", JSON.stringify(response.data));
           }
@@ -34,12 +42,11 @@ export default createStore({
       if (state.token) {
         return axios
           .get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/member`, {
-            headers: {
-              Authorization: `Bearer ${state.token}`,
-            },
+            withCredentials: true,
           })
           .then((response) => {
             commit("setMember", response.data);
+            console.log("setMember suuccess");
           })
           .catch((error) => {
             console.error("Failed to fetch member", error);
@@ -52,4 +59,5 @@ export default createStore({
       return !!state.token;
     },
   },
+  plugins: [createPersistedState()],
 });

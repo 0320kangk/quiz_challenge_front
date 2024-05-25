@@ -44,6 +44,7 @@
 export default {
   name: "vue_home",
   mounted() {
+    // console.log(this.$store.state.token + "asas");
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/member`)
       .then((response) => {

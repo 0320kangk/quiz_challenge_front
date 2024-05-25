@@ -87,43 +87,48 @@
 <script>
 export default {
   name: "vue_login",
-  // data() {
-  //   return {
-  //     email: "",
-  //     password: "",
-  //   };
-  // },
-  // methods: {
-  //   login() {
-  //     // Vuex 스토어의 login 액션 호출
-  //     this.$store.dispatch("login", {
-  //       email: this.email,
-  //       password: this.password,
-  //     }).then(() => {
-  //       // 로그인 성공 후 추가 작업 수행
-  //     }).catch((error) => {
-  //       // 로그인 실패 시 에러 처리
-  //       console.error("Failed to login", error);
-  //     });
-  //   },
-  // },
-  email: "",
-  password: "",
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
   methods: {
     login() {
-      console.log(this.email);
-      this.$axios
-        .post(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/login`, {
+      // Vuex 스토어의 login 액션 호출
+      this.$store
+        .dispatch("login", {
           email: this.email,
           password: this.password,
         })
-        .then((response) => {
-          if (response.data.token) {
-            localStorage.setItem("member", JSON.stringify(response.data));
-          }
-          console.log(response.data);
+        .then(() => {
+          console.log("test");
+          this.$store.dispatch("fetchMember");
+          // 로그인 성공 후 추가 작업 수행
+        })
+        .catch((error) => {
+          // 로그인 실패 시 에러 처리
+          console.error("Failed to login", error);
         });
     },
   },
+  // email: "",
+  // password: "",
+  // methods: {
+  //   login() {
+  //     console.log(this.email);
+  //     this.$axios
+  //       .post(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/login`, {
+  //         email: this.email,
+  //         password: this.password,
+  //       })
+  //       .then((response) => {
+  //         if (response.data.token) {
+  //           localStorage.setItem("member", JSON.stringify(response.data));
+  //         }
+  //         console.log(response.data);
+  //       });
+  //   },
+  // },
 };
 </script>
