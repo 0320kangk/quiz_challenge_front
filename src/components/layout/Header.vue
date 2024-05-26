@@ -45,16 +45,32 @@
         </div>
         <div class="font-bold hidden md:flex items-center space-x-1">
           <router-link
+            v-if="getMember == null"
             to="/login"
             class="py-2 px-3 hover:bg-gray-300 rounded transition duration-300"
           >
             로그인
           </router-link>
+          <div
+            v-else
+            class="py-2 px-3 hover:bg-gray-300 rounded transition duration-300"
+          >
+            {{ getMember.name }}
+          </div>
           <router-link
+            v-if="getMember == null"
             to="/join"
             class="font-bold py-2 px-3 hover:bg-gray-300 rounded transition duration-300"
           >
             회원가입
+          </router-link>
+          <router-link
+            v-else
+            to="/"
+            @click="logout"
+            class="font-bold py-2 px-3 hover:bg-gray-300 rounded transition duration-300"
+          >
+            로그아웃
           </router-link>
         </div>
         <div
@@ -116,16 +132,26 @@
 </template>
 <script>
 export default {
+  name: "vue_header",
+
   data() {
     return {
       menu_toggle: false,
     };
   },
+  computed: {
+    getMember() {
+      return this.$store.getters.getMember;
+    },
+  },
+
   methods: {
+    logout() {
+      this.$store.dispatch("logout");
+    },
     change_menu_toggle_state() {
       this.menu_toggle = !this.menu_toggle;
     },
   },
-  name: "vue_header",
 };
 </script>

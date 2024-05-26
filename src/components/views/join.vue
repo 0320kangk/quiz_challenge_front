@@ -105,10 +105,14 @@
 <script>
 export default {
   name: "vue_signup",
-  member_name: "",
-  email: "",
-  password_origin: "",
-  password_check: "",
+  data() {
+    return {
+      member_name: "",
+      email: "",
+      password_origin: "",
+      password_check: "",
+    };
+  },
   methods: {
     handleSubmit() {
       if (this.password_origin !== this.password_check) {

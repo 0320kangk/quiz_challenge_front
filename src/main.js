@@ -10,8 +10,23 @@ const app = createApp(App);
 app.config.globalProperties.$axios = axios;
 // app.config.globalProperties.$backend_origin = "http://localhost:8080";
 
-const member = JSON.parse(localStorage.getItem("member"));
-if (member && member.token) {
-  axios.defaults.headers.common["Authorization"] = "Bearer " + member.token;
-}
 app.use(router).use(store).mount("#app");
+
+// if (store.state.token !== null) {
+//   axios.defaults.headers.common["Authorization"] =
+//     "Bearer " + this.$store.state.token;
+// }
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = store.getters.getToken; // getters를 사용하여 토큰 가져오기
+
+    if (token !== null) {
+      config.headers["Authorization"] = "Bearer " + store.state.token;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);

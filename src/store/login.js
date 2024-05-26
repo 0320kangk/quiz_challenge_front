@@ -8,6 +8,7 @@ export default createStore({
     token: null,
     member: null,
   },
+
   mutations: {
     setToken(state, token) {
       state.token = token;
@@ -33,10 +34,14 @@ export default createStore({
           if (response.data.token) {
             console.log("setToken");
             commit("setToken", response.data.token);
-            localStorage.setItem("member", JSON.stringify(response.data));
+            // localStorage.setItem("member", JSON.stringify(response.data));
           }
           return response.data;
         });
+    },
+    logout({ commit }) {
+      commit("setMember", null);
+      commit("setToken", null);
     },
     fetchMember({ commit, state }) {
       if (state.token) {
@@ -55,8 +60,11 @@ export default createStore({
     },
   },
   getters: {
-    isAuthenticated(state) {
-      return !!state.token;
+    getToken(state) {
+      return state.token;
+    },
+    getMember(state) {
+      return state.member;
     },
   },
   plugins: [createPersistedState()],
