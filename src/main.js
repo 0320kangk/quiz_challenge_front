@@ -22,7 +22,7 @@ axios.interceptors.request.use(
     const token = store.getters.getToken; // getters를 사용하여 토큰 가져오기
 
     if (token !== null) {
-      config.headers["Authorization"] = "Bearer " + store.state.token;
+      config.headers["Authorization"] = "Bearer " + store.state.accessToken;
     }
     return config;
   },

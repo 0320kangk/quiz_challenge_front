@@ -5,13 +5,17 @@ import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
   state: {
-    token: null,
+    accessToken: null,
+    refreshToken: null,
     member: null,
   },
 
   mutations: {
-    setToken(state, token) {
-      state.token = token;
+    setAccessToken(state, accessToken) {
+      state.accessToken = accessToken;
+    },
+    setRefreshToken(state, refreshToken) {
+      state.refreshToken = refreshToken;
     },
     setMember(state, member) {
       state.member = member;
@@ -31,9 +35,10 @@ export default createStore({
           }
         )
         .then((response) => {
-          if (response.data.token) {
-            console.log("setToken");
-            commit("setToken", response.data.token);
+          if (response.data.accessToken) {
+            console.log("setAccessToken");
+            commit("setAccessToken", response.data.accessToken);
+            commit("setRefreshToken", response.data.refreshToken);
             // localStorage.setItem("member", JSON.stringify(response.data));
           }
           return response.data;
@@ -41,10 +46,11 @@ export default createStore({
     },
     logout({ commit }) {
       commit("setMember", null);
-      commit("setToken", null);
+      commit("setAccessToken", null);
+      commit("setRefreshToken", null);
     },
     fetchMember({ commit, state }) {
-      if (state.token) {
+      if (state.accessToken) {
         return axios
           .get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/member`, {
             withCredentials: true,
@@ -60,8 +66,8 @@ export default createStore({
     },
   },
   getters: {
-    getToken(state) {
-      return state.token;
+    getAccessToken(state) {
+      return state.accessToken;
     },
     getMember(state) {
       return state.member;
