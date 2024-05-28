@@ -2,8 +2,37 @@
 import { createStore } from "vuex";
 import axios from "axios"; // Axios import 추가
 import createPersistedState from "vuex-persistedstate";
+// Axios 요청 인터셉터 설정
+axios.interceptors.request.use(
+  (config) => {
+    const token = store.getters.getAccessToken;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-export default createStore({
+// Axios 응답 인터셉터 설정
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        await store.dispatch("refreshToken");
+        return axios(originalRequest);
+      } catch (e) {
+        store.dispatch("logout");
+        return Promise.reject(e);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+const store = createStore({
   state: {
     accessToken: null,
     refreshToken: null,
@@ -75,3 +104,4 @@ export default createStore({
   },
   plugins: [createPersistedState()],
 });
+export default store;
