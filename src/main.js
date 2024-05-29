@@ -17,16 +17,16 @@ app.use(router).use(store).mount("#app");
 //     "Bearer " + this.$store.state.token;
 // }
 
-axios.interceptors.request.use(
-  (config) => {
-    const token = store.getters.getToken; // getters를 사용하여 토큰 가져오기
+// axios.interceptors.request.use(
+//   (config) => {
+//     const token = store.getters.getToken; // getters를 사용하여 토큰 가져오기
 
-    if (token !== null) {
-      config.headers["Authorization"] = "Bearer " + store.state.accessToken;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+//     if (token !== null) {
+//       config.headers["Authorization"] = "Bearer " + store.state.accessToken;
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );

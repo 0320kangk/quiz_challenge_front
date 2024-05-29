@@ -5,25 +5,35 @@ import createPersistedState from "vuex-persistedstate";
 // Axios 요청 인터셉터 설정
 axios.interceptors.request.use(
   (config) => {
-    const token = store.getters.getAccessToken;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // 요청 URL이 /api/auth/refresh인 경우 refreshToken을 사용
+    const accessToken = store.getters.getAccessToken;
+    if (
+      config.url === `${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/refresh`
+    ) {
+      const refreshToken = store.getters.getRefreshToken;
+      console.log("refreshToken : " + refreshToken);
+      config.headers.Authorization = `Bearer ${refreshToken}`;
+    } else if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error)
 );
-
 // Axios 응답 인터셉터 설정
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    // 초기 설정: 재시도 여부와 재시도 횟수를 설정
+    console.log(originalRequest._retry);
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
         await store.dispatch("refreshToken");
         return axios(originalRequest);
+        // return Promise.resolve();
       } catch (e) {
         store.dispatch("logout");
         return Promise.reject(e);
@@ -93,6 +103,22 @@ const store = createStore({
           });
       }
     },
+    async refreshToken({ commit, state }) {
+      try {
+        const response = await axios.post(
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/refresh`,
+          {
+            refreshToken: state.refreshToken,
+          }
+        );
+        commit("setAccessToken", response.data.accessToken);
+        commit("setRefreshToken", response.data.refreshToken);
+        return response;
+      } catch (error) {
+        commit("logout");
+        throw error;
+      }
+    },
   },
   getters: {
     getAccessToken(state) {
@@ -100,6 +126,9 @@ const store = createStore({
     },
     getMember(state) {
       return state.member;
+    },
+    getRefreshToken(state) {
+      return state.refreshToken;
     },
   },
   plugins: [createPersistedState()],

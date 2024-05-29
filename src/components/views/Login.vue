@@ -102,7 +102,6 @@ export default {
           password: this.password,
         })
         .then(() => {
-          console.log("test");
           this.$store.dispatch("fetchMember");
           // 로그인 성공 후 추가 작업 수행
         })
