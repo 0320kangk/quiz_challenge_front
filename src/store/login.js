@@ -109,6 +109,10 @@ const store = createStore({
           `${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/refresh`,
           {
             refreshToken: state.refreshToken,
+          },
+          {
+            // config 설정
+            _retry: true,
           }
         );
         commit("setAccessToken", response.data.accessToken);
