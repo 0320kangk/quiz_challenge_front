@@ -36,6 +36,7 @@ axios.interceptors.response.use(
         // return Promise.resolve();
       } catch (e) {
         store.dispatch("logout");
+
         return Promise.reject(e);
       }
     }
@@ -44,9 +45,10 @@ axios.interceptors.response.use(
 );
 const store = createStore({
   state: {
-    accessToken: null,
-    refreshToken: null,
-    member: null,
+    accessToken: localStorage.getItem("accessToken") || "",
+    refreshToken: localStorage.getItem("refreshToken") || "",
+    member: localStorage.getItem("member") || "",
+    isAuthenticated: false,
   },
 
   mutations: {
@@ -58,6 +60,17 @@ const store = createStore({
     },
     setMember(state, member) {
       state.member = member;
+    },
+    setAuthenticated(state, status) {
+      state.isAuthenticated = status;
+    },
+    clearAuthToken(state) {
+      state.accessToken = "";
+      state.refreshToken = "";
+      state.member = "";
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("member");
     },
   },
   actions: {
@@ -84,9 +97,9 @@ const store = createStore({
         });
     },
     logout({ commit }) {
-      commit("setMember", null);
-      commit("setAccessToken", null);
-      commit("setRefreshToken", null);
+      commit("setMember", "");
+      commit("setAccessToken", "");
+      commit("setRefreshToken", "");
     },
     fetchMember({ commit, state }) {
       if (state.accessToken) {
@@ -119,7 +132,17 @@ const store = createStore({
         commit("setRefreshToken", response.data.refreshToken);
         return response;
       } catch (error) {
-        commit("logout");
+        commit("clearAuthToken");
+        throw error;
+      }
+    },
+    async checkAuth({ commit }) {
+      try {
+        await axios.get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth`);
+        commit("setAuthenticated", true);
+      } catch (error) {
+        commit("clearAuthToken");
+        commit("setAuthenticated", false);
         throw error;
       }
     },

@@ -24,15 +24,33 @@ const router = createRouter({
     {
       path: "/single_game",
       component: Single_game,
+      meta: { requiresAuth: true },
     },
     {
       path: "/multi_game",
       component: Multi_game,
+      meta: { requiresAuth: true },
     },
     {
       path: "/game_rooms",
       component: Game_rooms,
+      meta: { requiresAuth: true },
     },
   ],
 });
+
+router.beforeEach(async (to, from, next) => {
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  if (requiresAuth) {
+    try {
+      this.$store.dispatch("checkAuth"); // 인증 실패 시 토큰 제거
+      next();
+    } catch (error) {
+      next("/login"); // 로그인 페이지로 리디렉션
+    }
+  } else {
+    next();
+  }
+});
+
 export default router;

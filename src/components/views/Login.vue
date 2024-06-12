@@ -17,6 +17,12 @@
         @submit.prevent="login"
       >
         <div class="rounded-md shadow-sm -space-y-px">
+          <div
+            class="bg-gray-100 p-5 rounded text-red-500 text-sm mb-3"
+            v-if="errorMessage"
+          >
+            {{ errorMessage }}
+          </div>
           <div>
             <label for="email-address" class="sr-only">Email address</label>
             <input
@@ -45,25 +51,13 @@
           </div>
         </div>
 
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <input
-              id="remember-me"
-              name="remember-me"
-              type="checkbox"
-              class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-            />
-            <label for="remember-me" class="ml-2 block text-sm text-gray-900">
-              Remember me
-            </label>
-          </div>
-
+        <div class="flex items-center justify-end">
           <div class="text-sm">
             <a
               href="#"
               class="font-medium text-indigo-600 hover:text-indigo-500"
             >
-              Forgot your password?
+              비밀번호 찾기
             </a>
           </div>
         </div>
@@ -85,12 +79,15 @@
 </template>
 
 <script>
+import router from "@/router";
+
 export default {
   name: "vue_login",
   data() {
     return {
       email: "",
       password: "",
+      errorMessage: "",
     };
   },
   methods: {
@@ -102,11 +99,14 @@ export default {
           password: this.password,
         })
         .then(() => {
-          this.$store.dispatch("fetchMember");
+          this.$store.dispatch("fetchMember").then(() => {
+            router.push("/");
+          });
           // 로그인 성공 후 추가 작업 수행
         })
         .catch((error) => {
           // 로그인 실패 시 에러 처리
+          this.errorMessage = "아이디 또는 비밀번호가 잘못되었습니다.";
           console.error("Failed to login", error);
         });
     },

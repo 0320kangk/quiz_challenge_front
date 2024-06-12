@@ -43,19 +43,32 @@
 <script>
 export default {
   name: "vue_home",
-  mounted() {
-    // console.log(this.$store.state.token + "asas");
-    this.$axios
-      .get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/member`)
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log("실패");
-        console.log(error);
-      });
+  // mounted() {
+  //   // console.log(this.$store.state.token + "asas");
+  //   this.$axios
+  //     .get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/member`)
+  //     .then((response) => {
+  //       console.log(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log("실패");
+  //       console.log(error);
+  //     });
+  // },
+  methods: {
+    auth() {
+      this.$axios
+        .get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth`)
+        .then((response) => {
+          this.$router.push(this.link); // 인증이 성공하면 페이지 이동
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log("실패");
+          console.log(error);
+        });
+    },
   },
-  methods: {},
   // mounted() {
   //   // Spring Boot 백엔드에서 데이터를 요청하는 GET 요청 예시
   //   this.$axios
