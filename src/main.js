@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "./router.js";
 import "./index.css";
 import axios from "axios";
-import store from "./store/login";
+import store from "./store/auth";
 
 const app = createApp(App);
 
