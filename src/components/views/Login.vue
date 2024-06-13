@@ -111,23 +111,5 @@ export default {
         });
     },
   },
-  // email: "",
-  // password: "",
-  // methods: {
-  //   login() {
-  //     console.log(this.email);
-  //     this.$axios
-  //       .post(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/login`, {
-  //         email: this.email,
-  //         password: this.password,
-  //       })
-  //       .then((response) => {
-  //         if (response.data.token) {
-  //           localStorage.setItem("member", JSON.stringify(response.data));
-  //         }
-  //         console.log(response.data);
-  //       });
-  //   },
-  // },
 };
 </script>

@@ -91,6 +91,7 @@ const store = createStore({
             console.log("setAccessToken");
             commit("setAccessToken", response.data.accessToken);
             commit("setRefreshToken", response.data.refreshToken);
+            commit("setAuthenticated", true);
             // localStorage.setItem("member", JSON.stringify(response.data));
           }
           return response.data;
@@ -136,10 +137,11 @@ const store = createStore({
         throw error;
       }
     },
-    async checkAuth({ commit }) {
+    checkAuth({ commit }) {
+      console.log("test checkauth");
       try {
-        await axios.get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth`);
         commit("setAuthenticated", true);
+        return axios.get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth`);
       } catch (error) {
         commit("clearAuthToken");
         commit("setAuthenticated", false);

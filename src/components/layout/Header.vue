@@ -45,7 +45,7 @@
         </div>
         <div class="font-bold hidden md:flex items-center space-x-1">
           <router-link
-            v-if="getMember == null"
+            v-if="getMember === null || getMember === ''"
             to="/login"
             class="py-2 px-3 hover:bg-gray-300 rounded transition duration-300"
           >
@@ -58,7 +58,7 @@
             {{ getMember.name }}
           </div>
           <router-link
-            v-if="getMember == null"
+            v-if="getMember === null || getMember === ''"
             to="/join"
             class="font-bold py-2 px-3 hover:bg-gray-300 rounded transition duration-300"
           >
