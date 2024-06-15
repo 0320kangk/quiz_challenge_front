@@ -137,6 +137,7 @@ export default {
           })
           .catch((error) => {
             // 요청이 실패했을 때 처리할 로직
+            alert("서버에서 회원가입을 거절했습니다.");
             console.log("실패");
             console.error("Error fetching data:", error);
           });

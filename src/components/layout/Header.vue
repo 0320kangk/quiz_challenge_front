@@ -146,6 +146,9 @@ export default {
   },
 
   methods: {
+    checkAuth(){
+        this.$store.dispatch("checkAuth");
+    },
     logout() {
       this.$store.dispatch("logout");
     },

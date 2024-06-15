@@ -59,20 +59,20 @@ const actions = {
     commit("setMember", "");
     commit("setAccessToken", "");
     commit("setRefreshToken", "");
+    commit("setAuthenticated", false);
   },
-  fetchMember({ commit, state }) {
+  async fetchMember({ commit, state }) {
     if (state.accessToken) {
-      return axios
-        .get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/member`, {
+      try {
+        const response = await axios.get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/member`, {
           withCredentials: true,
-        })
-        .then((response) => {
-          commit("setMember", response.data);
-          console.log("setMember suuccess");
-        })
-        .catch((error) => {
-          console.error("Failed to fetch member", error);
         });
+        commit("setMember", response.data);
+        console.log("setMember success");
+      } catch (error) {
+        console.error("Failed to fetch member", error);
+        throw error; // 이 부분에서 오류를 다시 throw하여 상위에서 처리할 수 있도록 함
+      }
     }
   },
   async refreshToken({ commit, state }) {
@@ -95,11 +95,13 @@ const actions = {
       throw error;
     }
   },
-  checkAuth({ commit }) {
+  async checkAuth({ commit }) {
     console.log("test checkauth");
     try {
+      const response = await axios.post(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth`);
       commit("setAuthenticated", true);
-      return axios.get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth`);
+      // 여기서 필요하다면 response.data를 처리할 수 있음
+      return response; // 필요에 따라 반환값을 사용할 수 있음
     } catch (error) {
       commit("clearAuthToken");
       commit("setAuthenticated", false);
