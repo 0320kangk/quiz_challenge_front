@@ -5,6 +5,8 @@ import join from "./components/views/Join.vue";
 import Single_game from "./components/views/Single_game.vue";
 import Multi_game from "./components/views/Multi_game.vue";
 import Game_rooms from "./components/views/Game_rooms.vue";
+import Test from "./components/views/Test.vue";
+
 import store from "./store"; // Vuex 스토어 import
 
 const router = createRouter({
@@ -36,6 +38,10 @@ const router = createRouter({
       path: "/game_rooms",
       component: Game_rooms,
       meta: { requiresAuth: true },
+    },
+    {
+      path: "/test",
+      component: Test,
     },
   ],
 });
