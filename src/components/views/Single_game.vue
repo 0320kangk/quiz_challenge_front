@@ -12,7 +12,7 @@
           v-for="i in 4"
           :key="i"
           :class="{ 'bg-yellow-200': isClicked }"
-          @click="change_bg_color"
+          @click="changeBgColor"
           :id="'answer_' + i"
           class="ml-10 my-10 p-5 bg-gray-200 rounded-xl font-bold shadow-xl"
         >
@@ -99,8 +99,33 @@ export default {
       newMessage: "", // 입력된 새로운 메시지
     };
   },
+  mounted() {
+    const content = this.requestQuizQuestion();
+    console.log("api test");
+    console.log(content);
+  },
   methods: {
-    change_bg_color(e) {
+    async requestQuizQuestion() {
+      try {
+        const response = await this.$axios.post(
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/chatGpt/chat/completion/content`,
+          {
+            title: "spring framework",
+            quizLevel: "HARD",
+            count: 10,
+            quizType: "CHOICE",
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        console.log(response.data.content);
+        return response;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    changeBgColor(e) {
       // 색상 변경 로직
       const elements = document.querySelectorAll('[id^="answer_"]');
       elements.forEach((element) => {
