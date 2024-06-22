@@ -1,4 +1,64 @@
 <template>
+  <div
+    v-if="isOpen"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+  >
+    <!-- 모달 컨테이너 -->
+    <div class="w-full bg-white rounded-lg p-8 sm:w-2/5">
+      <!-- 모달 헤더 -->
+      <div class="mb-6 pb-2 border-b-2">
+        <h2 class="text-lg font-semibold">게임 설정</h2>
+      </div>
+      <!-- 모달 본문 -->
+      <div class="mb-6">
+        <form>
+          <div class="flex items-center mt-5">
+            <label for="topic" class="w-1/5">주제 </label>
+            <select
+              v-model="form_data.topic"
+              id="topic"
+              class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
+            >
+              <option hidden disabled value="">주제를 선탁하세요.</option>
+
+              <option value="option1">Option 1</option>
+              <option value="option2">Option 2</option>
+              <option value="option3">Option 3</option>
+            </select>
+          </div>
+          <div class="flex items-center mt-5">
+            <label for="topic " class="w-1/5">문제 수</label>
+            <select
+              v-model="form_data.problem_count"
+              id="problem_count"
+              class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
+            >
+              <option disabled hidden value="">문제 수를 선택하세요.</option>
+
+              <option value="option1">Option 1</option>
+              <option value="option2">Option 2</option>
+              <option value="option3">Option 3</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <!-- 닫기 버튼 -->
+      <div class="flex">
+        <button
+          @click="create_room"
+          class="px-4 py-2 w-1/2 mr-2 bg-yellow-400 hover:bg-yellow-500 rounded-lg"
+        >
+          방 만들기
+        </button>
+        <button
+          @click="close_modal"
+          class="px-4 py-2 w-1/2 ml-2 bg-gray-300 hover:bg-gray-400 rounded-lg"
+        >
+          취소
+        </button>
+      </div>
+    </div>
+  </div>
   <img class="h-64 w-full" src="../../assets/quiz.png" alt="quiz image" />
   <div class="layout-default py-4 my-7">
     <div class="pb-5 border-b-4 border-b-yellow-800 font-bold text-4xl">
@@ -43,50 +103,24 @@
 <script>
 export default {
   name: "HomeVue",
-  // mounted() {
-  //   // console.log(this.$store.state.token + "asas");
-  //   this.$axios
-  //     .get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/member`)
-  //     .then((response) => {
-  //       console.log(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log("실패");
-  //       console.log(error);
-  //     });
-  // },
-  methods: {
-    // auth() {
-    //   this.$axios
-    //     .get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth`)
-    //     .then((response) => {
-    //       this.$router.push(this.link); // 인증이 성공하면 페이지 이동
-    //       console.log(response.data);
-    //     })
-    //     .catch((error) => {
-    //       console.log("실패");
-    //       console.log(error);
-    //     });
-    // },
+  data() {
+    return {
+      isOpen: true,
+      form_data: {
+        topic: "",
+        problem_count: "",
+      },
+    }; // 모달이 열려있는지 여부
   },
-  // mounted() {
-  //   // Spring Boot 백엔드에서 데이터를 요청하는 GET 요청 예시
-  //   this.$axios
-  //     .get("http://localhost:8080/api/test", {
-  //       auth: {
-  //         username: "user",
-  //         password: "f200f1e2-17ca-4651-803a-5ac634ff3882s00pers3cret",
-  //       },
-  //     })
-  //     .then((response) => {
-  //       // 요청이 성공했을 때 처리할 로직
-  //       console.log(response);
-  //     })
-  //     .catch((error) => {
-  //       // 요청이 실패했을 때 처리할 로직
-  //       console.log("실패");
-  //       console.error("Error fetching data:", error);
-  //     });
-  // },
+  methods: {
+    open_modal() {
+      this.isOpen = true; // 모달 열기
+      this.form_data.topic = "";
+      this.form_data.problem_count = "";
+    },
+    close_modal() {
+      this.isOpen = false; // 모달 닫기
+    },
+  },
 };
 </script>
