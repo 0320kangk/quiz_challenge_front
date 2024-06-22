@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  name: "test_vue",
+  name: "TestVue",
   data() {
     return {
       question: "What is the capital of France?",

@@ -82,7 +82,7 @@
 import router from "@/router";
 
 export default {
-  name: "vue_login",
+  name: "LoginVue",
   data() {
     return {
       email: "",

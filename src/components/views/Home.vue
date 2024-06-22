@@ -42,7 +42,7 @@
 </style>
 <script>
 export default {
-  name: "vue_home",
+  name: "HomeVue",
   // mounted() {
   //   // console.log(this.$store.state.token + "asas");
   //   this.$axios

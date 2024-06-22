@@ -204,7 +204,7 @@
 </template>
 <script>
 export default {
-  name: "game_rooms_vue",
+  name: "GameRooms",
 
   data() {
     return {

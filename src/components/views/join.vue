@@ -104,7 +104,7 @@
 
 <script>
 export default {
-  name: "vue_signup",
+  name: "JoinVue",
   data() {
     return {
       member_name: "",

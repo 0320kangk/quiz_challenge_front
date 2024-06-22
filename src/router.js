@@ -2,9 +2,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "./components/views/Home.vue";
 import Login from "./components/views/Login.vue";
 import join from "./components/views/Join.vue";
-import Single_game from "./components/views/Single_game.vue";
-import Multi_game from "./components/views/Multi_game.vue";
-import Game_rooms from "./components/views/Game_rooms.vue";
+import Single_game from "./components/views/SingleGame.vue";
+import Multi_game from "./components/views/MultiGame.vue";
+import Game_rooms from "./components/views/GameRooms.vue";
 import Test from "./components/views/Test.vue";
 
 import store from "./store"; // Vuex 스토어 import
