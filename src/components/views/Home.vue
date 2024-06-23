@@ -21,9 +21,8 @@
             >
               <option hidden disabled value="">주제를 선탁하세요.</option>
 
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              <option value="option1">Spring framework</option>
+              <option value="option2">java</option>
             </select>
           </div>
           <div class="flex items-center mt-5">
@@ -35,9 +34,8 @@
             >
               <option disabled hidden value="">문제 수를 선택하세요.</option>
 
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              <option value="option1">10</option>
+              <option value="option2">20</option>
             </select>
           </div>
         </form>
@@ -48,7 +46,7 @@
           @click="create_room"
           class="px-4 py-2 w-1/2 mr-2 bg-yellow-400 hover:bg-yellow-500 rounded-lg"
         >
-          방 만들기
+          게임 플레이
         </button>
         <button
           @click="close_modal"
@@ -76,20 +74,19 @@
     </div> -->
 
     <div class="flex justify-between flex-wrap">
-      <router-link
-        to="/single_game"
+      <button
+        @click="singleGameOpenModal"
         class="btn flex-shrink-0 w-full sm:w-auto mb-4 sm:mb-0 inline-block bg-blue-500 hover:bg-blue-700 text-white"
       >
         <span class="text-9xl">🎮</span>
         <div class="mt-6 text-4xl">싱글 플레이</div>
-      </router-link>
-      <router-link
-        to="/game_rooms"
+      </button>
+      <button
         class="btn text-4xl flex-shrink-0 w-full sm:w-auto inline-block bg-green-500 hover:bg-green-700 text-white"
       >
         <span class="text-9xl">⚔</span>
         <div class="mt-6 text-4xl">멀티 플레이</div>
-      </router-link>
+      </button>
     </div>
     <!-- ... -->
   </div>
@@ -105,7 +102,7 @@ export default {
   name: "HomeVue",
   data() {
     return {
-      isOpen: true,
+      isOpen: false,
       form_data: {
         topic: "",
         problem_count: "",
@@ -113,6 +110,11 @@ export default {
     }; // 모달이 열려있는지 여부
   },
   methods: {
+    singleGameOpenModal() {
+      this.isOpen = true; // 모달 열기
+      this.form_data.topic = "";
+      this.form_data.problem_count = "";
+    },
     open_modal() {
       this.isOpen = true; // 모달 열기
       this.form_data.topic = "";
