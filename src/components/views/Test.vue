@@ -1,73 +1,33 @@
 <template>
-  <div>
-    <h1>Quiz Question</h1>
-    <p>{{ question }}</p>
-    <button
-      v-for="(option, index) in options"
-      :key="index"
-      @click="checkAnswer(index)"
-    >
-      {{ option }}
-    </button>
-    <svg v-if="isCorrect" viewBox="0 0 100 100" class="circle-animation">
-      <circle
-        cx="50"
-        cy="50"
-        r="45"
-        stroke="red"
-        stroke-width="4"
-        fill="none"
-      />
-    </svg>
+  <div class="flex items-center justify-center h-screen">
+    <div class="loader rounded-full w-24 h-24"></div>
   </div>
 </template>
 
+<style scoped>
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader {
+  animation: spin 1s linear infinite;
+  border: 6px solid transparent;
+  border-top: 6px solid #3490dc; /* 파란색 부분 */
+  border-right: 6px solid #3490dc; /* 파란색 부분 */
+  border-bottom: 6px solid rgba(244, 238, 238, 0.5); /* 파란색 부분 */
+  border-left: 6px solid rgba(244, 238, 238, 0.5); /* 투명 부분 */
+  border-radius: 50%;
+  width: 96px; /* 너비 */
+  height: 96px; /* 높이 */
+}
+</style>
 <script>
 export default {
   name: "TestVue",
-  data() {
-    return {
-      question: "What is the capital of France?",
-      options: ["Berlin", "Madrid", "Paris", "Rome"],
-      correctAnswer: 2, // Index of the correct answer
-      isCorrect: false, // To trigger the animation
-    };
-  },
-  methods: {
-    checkAnswer(index) {
-      if (index === this.correctAnswer) {
-        this.isCorrect = true;
-        setTimeout(() => {
-          this.isCorrect = false; // Reset the animation state after 1.5 seconds
-        }, 1000);
-      } else {
-        // Handle incorrect answer
-        alert("Wrong answer, try again!");
-      }
-    },
-  },
 };
 </script>
-
-<style scoped>
-.circle-animation {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
-}
-
-circle {
-  stroke-dasharray: 283;
-  stroke-dashoffset: 283;
-  animation: drawCircle 1.5s linear forwards;
-}
-
-@keyframes drawCircle {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-</style>

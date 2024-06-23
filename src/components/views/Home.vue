@@ -13,29 +13,43 @@
       <div class="mb-6">
         <form>
           <div class="flex items-center mt-5">
-            <label for="topic" class="w-1/5">주제 </label>
+            <label for="title" class="w-1/5">주제 </label>
             <select
-              v-model="form_data.topic"
-              id="topic"
+              v-model="singleGameData.title"
+              id="title"
               class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
             >
               <option hidden disabled value="">주제를 선탁하세요.</option>
 
-              <option value="option1">Spring framework</option>
-              <option value="option2">java</option>
+              <option value="Spring framework">Spring framework</option>
+              <option value="java">java</option>
             </select>
           </div>
           <div class="flex items-center mt-5">
-            <label for="topic " class="w-1/5">문제 수</label>
+            <label for="questionCount" class="w-1/5">문제 수</label>
             <select
-              v-model="form_data.problem_count"
-              id="problem_count"
+              v-model="singleGameData.questionCount"
+              id="questionCount"
               class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
             >
               <option disabled hidden value="">문제 수를 선택하세요.</option>
 
-              <option value="option1">10</option>
-              <option value="option2">20</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+          <div class="flex items-center mt-5">
+            <label for="level" class="w-1/5">난이도</label>
+            <select
+              v-model="singleGameData.level"
+              id="level"
+              class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
+            >
+              <option disabled hidden value="">보통</option>
+
+              <option value="EASY">쉬움</option>
+              <option value="NORMAL">보통</option>
+              <option value="HARD">어려움</option>
             </select>
           </div>
         </form>
@@ -43,13 +57,13 @@
       <!-- 닫기 버튼 -->
       <div class="flex">
         <button
-          @click="create_room"
+          @click="singleGamePlay"
           class="px-4 py-2 w-1/2 mr-2 bg-yellow-400 hover:bg-yellow-500 rounded-lg"
         >
           게임 플레이
         </button>
         <button
-          @click="close_modal"
+          @click="closeModal"
           class="px-4 py-2 w-1/2 ml-2 bg-gray-300 hover:bg-gray-400 rounded-lg"
         >
           취소
@@ -81,12 +95,13 @@
         <span class="text-9xl">🎮</span>
         <div class="mt-6 text-4xl">싱글 플레이</div>
       </button>
-      <button
+      <router-link
+        to="/game_rooms"
         class="btn text-4xl flex-shrink-0 w-full sm:w-auto inline-block bg-green-500 hover:bg-green-700 text-white"
       >
         <span class="text-9xl">⚔</span>
         <div class="mt-6 text-4xl">멀티 플레이</div>
-      </button>
+      </router-link>
     </div>
     <!-- ... -->
   </div>
@@ -103,24 +118,43 @@ export default {
   data() {
     return {
       isOpen: false,
-      form_data: {
-        topic: "",
-        problem_count: "",
+      singleGameData: {
+        title: "",
+        questionCount: "",
+        level: "",
       },
     }; // 모달이 열려있는지 여부
   },
   methods: {
     singleGameOpenModal() {
       this.isOpen = true; // 모달 열기
-      this.form_data.topic = "";
-      this.form_data.problem_count = "";
+      this.singleGameData.title = "";
+      this.singleGameData.questionCount = "";
+      this.singleGameData.level = "";
     },
-    open_modal() {
+    singleGamePlay() {
+      if (
+        this.singleGameData.title !== "" &&
+        this.singleGameData.questionCount !== "" &&
+        this.singleGameData.level !== ""
+      ) {
+        this.singleGameData.questionCount = parseInt(
+          this.singleGameData.questionCount
+        );
+        this.$router.push({
+          path: "/single_game",
+          state: this.singleGameData,
+        });
+      } else {
+        alert("빈 값은 허용되지 않습니다.");
+      }
+    },
+    openModal() {
       this.isOpen = true; // 모달 열기
-      this.form_data.topic = "";
-      this.form_data.problem_count = "";
+      this.singleGameData.title = "";
+      this.singleGameData.questionCount = "";
     },
-    close_modal() {
+    closeModal() {
       this.isOpen = false; // 모달 닫기
     },
   },

@@ -94,26 +94,30 @@ export default {
   name: "SingleGame",
   data() {
     return {
-      isClicked: false,
+      isClicked: false, //문제 항목 클릭 여부
       messages: [], // 채팅 메시지를 저장할 배열
       newMessage: "", // 입력된 새로운 메시지
     };
   },
   mounted() {
-    const content = this.requestQuizQuestion();
-    console.log("api test");
-    console.log(content);
+    const choiceQueston = this.requestQuizQuestion("CHOICE");
+    const oxQuestion = this.requestQuizQuestion("OX");
+
+    console.log(choiceQueston);
+    console.log(oxQuestion);
+    console.log(history.state); // 'value'
+    console.log(history.state.questionCount / 2);
   },
   methods: {
-    async requestQuizQuestion() {
+    async requestQuizQuestion(quizType) {
       try {
         const response = await this.$axios.post(
           `${process.env.VUE_APP_BACKEND_ORIGIN}/api/chatGpt/chat/completion/content`,
           {
-            title: "spring framework",
-            quizLevel: "HARD",
-            count: 10,
-            quizType: "CHOICE",
+            title: history.state.title,
+            quizLevel: history.state.level,
+            count: history.state.questionCount / 2,
+            quizType: quizType,
           },
           {
             withCredentials: true,
