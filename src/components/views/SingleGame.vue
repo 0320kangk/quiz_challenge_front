@@ -46,71 +46,69 @@
           >
             스프링에서 트랜잭션 관리를 위한 이노에션은 무엇인가?
           </div>
+        </div>
+      </div>
+      <div
+        class="col-span-12 sm:col-span-3 border border-red-600 flex justify-center"
+      >
+        <div class="max-w-sm rounded overflow-hidden shadow-lg">
+          <img
+            class="w-full"
+            src="../../assets/character/bear.png"
+            alt="Sunset in the mountains"
+          />
           <div
-            class="col-span-12 sm:col-span-3 border border-red-600 flex justify-center"
+            class="font-bold text-lg text-center bg-gray-200 rounded-full px-3 py-1"
           >
-            <div class="max-w-sm rounded overflow-hidden shadow-lg">
-              <img
-                class="w-full"
-                src="../../assets/character/bear.png"
-                alt="Sunset in the mountains"
-              />
+            name: junho <br />
+            score: 90
+          </div>
+          <div class="px-6 pt-4 pb-2">
+            <div class="h-64 bg-gray-100 flex flex-col justify-between">
+              <!-- 채팅창 메시지 영역 -->
               <div
-                class="font-bold text-lg text-center bg-gray-200 rounded-full px-3 py-1"
+                ref="messageContainer"
+                class="flex-grow px-4 py-8 overflow-y-auto"
               >
-                name: junho <br />
-                score: 90
-              </div>
-              <div class="px-6 pt-4 pb-2">
-                <div class="h-64 bg-gray-100 flex flex-col justify-between">
-                  <!-- 채팅창 메시지 영역 -->
-                  <div
-                    ref="messageContainer"
-                    class="flex-grow px-4 py-8 overflow-y-auto"
-                  >
-                    <!-- 메시지 -->
+                <!-- 메시지 -->
+                <div
+                  v-for="(message, index) in messages"
+                  :key="index"
+                  class="mb-4"
+                >
+                  <!-- 메시지 내용 -->
+                  <div v-if="message.isSent" class="flex justify-end">
                     <div
-                      v-for="(message, index) in messages"
-                      :key="index"
-                      class="mb-4"
+                      class="max-w-xs px-4 py-2 bg-blue-500 text-white rounded-lg"
                     >
-                      <!-- 메시지 내용 -->
-                      <div v-if="message.isSent" class="flex justify-end">
-                        <div
-                          class="max-w-xs px-4 py-2 bg-blue-500 text-white rounded-lg"
-                        >
-                          {{ message.content }}
-                        </div>
-                      </div>
-                      <div v-else class="flex">
-                        <div
-                          class="max-w-xs px-4 py-2 bg-white border border-gray-300 rounded-lg"
-                        >
-                          {{ message.content }}
-                        </div>
-                      </div>
+                      {{ message.content }}
                     </div>
                   </div>
-
-                  <!-- 채팅 입력창 -->
-                  <div
-                    class="flex items-center bg-white border-t border-gray-300"
-                  >
-                    <input
-                      type="text"
-                      v-model="newMessage"
-                      @keyup.enter="sendMessage"
-                      placeholder="메시지를 입력하세요..."
-                      class="w-full py-2 border focus:outline-none focus:border-blue-500"
-                    />
-                    <button
-                      @click="sendMessage"
-                      class="px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
+                  <div v-else class="flex">
+                    <div
+                      class="max-w-xs px-4 py-2 bg-white border border-gray-300 rounded-lg"
                     >
-                      ✉
-                    </button>
+                      {{ message.content }}
+                    </div>
                   </div>
                 </div>
+              </div>
+
+              <!-- 채팅 입력창 -->
+              <div class="flex items-center bg-white border-t border-gray-300">
+                <input
+                  type="text"
+                  v-model="newMessage"
+                  @keyup.enter="sendMessage"
+                  placeholder="메시지를 입력하세요..."
+                  class="w-full py-2 border focus:outline-none focus:border-blue-500"
+                />
+                <button
+                  @click="sendMessage"
+                  class="px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
+                >
+                  ✉
+                </button>
               </div>
             </div>
           </div>
@@ -187,7 +185,7 @@ export default {
             withCredentials: true,
           }
         );
-        console.log(response.data.content);
+        // console.log(response.data.content);
         return response;
       } catch (error) {
         console.log(error);
