@@ -1,10 +1,10 @@
 <template>
   <div class="layout-default">
     <div class="grid grid-cols-12">
-      <div class="col-span-12 sm:col-span-9 border border-red-700">
+      <div v-if="!gameStarted" class="col-span-12">
         <!-- 로딩  -->
         <div
-          v-if="!loading"
+          v-if="!loading && !gameStarted"
           class="flex flex-col items-center justify-center h-screen"
         >
           <div class="loader rounded-full w-24 h-24 mb-4"></div>
@@ -28,10 +28,16 @@
             </button>
           </div>
         </div>
+      </div>
+
+      <div
+        v-if="gameStarted"
+        class="col-span-12 sm:col-span-9 border border-red-600"
+      >
         <!-- 게임 문제  -->
-        <div v-if="gameStarted">
+        <div>
           <div
-            class="ml-10 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
+            class="ml-10 mr-5 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
           >
             <span class="text-3xl">Q.</span> 스프링에서 트랜택션 관리를 위한
             이노에션은 무엇인가?
@@ -42,13 +48,14 @@
             :class="{ 'bg-yellow-200': isClicked }"
             @click="changeBgColor"
             :id="'answer_' + i"
-            class="ml-10 my-10 p-5 bg-gray-200 rounded-xl font-bold shadow-xl"
+            class="ml-10 mr-5 my-10 p-5 bg-gray-200 rounded-xl font-bold shadow-xl"
           >
             스프링에서 트랜잭션 관리를 위한 이노에션은 무엇인가?
           </div>
         </div>
       </div>
       <div
+        v-if="gameStarted"
         class="col-span-12 sm:col-span-3 border border-red-600 flex justify-center"
       >
         <div class="max-w-sm rounded overflow-hidden shadow-lg">
@@ -150,11 +157,12 @@ export default {
       newMessage: "", // 입력된 새로운 메시지
       loading: false,
       gameStarted: false,
+      quizQuestions: [],
     };
   },
   async mounted() {
     // 두 비동기 함수 호출 및 결과를 기다림
-    const choiceQuestionPromise = this.requestQuizQuestion("CHOICE");
+    const choiceQuestionPromise = this.requestQuizQuestion("CHOICE_5");
     const oxQuestionPromise = this.requestQuizQuestion("OX");
 
     try {
@@ -163,8 +171,14 @@ export default {
         choiceQuestionPromise,
         oxQuestionPromise,
       ]);
-      console.log(choiceQuestion);
-      console.log(oxQuestion);
+      // console.log(choiceQuestion.data);
+      // console.log(choiceQuestion.data.concat(oxQuestion.data));
+      this.quizQuestions = this.mergeQuestions(
+        choiceQuestion.data,
+        oxQuestion.data
+      );
+      this.shuffle(this.quizQuestions);
+      console.log(this.quizQuestions);
       this.loading = true;
     } catch (error) {
       console.error("Error fetching questions:", error);
@@ -173,6 +187,15 @@ export default {
   methods: {
     async requestQuizQuestion(quizType) {
       try {
+        if (
+          !history.state.title ||
+          !history.state.level ||
+          !history.state.questionCount ||
+          !quizType
+        ) {
+          throw new Error("게임 실행에 필요한 값이 없습니다.");
+        }
+
         const response = await this.$axios.post(
           `${process.env.VUE_APP_BACKEND_ORIGIN}/api/chatGpt/chat/completion/content`,
           {
@@ -188,7 +211,18 @@ export default {
         // console.log(response.data.content);
         return response;
       } catch (error) {
-        console.log(error);
+        alert("퀴즈 문제 생성 에러, 다시 접속해주세요.");
+        this.$router.push("/");
+        console.error("Error fetching quiz question:", error.message); // 에러 메시지 출력
+      }
+    },
+    mergeQuestions(choiceQuestions, oxQuestions) {
+      return choiceQuestions.concat(oxQuestions);
+    },
+    shuffle(questions) {
+      for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
       }
     },
     startGame() {

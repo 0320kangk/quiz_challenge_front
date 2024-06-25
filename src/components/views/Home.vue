@@ -45,7 +45,7 @@
               id="level"
               class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
             >
-              <option disabled hidden value="">보통</option>
+              <option disabled hidden value="">난이도 선택</option>
 
               <option value="EASY">쉬움</option>
               <option value="NORMAL">보통</option>
