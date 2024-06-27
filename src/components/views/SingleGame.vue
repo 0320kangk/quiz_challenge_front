@@ -1,15 +1,15 @@
 <template>
   <div class="layout-default">
+    <div
+      v-if="!loading && !gameStarted"
+      class="flex flex-col items-center justify-center h-screen"
+    >
+      <div class="loader rounded-full w-24 h-24 mb-4"></div>
+      <span class="text-gray-700 font-bold">Loading...</span>
+    </div>
+
     <div class="grid grid-cols-12">
       <div v-if="!gameStarted" class="col-span-12">
-        <!-- 로딩  -->
-        <div
-          v-if="!loading && !gameStarted"
-          class="flex flex-col items-center justify-center h-screen"
-        >
-          <div class="loader rounded-full w-24 h-24 mb-4"></div>
-          <span class="text-gray-700 font-bold">Loading...</span>
-        </div>
         <!-- 게임 시작  -->
         <div
           v-if="loading && !gameStarted"
@@ -35,22 +35,36 @@
         class="col-span-12 sm:col-span-9 border border-red-600"
       >
         <!-- 게임 문제  -->
-        <div>
+        <div v-if="currentQuizIndex < quizQuestions.length">
           <div
             class="ml-10 mr-5 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
           >
-            <span class="text-3xl">Q.</span> 스프링에서 트랜택션 관리를 위한
-            이노에션은 무엇인가?
+            <span class="text-3xl">Q.</span>
+            {{ quizQuestions[currentQuizIndex].question }}
           </div>
           <div
-            v-for="i in 4"
+            v-for="(option, i) in quizQuestions[currentQuizIndex].options"
             :key="i"
-            :class="{ 'bg-yellow-200': isClicked }"
-            @click="changeBgColor"
-            :id="'answer_' + i"
+            @click="changeBgColor(i)"
+            :id="'answer_' + currentQuizIndex + '_' + i"
+            :class="{
+              'bg-yellow-200': selectedAnswerIndex === i,
+              'bg-gray-200': selectedAnswerIndex !== i,
+            }"
             class="ml-10 mr-5 my-10 p-5 bg-gray-200 rounded-xl font-bold shadow-xl"
           >
-            스프링에서 트랜잭션 관리를 위한 이노에션은 무엇인가?
+            {{ i + 1 }}. {{ option }}
+          </div>
+          <div class="flex justify-between">
+            <div class="text-xl ml-10 text-black font-bold px-5">
+              {{ timer }}
+            </div>
+            <div
+              class="mr-5 text-white font-bold bg-blue-500 hover:bg-blue-700 px-10 py-4 rounded-xl"
+              @click="nextQuestion"
+            >
+              다음 문제
+            </div>
           </div>
         </div>
       </div>
@@ -68,7 +82,7 @@
             class="font-bold text-lg text-center bg-gray-200 rounded-full px-3 py-1"
           >
             name: junho <br />
-            score: 90
+            totalScore: 90
           </div>
           <div class="px-6 pt-4 pb-2">
             <div class="h-64 bg-gray-100 flex flex-col justify-between">
@@ -152,19 +166,25 @@ export default {
   name: "SingleGame",
   data() {
     return {
-      isClicked: false, //문제 항목 클릭 여부
+      //문제 항목 클릭 여부
       messages: [], // 채팅 메시지를 저장할 배열
       newMessage: "", // 입력된 새로운 메시지
       loading: false,
       gameStarted: false,
       quizQuestions: [],
+      currentQuizIndex: 0,
+      selectedAnswerIndex: null,
+      totalScore: 0,
+      score: 0,
+      timer: 0,
+      intervalId: null,
+      oxMap: { 0: "O", 1: "X" },
     };
   },
   async mounted() {
     // 두 비동기 함수 호출 및 결과를 기다림
     const choiceQuestionPromise = this.requestQuizQuestion("CHOICE_5");
     const oxQuestionPromise = this.requestQuizQuestion("OX");
-
     try {
       // 두 Promise가 모두 완료될 때까지 기다림
       const [choiceQuestion, oxQuestion] = await Promise.all([
@@ -173,10 +193,12 @@ export default {
       ]);
       // console.log(choiceQuestion.data);
       // console.log(choiceQuestion.data.concat(oxQuestion.data));
+
       this.quizQuestions = this.mergeQuestions(
         choiceQuestion.data,
         oxQuestion.data
       );
+      this.score = 100 / this.quizQuestions.length;
       this.shuffle(this.quizQuestions);
       console.log(this.quizQuestions);
       this.loading = true;
@@ -226,20 +248,65 @@ export default {
       }
     },
     startGame() {
-      // 게임 시작 버튼 클릭 시 호출되는 메서드
-      // 예를 들어, 게임 시작 로직을 구현하거나 다음 화면으로 네비게이션하는 등의 작업을 수행할 수 있습니다.
-      // 여기서는 간단히 console.log로 메시지를 출력하도록 했습니다.
       this.gameStarted = true;
       console.log("게임이 시작됩니다!");
+      this.startTimer();
     },
-    changeBgColor(e) {
-      // 색상 변경 로직
-      const elements = document.querySelectorAll('[id^="answer_"]');
-      elements.forEach((element) => {
-        element.classList.remove("bg-yellow-200");
-      });
-      e.target.classList.add("bg-yellow-200");
-      console.log(e.target.className);
+    nextQuestion() {
+      if (this.selectedAnswerIndex !== null) {
+        console.log(
+          "정답: " + this.quizQuestions[this.currentQuizIndex].answer
+        );
+        this.totalScore = this.addScore(
+          this.totalScore,
+          this.selectedAnswerIndex
+        );
+        this.selectedAnswerIndex = null;
+
+        console.log("점수: " + this.totalScore);
+      }
+      //다음문제로 넘어가기
+      if (this.currentQuizIndex < this.quizQuestions.length) {
+        this.currentQuizIndex++;
+        this.startTimer();
+      }
+      if (this.currentQuizIndex == this.quizQuestions.length) {
+        //게임 종료 후
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+        }
+        console.log(this.score);
+        console.log(this.totalScore / this.score);
+      }
+    },
+    addScore(totalScore, selectedAnswer) {
+      if (this.quizQuestions[this.currentQuizIndex].quizType === "OX") {
+        selectedAnswer = this.oxMap[this.selectedAnswerIndex];
+      }
+      if (this.quizQuestions[this.currentQuizIndex].answer == selectedAnswer)
+        totalScore += this.score;
+      return totalScore;
+    },
+
+    startTimer() {
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+      }
+      // 초기화
+      this.timer = 10;
+      // 1초마다 타이머 업데이트
+      this.intervalId = setInterval(() => {
+        if (this.timer > 0) {
+          this.timer--;
+        } else {
+          clearInterval(this.intervalId); // 타이머가 0이 되면 중지
+          this.nextQuestion();
+        }
+      }, 1000);
+    },
+
+    changeBgColor(selectedAnswerIndex) {
+      this.selectedAnswerIndex = selectedAnswerIndex;
     },
     sendMessage() {
       if (this.newMessage.trim() !== "") {
