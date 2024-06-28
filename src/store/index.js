@@ -1,11 +1,13 @@
 import { createStore } from "vuex";
 import auth from "./auth";
+import quiz from "./quiz";
 import createPersistedState from "vuex-persistedstate";
 import axios from "axios";
 
 const store = createStore({
   modules: {
     auth,
+    quiz,
   },
   plugins: [createPersistedState()],
 });

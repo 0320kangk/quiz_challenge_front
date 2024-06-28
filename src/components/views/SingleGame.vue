@@ -7,7 +7,6 @@
       <div class="loader rounded-full w-24 h-24 mb-4"></div>
       <span class="text-gray-700 font-bold">Loading...</span>
     </div>
-
     <div class="grid grid-cols-12">
       <div v-if="!gameStarted" class="col-span-12">
         <!-- 게임 시작  -->
@@ -42,25 +41,53 @@
             <span class="text-3xl">Q.</span>
             {{ quizQuestions[currentQuizIndex].question }}
           </div>
-          <div
-            v-for="(option, i) in quizQuestions[currentQuizIndex].options"
-            :key="i"
-            @click="changeBgColor(i)"
-            :id="'answer_' + currentQuizIndex + '_' + i"
-            :class="{
-              'bg-yellow-200': selectedAnswerIndex === i,
-              'bg-gray-200': selectedAnswerIndex !== i,
-            }"
-            class="ml-10 mr-5 my-10 p-5 bg-gray-200 rounded-xl font-bold shadow-xl"
-          >
-            {{ i + 1 }}. {{ option }}
+          <div v-if="isChoice5Quiz()">
+            <div
+              v-for="(option, i) in quizQuestions[currentQuizIndex].options"
+              :key="i"
+              @click="changeselectedAnswerIndex(i)"
+              :id="'answer_' + currentQuizIndex + '_' + i"
+              :class="{
+                'bg-yellow-200': selectedAnswerIndex === i,
+                'bg-gray-200': selectedAnswerIndex !== i,
+              }"
+              class="ml-10 mr-5 my-10 p-5 cursor-pointer bg-gray-200 rounded-xl font-bold shadow-xl"
+            >
+              {{ i + 1 }}. {{ option }}
+            </div>
           </div>
+
+          <!-- OX 퀴즈 문제 형식 -->
+          <div v-else class="ml-10 mr-5 mt-7 p-3 pb-10 grid grid-cols-3 gap-4">
+            <div class="p-4 flex items-center justify-center">
+              <p
+                @click="changeselectedAnswerIndex(0)"
+                :class="{ 'text-yellow-300': selectedAnswerIndex === 0 }"
+                class="text-9xl cursor-pointer"
+              >
+                O
+              </p>
+            </div>
+            <div class="p-4 flex items-center justify-center">
+              <p class="text-9xl">/</p>
+            </div>
+            <div class="p-4">
+              <p
+                @click="changeselectedAnswerIndex(1)"
+                :class="{ 'text-yellow-300': selectedAnswerIndex === 1 }"
+                class="text-9xl cursor-pointer"
+              >
+                X
+              </p>
+            </div>
+          </div>
+
           <div class="flex justify-between">
             <div class="text-xl ml-10 text-black font-bold px-5">
               {{ timer }}
             </div>
             <div
-              class="mr-5 text-white font-bold bg-blue-500 hover:bg-blue-700 px-10 py-4 rounded-xl"
+              class="mr-5 cursor-pointer text-white font-bold bg-blue-500 hover:bg-blue-700 px-10 py-4 rounded-xl"
               @click="nextQuestion"
             >
               다음 문제
@@ -178,7 +205,6 @@ export default {
       score: 0,
       timer: 0,
       intervalId: null,
-      oxMap: { 0: "O", 1: "X" },
     };
   },
   async mounted() {
@@ -198,7 +224,7 @@ export default {
         choiceQuestion.data,
         oxQuestion.data
       );
-      this.score = 100 / this.quizQuestions.length;
+      this.score = 100 / this.quizQuestions.length; // 문제 당 점수 할당
       this.shuffle(this.quizQuestions);
       console.log(this.quizQuestions);
       this.loading = true;
@@ -280,8 +306,14 @@ export default {
       }
     },
     addScore(totalScore, selectedAnswer) {
-      if (this.quizQuestions[this.currentQuizIndex].quizType === "OX") {
-        selectedAnswer = this.oxMap[this.selectedAnswerIndex];
+      if (
+        this.quizQuestions[this.currentQuizIndex].quizType ===
+        this.$store.getters.getOX
+      ) {
+        selectedAnswer = this.$store.getters.getOXAnswer(
+          this.selectedAnswerIndex
+        );
+        console.log(selectedAnswer);
       }
       if (this.quizQuestions[this.currentQuizIndex].answer == selectedAnswer)
         totalScore += this.score;
@@ -305,8 +337,12 @@ export default {
       }, 1000);
     },
 
-    changeBgColor(selectedAnswerIndex) {
+    changeselectedAnswerIndex(selectedAnswerIndex) {
       this.selectedAnswerIndex = selectedAnswerIndex;
+    },
+    isChoice5Quiz() {
+      const quizType = this.quizQuestions[this.currentQuizIndex].quizType;
+      return quizType === this.$store.getters.getChoice_5;
     },
     sendMessage() {
       if (this.newMessage.trim() !== "") {
