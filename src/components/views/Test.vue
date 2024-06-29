@@ -93,28 +93,48 @@
       <!-- 답안 표 -->
       <div
         v-if="gameStarted"
-        class="col-span-12 sm:col-span-3 border border-red-600"
+        class="col-span-12 sm:col-span-3 border border-red-600 flex flex-col justify-center"
       >
-        <div class="max-w-sm rounded overflow-hidden shadow-lg">
-          <div class="overflow-x-auto px-6 pt-4 pb-2">
+        <div class="max-w-full rounded overflow-hidden shadow-lg">
+          <div class="overflow-x-auto">
             <!-- 문제 결과 표 -->
-            <table class="text-left">
-              <thead class="whitespace-nowrap">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-4 py-2">번호</th>
-                  <th class="px-4 py-2">답 란</th>
-                  <th class="px-4 py-2">결과</th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    번호
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    답 란
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    결과
+                  </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="(answer, i) in quizQuestions" :key="i">
-                  <td class="border px-4 py-2">{{ answer.questionNumber }}</td>
-                  <td class="border px-4 py-2">-</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {{ answer.questionNumber }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    -
+                  </td>
                   <td
-                    class="border px-4 py-2"
                     :class="{
-                      'text-green-500': answer.isCorrect,
-                      'text-red-500': answer.isCorrect === false,
+                      'px-6 py-4 whitespace-nowrap text-sm text-green-500':
+                        answer.isCorrect,
+                      'px-6 py-4 whitespace-nowrap text-sm text-red-500':
+                        answer.isCorrect === false,
                     }"
                   >
                     -
