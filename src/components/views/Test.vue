@@ -90,10 +90,41 @@
           </div>
         </div>
       </div>
+      <!-- 답안 표 -->
       <div
         v-if="gameStarted"
-        class="col-span-12 sm:col-span-3 border border-red-600 flex justify-center"
-      ></div>
+        class="col-span-12 sm:col-span-3 border border-red-600"
+      >
+        <div class="max-w-sm rounded overflow-hidden shadow-lg">
+          <div class="overflow-x-auto px-6 pt-4 pb-2">
+            <!-- 문제 결과 표 -->
+            <table class="text-left">
+              <thead class="whitespace-nowrap">
+                <tr>
+                  <th class="px-4 py-2">번호</th>
+                  <th class="px-4 py-2">답 란</th>
+                  <th class="px-4 py-2">결과</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(answer, i) in quizQuestions" :key="i">
+                  <td class="border px-4 py-2">{{ answer.questionNumber }}</td>
+                  <td class="border px-4 py-2">-</td>
+                  <td
+                    class="border px-4 py-2"
+                    :class="{
+                      'text-green-500': answer.isCorrect,
+                      'text-red-500': answer.isCorrect === false,
+                    }"
+                  >
+                    -
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
