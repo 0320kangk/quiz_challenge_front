@@ -1,9 +1,9 @@
 const state = {
-    quizType : ["CHOICE_5", "OX"],
+    quizType : ["CHOICE_4", "OX"],
     oxMap: { 0: "O", 1: "X" },
 }
 const getters = {
-    getChoice_5(state) {
+    getChoice_4(state) {
       return state.quizType[0];
     },
     getOX(state) {

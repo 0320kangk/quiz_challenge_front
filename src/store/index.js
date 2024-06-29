@@ -9,7 +9,11 @@ const store = createStore({
     auth,
     quiz,
   },
-  plugins: [createPersistedState()],
+  plugins: [
+    createPersistedState({
+      paths: ['auth'], // auth 모듈만 persist 적용
+    }),
+  ],
 });
 
 axios.interceptors.request.use(
