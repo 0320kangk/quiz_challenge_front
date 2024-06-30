@@ -23,10 +23,10 @@
       </div>
       <div
         v-if="gameStarted"
-        class="col-span-12 sm:col-span-9 border border-red-600"
+        class="col-span-12 md:col-span-9 border border-red-600"
       >
         <!-- 게임 문제  -->
-        <div class="sm:h-full" v-if="currentQuizIndex < quizQuestions.length">
+        <div class="md:h-full" v-if="currentQuizIndex < quizQuestions.length">
           <div
             class="ml-10 mr-5 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
           >
@@ -37,7 +37,7 @@
             <div
               v-for="(option, i) in quizQuestions[currentQuizIndex].options"
               :key="i"
-              @click="changeselectedAnswerIndex(i)"
+              @click="changeSelectedAnswerIndex(i)"
               :id="'answer_' + currentQuizIndex + '_' + i"
               :class="{
                 'bg-yellow-200': selectedAnswerIndex === i,
@@ -56,7 +56,7 @@
           >
             <div class="p-4 flex items-center justify-center">
               <p
-                @click="changeselectedAnswerIndex(0)"
+                @click="changeSelectedAnswerIndex(0)"
                 :class="{ 'text-yellow-300': selectedAnswerIndex === 0 }"
                 class="text-9xl cursor-pointer"
               >
@@ -68,7 +68,7 @@
             </div>
             <div class="p-4 flex items-center justify-center">
               <p
-                @click="changeselectedAnswerIndex(1)"
+                @click="changeSelectedAnswerIndex(1)"
                 :class="{ 'text-yellow-300': selectedAnswerIndex === 1 }"
                 class="text-9xl cursor-pointer"
               >
@@ -93,56 +93,69 @@
       <!-- 답안 표 -->
       <div
         v-if="gameStarted"
-        class="col-span-12 sm:col-span-3 border border-red-600 flex flex-col justify-center"
+        class="col-span-12 md:col-span-3 border border-red-600"
       >
         <div class="max-w-full rounded overflow-hidden shadow-lg">
-          <div class="overflow-x-auto">
-            <!-- 문제 결과 표 -->
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    번호
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    답 란
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    결과
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="(answer, i) in quizQuestions" :key="i">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ answer.questionNumber }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    -
-                  </td>
-                  <td
-                    :class="{
-                      'px-6 py-4 whitespace-nowrap text-sm text-green-500':
-                        answer.isCorrect,
-                      'px-6 py-4 whitespace-nowrap text-sm text-red-500':
-                        answer.isCorrect === false,
-                    }"
-                  >
-                    -
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <!-- 문제 결과 표 -->
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  번호
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  답 란
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  채점
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr class="text-center" v-for="i in currentQuestionPage" :key="i">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{ i + 1 }}
+                </td>
+                <td
+                  class="px-6 py-4 font-bold whitespace-nowrap text-sm text-black"
+                >
+                  {{
+                    selectedAnswers[i].answer !== null
+                      ? selectedAnswers[i].answer
+                      : "-"
+                  }}
+                </td>
+                <td
+                  class="font-bold"
+                  :class="{
+                    'px-6 py-4 whitespace-nowrap text-sm text-gray-500':
+                      selectedAnswers[i].isCorrect === null,
+                    'px-6 py-4 whitespace-nowrap text-sm text-green-500':
+                      selectedAnswers[i].isCorrect,
+                    'px-6 py-4 whitespace-nowrap text-sm text-red-500':
+                      selectedAnswers[i].isCorrect === false,
+                  }"
+                >
+                  {{
+                    selectedAnswers[i].isCorrect === null
+                      ? "-"
+                      : selectedAnswers[i].isCorrect
+                      ? "O"
+                      : "X"
+                  }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -195,7 +208,70 @@ export default {
         {
           question:
             "Spring Boot에서 내장 서버로 사용되는 서블릿 컨테이너는 무엇인가요?",
-          options: ["Tomcat", "Jetty", "Undertow", "WebLogic", "WildFly"],
+          options: ["Tomcat", "Jetty", "Undertow", "WebLogic"],
+          answer: "0",
+          quizType: "CHOICE_4",
+        },
+        {
+          question:
+            "Spring Boot에서 내장 서버로 사용되는 서블릿 컨테이너는 무엇인가요?",
+          options: ["Tomcat", "Jetty", "Undertow", "WebLogic"],
+          answer: "0",
+          quizType: "CHOICE_4",
+        },
+        {
+          question:
+            "Spring Boot에서 내장 서버로 사용되는 서블릿 컨테이너는 무엇인가요?",
+          options: ["Tomcat", "Jetty", "Undertow", "WebLogic"],
+          answer: "0",
+          quizType: "CHOICE_4",
+        },
+        {
+          question:
+            "Spring Boot에서 내장 서버로 사용되는 서블릿 컨테이너는 무엇인가요?",
+          options: ["Tomcat", "Jetty", "Undertow", "WebLogic"],
+          answer: "0",
+          quizType: "CHOICE_4",
+        },
+        {
+          question:
+            "Spring Boot에서 내장 서버로 사용되는 서블릿 컨테이너는 무엇인가요?",
+          options: ["Tomcat", "Jetty", "Undertow", "WebLogic"],
+          answer: "0",
+          quizType: "CHOICE_4",
+        },
+        {
+          question:
+            "Spring Boot에서 내장 서버로 사용되는 서블릿 컨테이너는 무엇인가요?",
+          options: ["Tomcat", "Jetty", "Undertow", "WebLogic"],
+          answer: "0",
+          quizType: "CHOICE_4",
+        },
+        {
+          question:
+            "Spring Boot에서 내장 서버로 사용되는 서블릿 컨테이너는 무엇인가요?",
+          options: ["Tomcat", "Jetty", "Undertow", "WebLogic"],
+          answer: "0",
+          quizType: "CHOICE_4",
+        },
+        {
+          question:
+            "Spring Boot에서 내장 서버로 사용되는 서블릿 컨테이너는 무엇인가요?",
+          options: ["Tomcat", "Jetty", "Undertow", "WebLogic"],
+          answer: "0",
+          quizType: "CHOICE_4",
+        },
+        {
+          question:
+            "Spring Boot에서 내장 서버로 사용되는 서블릿 컨테이너는 무엇인가요?",
+          options: ["Tomcat", "Jetty", "Undertow", "WebLogic"],
+          answer: "0",
+          quizType: "CHOICE_4",
+        },
+        {
+          question:
+            "Spring Boot에서 내장 서버로 사용되는 서블릿 컨테이너는 무엇인가요?",
+          options: ["Tomcat", "Jetty", "Undertow", "WebLogic"],
           answer: "0",
           quizType: "CHOICE_4",
         },
@@ -208,16 +284,43 @@ export default {
       score: 33,
       timer: 0,
       intervalId: null,
+      selectedAnswers: [],
+      currentPage: 0,
+      perPage: 10,
     };
   },
-
+  mounted() {
+    for (var i = 0; i < this.quizQuestions.length; i++) {
+      this.selectedAnswers[i] = {
+        answer: null,
+        isCorrect: null,
+      };
+    }
+  },
+  computed: {
+    currentQuestionPage() {
+      console.log("currentQuestionsPage " + this.currentQuizIndex / 10);
+      const start = this.currentPage * 10;
+      const end =
+        (this.currentPage + 1) * 10 < this.quizQuestions.length
+          ? (this.currentPage + 1) * 10
+          : this.quizQuestions.length;
+      console.log(end);
+      return Array.from({ length: end - start }, (_, i) => i + start);
+    },
+  },
   methods: {
     startGame() {
       this.gameStarted = true;
       console.log("게임이 시작됩니다!");
       this.startTimer();
     },
+    nextPage() {
+      this.currentPage++;
+    },
     nextQuestion() {
+      if (Math.floor(this.currentQuizIndex / 10) != this.currentPage)
+        this.nextPage();
       if (this.selectedAnswerIndex !== null) {
         console.log(
           "정답: " + this.quizQuestions[this.currentQuizIndex].answer
@@ -226,10 +329,16 @@ export default {
           this.totalScore,
           this.selectedAnswerIndex
         );
+
         this.selectedAnswerIndex = null;
 
         console.log("점수: " + this.totalScore);
       }
+      //채점하기
+      this.selectedAnswers[this.currentQuizIndex].isCorrect = this.checkAnswer(
+        this.selectedAnswers[this.currentQuizIndex].answer
+      );
+
       //다음문제로 넘어가기
       if (this.currentQuizIndex < this.quizQuestions.length) {
         this.currentQuizIndex++;
@@ -244,18 +353,19 @@ export default {
         console.log(this.totalScore / this.score);
       }
     },
+    checkAnswer(selectedAnswer) {
+      return (
+        this.quizQuestions[this.currentQuizIndex].answer === selectedAnswer
+      );
+    },
     addScore(totalScore, selectedAnswer) {
-      if (
-        this.quizQuestions[this.currentQuizIndex].quizType ===
-        this.$store.getters.getOX
-      ) {
+      if (!this.isChoice4Quiz()) {
         selectedAnswer = this.$store.getters.getOXAnswer(
           this.selectedAnswerIndex
         );
         console.log(selectedAnswer);
       }
-      if (this.quizQuestions[this.currentQuizIndex].answer == selectedAnswer)
-        totalScore += this.score;
+      if (this.checkAnswer(selectedAnswer)) totalScore += this.score;
       return totalScore;
     },
 
@@ -276,28 +386,23 @@ export default {
       }, 1000);
     },
 
-    changeselectedAnswerIndex(selectedAnswerIndex) {
+    changeSelectedAnswerIndex(selectedAnswerIndex) {
       this.selectedAnswerIndex = selectedAnswerIndex;
+      // this.selectedAnswers[this.currentQuizIndex]
+      var selectedAnswer = 0;
+      if (this.isChoice4Quiz()) {
+        selectedAnswer = selectedAnswerIndex + 1;
+      } else {
+        selectedAnswer = this.$store.getters.getOXAnswer(
+          this.selectedAnswerIndex
+        );
+        console.log(this.$store.getters.getOXAnswer(this.selectedAnswerIndex));
+      }
+      this.selectedAnswers[this.currentQuizIndex].answer = selectedAnswer;
     },
     isChoice4Quiz() {
       const quizType = this.quizQuestions[this.currentQuizIndex].quizType;
       return quizType === this.$store.getters.getChoice_4;
-    },
-    sendMessage() {
-      if (this.newMessage.trim() !== "") {
-        // 새로운 메시지를 배열에 추가
-        this.messages.push({
-          content: this.newMessage,
-          isSent: true, // 메시지가 보낸 것인지 여부
-        });
-        // 입력창 초기화
-        this.newMessage = "";
-        this.$nextTick(() => {
-          // 채팅창 요소에 접근하여 스크롤을 아래로 내림
-          const messageContainer = this.$refs.messageContainer;
-          messageContainer.scrollTop = messageContainer.scrollHeight;
-        });
-      }
     },
   },
 };
