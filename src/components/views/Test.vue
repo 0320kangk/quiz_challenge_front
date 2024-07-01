@@ -1,12 +1,9 @@
 <template>
   <div class="layout-default">
     <div class="grid grid-cols-12">
-      <div v-if="!gameStarted" class="col-span-12">
+      <div v-if="!gameStarted && !gameEnded" class="col-span-12">
         <!-- 게임 시작  -->
-        <div
-          v-if="!gameStarted"
-          class="flex items-center justify-center h-screen"
-        >
+        <div class="flex items-center justify-center h-screen">
           <div class="text-center">
             <h1 class="text-4xl font-bold mb-4">환영합니다!</h1>
             <p class="text-lg mb-8">
@@ -22,7 +19,7 @@
         </div>
       </div>
       <div
-        v-if="gameStarted"
+        v-if="gameStarted && !gameEnded"
         class="col-span-12 md:col-span-9 border border-red-600"
       >
         <!-- 게임 문제  -->
@@ -90,9 +87,10 @@
           </div>
         </div>
       </div>
+
       <!-- 답안 표 -->
       <div
-        v-if="gameStarted"
+        v-if="gameStarted && !gameEnded"
         class="col-span-12 md:col-span-3 border border-red-600"
       >
         <div class="max-w-full rounded overflow-hidden shadow-lg">
@@ -158,6 +156,21 @@
           </table>
         </div>
       </div>
+      <div
+        v-if="gameEnded"
+        class="col-span-12 flex items-center justify-center h-screen"
+      >
+        <div class="text-center">
+          <h1 class="text-4xl font-bold mb-4">게임 종료!</h1>
+          <p class="text-lg mb-8">당신의 점수는 {{ totalScore }} 점입니다.</p>
+          <button
+            @click="restartGame"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded"
+          >
+            다시 시작
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -190,8 +203,8 @@ export default {
   data() {
     return {
       //문제 항목 클릭 여부
-
       gameStarted: false,
+      gameEnded: false,
       quizQuestions: [
         {
           question: "Spring Bean은 Singleton으로 기본 설정되어 있는가?",
@@ -344,13 +357,9 @@ export default {
         this.currentQuizIndex++;
         this.startTimer();
       }
+      //게임 종료 후
       if (this.currentQuizIndex == this.quizQuestions.length) {
-        //게임 종료 후
-        if (this.intervalId) {
-          clearInterval(this.intervalId);
-        }
-        console.log(this.score);
-        console.log(this.totalScore / this.score);
+        this.endGame();
       }
     },
     checkAnswer(selectedAnswer) {
@@ -403,6 +412,18 @@ export default {
     isChoice4Quiz() {
       const quizType = this.quizQuestions[this.currentQuizIndex].quizType;
       return quizType === this.$store.getters.getChoice_4;
+    },
+    restartGame() {
+      window.location.reload();
+    },
+    endGame() {
+      this.gameEnded = true;
+      this.gameStarted = false;
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+      }
+      console.log(this.score);
+      console.log(this.totalScore / this.score);
     },
   },
 };

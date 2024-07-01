@@ -8,12 +8,9 @@
       <span class="text-gray-700 font-bold">Loading...</span>
     </div>
     <div class="grid grid-cols-12">
-      <div v-if="!gameStarted" class="col-span-12">
+      <div v-if="loading && !gameStarted && !gameEnded" class="col-span-12">
         <!-- 게임 시작  -->
-        <div
-          v-if="loading && !gameStarted"
-          class="flex items-center justify-center h-screen"
-        >
+        <div class="flex items-center justify-center h-screen">
           <div class="text-center">
             <h1 class="text-4xl font-bold mb-4">환영합니다!</h1>
             <p class="text-lg mb-8">
@@ -30,7 +27,7 @@
       </div>
 
       <div
-        v-if="gameStarted"
+        v-if="gameStarted && !gameEnded"
         class="col-span-12 md:col-span-9 border border-red-600"
       >
         <!-- 게임 문제  -->
@@ -98,8 +95,9 @@
           </div>
         </div>
       </div>
+
       <div
-        v-if="gameStarted"
+        v-if="gameStarted && !gameEnded"
         class="col-span-12 md:col-span-3 w-full border border-red-600 flex flex-col justify-center"
       >
         <div class="max-w-full rounded overflow-hidden shadow-lg">
@@ -165,6 +163,22 @@
           </table>
         </div>
       </div>
+      <!-- 게임 종료 -->
+      <div
+        v-if="gameEnded"
+        class="col-span-12 flex items-center justify-center h-screen"
+      >
+        <div class="text-center">
+          <h1 class="text-4xl font-bold mb-4">게임 종료!</h1>
+          <p class="text-lg mb-8">당신의 점수는 {{ totalScore }} 점입니다.</p>
+          <button
+            @click="restartGame"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded"
+          >
+            다시 시작
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -197,9 +211,10 @@ export default {
   data() {
     return {
       //문제 항목 클릭 여부
-
+      componentKey: 0,
       loading: false,
       gameStarted: false,
+      gameEnded: false,
       quizQuestions: [],
       currentQuizIndex: 0,
       selectedAnswerIndex: null,
@@ -228,15 +243,12 @@ export default {
       ]);
       // console.log(choiceQuestion.data);
       // console.log(choiceQuestion.data.concat(oxQuestion.data));
-
       this.quizQuestions = this.mergeQuestions(
         choiceQuestion.data,
         oxQuestion.data
       );
-
       this.score = 100 / this.quizQuestions.length; // 문제 당 점수 할당
       this.shuffle(this.quizQuestions); //문제 랜덤하게 섞기
-
       //정답 객체 만들기
       for (var i = 0; i < this.quizQuestions.length; i++) {
         this.selectedAnswers[i] = {
@@ -244,7 +256,6 @@ export default {
           isCorrect: null,
         };
       }
-
       console.log(this.quizQuestions);
       this.loading = true;
     } catch (error) {
@@ -306,6 +317,7 @@ export default {
     },
     startGame() {
       this.gameStarted = true;
+      this.gameEnded = false;
       console.log("게임이 시작됩니다!");
       this.startTimer();
     },
@@ -337,13 +349,9 @@ export default {
         this.currentQuizIndex++;
         this.startTimer();
       }
+      //게임 종료 후
       if (this.currentQuizIndex == this.quizQuestions.length) {
-        //게임 종료 후
-        if (this.intervalId) {
-          clearInterval(this.intervalId);
-        }
-        console.log(this.score);
-        console.log(this.totalScore / this.score);
+        this.endGame();
       }
     },
     checkAnswer(selectedAnswer) {
@@ -395,21 +403,17 @@ export default {
 
       return quizType === this.$store.getters.getChoice_4;
     },
-    sendMessage() {
-      if (this.newMessage.trim() !== "") {
-        // 새로운 메시지를 배열에 추가
-        this.messages.push({
-          content: this.newMessage,
-          isSent: true, // 메시지가 보낸 것인지 여부
-        });
-        // 입력창 초기화
-        this.newMessage = "";
-        this.$nextTick(() => {
-          // 채팅창 요소에 접근하여 스크롤을 아래로 내림
-          const messageContainer = this.$refs.messageContainer;
-          messageContainer.scrollTop = messageContainer.scrollHeight;
-        });
+    restartGame() {
+      window.location.reload();
+    },
+    endGame() {
+      this.gameEnded = true;
+      this.gameStarted = false;
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
       }
+      console.log(this.score);
+      console.log(this.totalScore / this.score);
     },
   },
 };
