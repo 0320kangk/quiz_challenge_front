@@ -128,7 +128,9 @@
                 >
                   {{
                     selectedAnswers[i].answer !== null
-                      ? selectedAnswers[i].answer
+                      ? typeof selectedAnswers[i].answer == "number"
+                        ? selectedAnswers[i].answer + 1
+                        : selectedAnswers[i].answer
                       : "-"
                   }}
                 </td>
@@ -364,7 +366,8 @@ export default {
     },
     checkAnswer(selectedAnswer) {
       return (
-        this.quizQuestions[this.currentQuizIndex].answer === selectedAnswer
+        this.quizQuestions[this.currentQuizIndex].answer ===
+        String(selectedAnswer)
       );
     },
     addScore(totalScore, selectedAnswer) {
@@ -372,7 +375,7 @@ export default {
         selectedAnswer = this.$store.getters.getOXAnswer(
           this.selectedAnswerIndex
         );
-        console.log(selectedAnswer);
+        console.log("addScroe : selected answer : ", selectedAnswer);
       }
       if (this.checkAnswer(selectedAnswer)) totalScore += this.score;
       return totalScore;
@@ -400,7 +403,7 @@ export default {
       // this.selectedAnswers[this.currentQuizIndex]
       var selectedAnswer = 0;
       if (this.isChoice4Quiz()) {
-        selectedAnswer = selectedAnswerIndex + 1;
+        selectedAnswer = selectedAnswerIndex;
       } else {
         selectedAnswer = this.$store.getters.getOXAnswer(
           this.selectedAnswerIndex

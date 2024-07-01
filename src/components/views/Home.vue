@@ -22,7 +22,7 @@
               <option hidden disabled value="">주제를 선탁하세요.</option>
 
               <option value="Spring framework">Spring framework</option>
-              <option value="java">java</option>
+              <option value="Java">Java</option>
             </select>
           </div>
           <div class="flex items-center mt-5">
@@ -33,7 +33,6 @@
               class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
             >
               <option disabled hidden value="">문제 수를 선택하세요.</option>
-
               <option value="10">10</option>
               <option value="20">20</option>
             </select>
@@ -46,7 +45,6 @@
               class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
             >
               <option disabled hidden value="">난이도 선택</option>
-
               <option value="EASY">쉬움</option>
               <option value="NORMAL">보통</option>
               <option value="HARD">어려움</option>
