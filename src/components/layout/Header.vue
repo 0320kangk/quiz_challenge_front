@@ -113,6 +113,32 @@
       </div>
     </div>
     <div :class="['md:hidden', { hidden: !menu_toggle }]">
+      <router-link
+        v-if="getMember === null || getMember === ''"
+        to="/login"
+        class="font-bold block py-2 px-4 text-sm hover:bg-gray-200"
+      >
+        로그인
+      </router-link>
+      <div v-else class="font-bold block py-2 px-4 text-sm hover:bg-gray-200">
+        {{ getMember.name }}
+      </div>
+      <router-link
+        v-if="getMember === null || getMember === ''"
+        to="/join"
+        class="font-bold block py-2 px-4 text-sm hover:bg-gray-200"
+      >
+        회원가입
+      </router-link>
+      <router-link
+        v-else
+        to="/"
+        @click="logout"
+        class="font-bold block py-2 px-4 text-sm hover:bg-gray-200"
+      >
+        로그아웃
+      </router-link>
+
       <a
         href="#"
         @click="change_menu_toggle_state"
@@ -125,7 +151,7 @@
         @click="change_menu_toggle_state"
         class="font-bold block py-2 px-4 text-sm hover:bg-gray-200"
       >
-        게임설명
+        게임소개
       </a>
     </div>
   </nav>
@@ -146,8 +172,8 @@ export default {
   },
 
   methods: {
-    checkAuth(){
-        this.$store.dispatch("checkAuth");
+    checkAuth() {
+      this.$store.dispatch("checkAuth");
     },
     logout() {
       this.$store.dispatch("logout");
