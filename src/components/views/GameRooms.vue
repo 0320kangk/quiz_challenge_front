@@ -153,7 +153,7 @@
       </div>
       <!-- 방 목록 -->
       <div
-        class="col-span-12 m-3 p-3 sm:col-span-9 w-full bg-gray-100 rounded-2xl"
+        class="col-span-12 m-3 p-3 sm:col-span-9 w-full h-screen overflow-y-scroll bg-gray-100 rounded-2xl"
       >
         <div class="grid grid-cols-2">
           <div
@@ -202,6 +202,27 @@
     </div>
   </div>
 </template>
+<style scoped>
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+</style>
+
 <script>
 export default {
   name: "GameRooms",
@@ -217,6 +238,48 @@ export default {
           status: "비활성",
           title: "UI/UX 디자인 토론",
           members: 12,
+        },
+        {
+          category: "게임",
+          status: "활성",
+          title: "모바일 게임 개발",
+          members: 8,
+        },
+        {
+          category: "게임",
+          status: "활성",
+          title: "모바일 게임 개발",
+          members: 8,
+        },
+        {
+          category: "게임",
+          status: "활성",
+          title: "모바일 게임 개발",
+          members: 8,
+        },
+        {
+          category: "게임",
+          status: "활성",
+          title: "모바일 게임 개발",
+          members: 8,
+        },
+        {
+          category: "게임",
+          status: "활성",
+          title: "모바일 게임 개발",
+          members: 8,
+        },
+        {
+          category: "게임",
+          status: "활성",
+          title: "모바일 게임 개발",
+          members: 8,
+        },
+        {
+          category: "게임",
+          status: "활성",
+          title: "모바일 게임 개발",
+          members: 8,
         },
         {
           category: "게임",
