@@ -19,7 +19,7 @@
               id="title"
               class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
             >
-              <option hidden disabled value="">주제를 선탁하세요.</option>
+              <option hidden disabled value="">제목을 선택하세요.</option>
 
               <option value="Spring framework">Spring framework</option>
               <option value="Java">Java</option>
@@ -94,7 +94,7 @@
         <div class="mt-6 text-4xl">싱글 플레이</div>
       </button>
       <router-link
-        to="/game_rooms"
+        to="/gameRooms"
         class="btn text-4xl flex-shrink-0 w-full sm:w-auto inline-block bg-green-500 hover:bg-green-700 text-white"
       >
         <span class="text-9xl">⚔</span>
@@ -140,7 +140,7 @@ export default {
           this.singleGameData.questionCount
         );
         this.$router.push({
-          path: "/single_game",
+          path: "/singleGame",
           state: this.singleGameData,
         });
       } else {

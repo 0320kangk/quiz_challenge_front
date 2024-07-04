@@ -2,9 +2,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "./components/views/Home.vue";
 import Login from "./components/views/Login.vue";
 import join from "./components/views/Join.vue";
-import Single_game from "./components/views/SingleGame.vue";
-import Multi_game from "./components/views/MultiGame.vue";
-import Game_rooms from "./components/views/GameRooms.vue";
+import SingleGame from "./components/views/SingleGame.vue";
+import MultiGame from "./components/views/MultiGame.vue";
+import GameRooms from "./components/views/GameRooms.vue";
 import Test from "./components/views/Test.vue";
 
 import store from "./store"; // Vuex 스토어 import
@@ -25,18 +25,18 @@ const router = createRouter({
       component: join,
     },
     {
-      path: "/single_game",
-      component: Single_game,
+      path: "/singleGame",
+      component: SingleGame,
       meta: { requiresAuth: true },
     },
     {
-      path: "/multi_game",
-      component: Multi_game,
+      path: "/multiGame/:roomId",
+      component: MultiGame,
       meta: { requiresAuth: true },
     },
     {
-      path: "/game_rooms",
-      component: Game_rooms,
+      path: "/gameRooms",
+      component: GameRooms,
       meta: { requiresAuth: true },
     },
     {
