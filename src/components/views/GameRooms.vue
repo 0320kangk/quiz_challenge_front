@@ -263,7 +263,6 @@ export default {
         const response = await this.$axios.post(
           `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/create`,
           {
-            emailId: this.$store.getters.getMember.email,
             roomName: this.roomFormData.roomName,
             questionCount: this.roomFormData.questionCount,
             title: this.roomFormData.title,

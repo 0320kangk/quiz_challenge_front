@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "./components/views/Home.vue";
 import Login from "./components/views/Login.vue";
-import join from "./components/views/Join.vue";
+import Join from "./components/views/Join.vue";
 import SingleGame from "./components/views/SingleGame.vue";
 import MultiGame from "./components/views/MultiGame.vue";
 import GameRooms from "./components/views/GameRooms.vue";
@@ -22,7 +22,7 @@ const router = createRouter({
     },
     {
       path: "/join",
-      component: join,
+      component: Join,
     },
     {
       path: "/singleGame",
