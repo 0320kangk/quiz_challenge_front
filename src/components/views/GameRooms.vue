@@ -160,7 +160,7 @@
             class="col-span-2 m-3 lg:col-span-1 bg-blue-200 p-4 rounded-3xl"
           >
             <div
-              @click="enterGameRoom(index)"
+              @click="enterGameRoom(room.id)"
               class="p-3 bg-blue-300 text-sm rounded-xl hover:bg-gray-400 cursor-pointer"
             >
               <div
@@ -244,7 +244,7 @@ export default {
   async mounted() {
     const response = await this.findGameRooms();
     this.rooms = response.data;
-    console.log(response);
+    console.log(this.rooms);
   },
   methods: {
     //방불러오기, 방 만들기
@@ -280,7 +280,7 @@ export default {
       console.log(this.$store.getters.getMember.email);
       try {
         const response = await this.$axios.post(
-          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/enter/${this.rooms[roomId].id}`,
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/enter/${roomId}`,
           {
             email: this.$store.getters.getMember.email,
           }
