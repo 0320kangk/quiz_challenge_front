@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import { getStompClient } from "@/webSocket";
+import { getStompClient, disconnectWebSocket } from "@/webSocket";
 
 export default {
   name: "MultiGame",
@@ -153,7 +153,14 @@ export default {
   mounted() {
     this.connectWebSocket();
   },
+  beforeUnmount() {
+    this.disconnect();
+  },
   methods: {
+    disconnect() {
+      disconnectWebSocket();
+      // this.status = "Disconnected";
+    },
     connectWebSocket() {
       this.stompClient = getStompClient();
       this.stompClient.connect(

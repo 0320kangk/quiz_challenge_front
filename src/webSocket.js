@@ -1,6 +1,6 @@
-import SockJS from 'sockjs-client';
-import { Stomp } from '@stomp/stompjs';
-import store from './store'; // Vuex store가 필요하면 import
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
+import store from "./store"; // Vuex store가 필요하면 import
 
 const socketUrl = `${process.env.VUE_APP_BACKEND_ORIGIN}/chat`;
 
@@ -12,10 +12,10 @@ export function getStompClient() {
       Authorization: `Bearer ${store.getters.getAccessToken}`, // Vuex store에서 가져온 JWT 토큰
     };
     const socket = new SockJS(socketUrl, null, {
-      transports: ['websocket'],
+      transports: ["websocket"],
       headers,
-    });    
- 
+    });
+
     stompClient = Stomp.over(socket);
     stompClient.connectHeaders = {
       Authorization: `Bearer ${store.getters.getAccessToken}`, // Vuex store에서 가져온 JWT 토큰
@@ -23,7 +23,15 @@ export function getStompClient() {
     stompClient.debug = (str) => {
       console.log(str);
     };
-    
   }
   return stompClient;
+}
+
+export function disconnectWebSocket() {
+  if (stompClient && stompClient.connected) {
+    stompClient.disconnect(() => {
+      console.log("WebSocket disconnected");
+      stompClient = null; // 연결 끊기 후 클라이언트 객체 초기화
+    });
+  }
 }
