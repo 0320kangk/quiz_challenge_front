@@ -134,6 +134,8 @@
 </template>
 
 <script>
+import createStompClient from "@/webSocket";
+
 export default {
   name: "MultiGame",
   data() {
@@ -144,6 +146,21 @@ export default {
     };
   },
   methods: {
+    connect() {
+      this.stompClient = createStompClient();
+
+      // onConnect 재정의
+      this.stompClient.onConnect = (frame) => {
+        console.log("Connected: " + frame);
+        // 구독 설정 예시
+        this.stompClient.subscribe("/topic/messages", (message) => {
+          console.log(message.body);
+        });
+      };
+
+      this.stompClient.activate();
+    },
+
     change_bg_color(e) {
       // 색상 변경 로직
       const elements = document.querySelectorAll('[id^="answer_"]');
