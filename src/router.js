@@ -30,7 +30,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/multiGame/:roomId",
+      path: "/multiGame/room/:roomId",
       component: MultiGame,
       meta: { requiresAuth: true },
     },

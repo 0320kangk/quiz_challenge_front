@@ -268,7 +268,6 @@ export default {
             title: this.roomFormData.title,
           }
         );
-
         //
         this.enterGameRoom(response.data.roomId);
         console.log(response);
@@ -277,16 +276,16 @@ export default {
         console.log("게임방 생성 실패");
       }
     },
-    async enterGameRoom(roomIdx) {
+    async enterGameRoom(roomId) {
       console.log(this.$store.getters.getMember.email);
       try {
         const response = await this.$axios.post(
-          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/enter/${this.rooms[roomIdx].id}`,
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/enter/${this.rooms[roomId].id}`,
           {
             email: this.$store.getters.getMember.email,
           }
         );
-        this.$router.push(`/multiGame/${roomIdx}`);
+        this.$router.push(`/multiGame/room/${roomId}`);
         console.log(response);
       } catch (e) {
         console.log(e);

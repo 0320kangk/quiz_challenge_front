@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import createStompClient from "@/webSocket";
+import { getStompClient } from "@/webSocket";
 
 export default {
   name: "MultiGame",
@@ -143,22 +143,40 @@ export default {
       isClicked: false,
       messages: [], // 채팅 메시지를 저장할 배열
       newMessage: "", // 입력된 새로운 메시지
+      roomId: null,
+      stompClient: null,
     };
   },
+  created() {
+    this.roomId = this.$route.params.roomId;
+  },
+  mounted() {
+    this.connectWebSocket();
+  },
   methods: {
-    connect() {
-      this.stompClient = createStompClient();
-
-      // onConnect 재정의
-      this.stompClient.onConnect = (frame) => {
-        console.log("Connected: " + frame);
-        // 구독 설정 예시
-        this.stompClient.subscribe("/topic/messages", (message) => {
-          console.log(message.body);
-        });
-      };
-
-      this.stompClient.activate();
+    connectWebSocket() {
+      this.stompClient = getStompClient();
+      this.stompClient.connect(
+        {
+          Authorization: `Bearer ${this.$store.getters.getAccessToken}`, // Vuex store에서 가져온 JWT 토큰
+        },
+        (frame) => {
+          console.log("Connected: " + frame);
+          this.stompClient.subscribe(
+            `/subscribe/chat/room/${this.roomId}`,
+            (message) => {
+              const messageObject = JSON.parse(message.body);
+              this.messages.push({
+                content: messageObject.message,
+                isSent: true,
+              });
+            }
+          );
+        },
+        (error) => {
+          console.error("Connection error: " + error);
+        }
+      );
     },
 
     change_bg_color(e) {
@@ -171,20 +189,36 @@ export default {
       console.log(e.target.className);
     },
     sendMessage() {
+      // if (this.newMessage.trim() !== "") {
+      //   // 새로운 메시지를 배열에 추가
+      //   this.messages.push({
+      //     content: this.newMessage,
+      //     isSent: true, // 메시지가 보낸 것인지 여부
+      //   });
+      //   // 입력창 초기화
+      //   this.newMessage = "";
+
+      // }
+
       if (this.newMessage.trim() !== "") {
-        // 새로운 메시지를 배열에 추가
-        this.messages.push({
-          content: this.newMessage,
-          isSent: true, // 메시지가 보낸 것인지 여부
+        const chatMessage = {
+          writer: this.$store.getters.getMember.name, // 예시로 작성자의 이름을 Vuex에서 가져온다고 가정
+          message: this.newMessage,
+          roomId: this.roomId,
+        };
+
+        this.stompClient.publish({
+          destination: "/publish/chat/room/message",
+          body: JSON.stringify(chatMessage),
         });
-        // 입력창 초기화
+
         this.newMessage = "";
-        this.$nextTick(() => {
-          // 채팅창 요소에 접근하여 스크롤을 아래로 내림
-          const messageContainer = this.$refs.messageContainer;
-          messageContainer.scrollTop = messageContainer.scrollHeight;
-        });
       }
+      this.$nextTick(() => {
+        // 채팅창 요소에 접근하여 스크롤을 아래로 내림
+        const messageContainer = this.$refs.messageContainer;
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+      });
     },
   },
 };

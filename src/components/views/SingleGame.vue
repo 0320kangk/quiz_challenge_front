@@ -264,6 +264,7 @@ export default {
       console.error("Error fetching questions:", error);
     }
   },
+
   computed: {
     currentQuestionPage() {
       console.log("currentQuestionsPage " + this.currentQuizIndex / 10);

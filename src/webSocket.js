@@ -1,35 +1,29 @@
-import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs";
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
+import store from './store'; // Vuex store가 필요하면 import
 
-const socketUrl = "http://localhost:8080/chat"; // 서버 WebSocket 엔드포인트
+const socketUrl = `${process.env.VUE_APP_BACKEND_ORIGIN}/chat`;
 
-const createStompClient = () => {
-  const stompClient = new Client({
-    brokerURL: socketUrl,
-    connectHeaders: {
-      Authorization: `Bearer ${this.store.getters.getAccessToken}`, // Vuex store에서 가져온 JWT 토큰
-    },
-    webSocketFactory: () => new SockJS(socketUrl),
-    debug: (str) => {
+let stompClient;
+
+export function getStompClient() {
+  if (!stompClient) {
+    const headers = {
+      Authorization: `Bearer ${store.getters.getAccessToken}`, // Vuex store에서 가져온 JWT 토큰
+    };
+    const socket = new SockJS(socketUrl, null, {
+      transports: ['websocket'],
+      headers,
+    });    
+ 
+    stompClient = Stomp.over(socket);
+    stompClient.connectHeaders = {
+      Authorization: `Bearer ${store.getters.getAccessToken}`, // Vuex store에서 가져온 JWT 토큰
+    };
+    stompClient.debug = (str) => {
       console.log(str);
-    },
-    reconnectDelay: 5000,
-    heartbeatIncoming: 4000,
-    heartbeatOutgoing: 4000,
-  });
-
-  // 기본 onConnect 정의
-  stompClient.onConnect = (frame) => {
-    console.log("Connected: " + frame);
-  };
-
-  // 기본 onStompError 정의
-  stompClient.onStompError = (frame) => {
-    console.error("Broker reported error: " + frame.headers["message"]);
-    console.error("Additional details: " + frame.body);
-  };
-
+    };
+    
+  }
   return stompClient;
-};
-
-export default createStompClient;
+}
