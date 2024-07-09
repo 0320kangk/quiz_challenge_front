@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import { getStompClient, disconnectWebSocket } from "@/webSocket";
+import { getStompClient } from "@/webSocket";
 
 export default {
   name: "MultiGame",
@@ -154,18 +154,15 @@ export default {
     this.connectWebSocket();
   },
   beforeUnmount() {
-    this.disconnect();
+    this.stompClient.disconnect();
   },
   methods: {
-    disconnect() {
-      disconnectWebSocket();
-      // this.status = "Disconnected";
-    },
     connectWebSocket() {
       this.stompClient = getStompClient();
       this.stompClient.connect(
         {
           Authorization: `Bearer ${this.$store.getters.getAccessToken}`, // Vuex store에서 가져온 JWT 토큰
+          roomId: this.roomId,
         },
         (frame) => {
           console.log("Connected: " + frame);

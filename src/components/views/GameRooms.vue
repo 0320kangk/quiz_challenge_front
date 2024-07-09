@@ -276,20 +276,10 @@ export default {
         console.log("게임방 생성 실패");
       }
     },
-    async enterGameRoom(roomId) {
+    enterGameRoom(roomId) {
       console.log(this.$store.getters.getMember.email);
-      try {
-        const response = await this.$axios.post(
-          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/enter/${roomId}`,
-          {
-            email: this.$store.getters.getMember.email,
-          }
-        );
-        this.$router.push(`/multiGame/room/${roomId}`);
-        console.log(response);
-      } catch (e) {
-        console.log(e);
-      }
+
+      this.$router.push(`/multiGame/room/${roomId}`);
     },
     open_modal() {
       this.isOpen = true; // 모달 열기
