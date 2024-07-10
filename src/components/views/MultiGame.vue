@@ -154,7 +154,7 @@ export default {
     this.connectWebSocket();
   },
   beforeUnmount() {
-    this.stompClient.disconnect();
+    this.stompClient.disconnectWebsocket();
   },
   methods: {
     connectWebSocket() {

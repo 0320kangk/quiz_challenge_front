@@ -30,12 +30,16 @@ export function getStompClient() {
   
     stompClient.onWebSocketClose = (event) => {
       console.log('WebSocket connection closed:', event);
-      stompClient.disconnect();
+      if(stompClient !== null){
+        stompClient.disconnect();
+
+      }
     };
     
     //클라이언트에서 연결을 끊었을 때
-    stompClient.disconnect = () => {
+    stompClient.disconnectWebsocket = () => {
       if (stompClient && stompClient.connected) {
+          stompClient.disconnect();
           console.log("WebSocket disconnected");
           stompClient = null; // 연결 끊기 후 클라이언트 객체 초기화
       }
