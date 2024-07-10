@@ -1,6 +1,7 @@
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import store from "./store"; // Vuex store가 필요하면 import
+import router from './router'; // Vue Router import
 
 const socketUrl = `${process.env.VUE_APP_BACKEND_ORIGIN}/chat`;
 
@@ -25,6 +26,7 @@ export function getStompClient() {
     stompClient.onStompError = (frame) => {
       console.error('Broker reported error: ' + frame.headers['message']);
       console.error('Additional details: ' + frame.body);
+      router.push("/gameRooms");
       // 추가적인 에러 핸들링 로직
     };
   
@@ -32,10 +34,8 @@ export function getStompClient() {
       console.log('WebSocket connection closed:', event);
       if(stompClient !== null){
         stompClient.disconnect();
-
       }
     };
-    
     //클라이언트에서 연결을 끊었을 때
     stompClient.disconnectWebsocket = () => {
       if (stompClient && stompClient.connected) {

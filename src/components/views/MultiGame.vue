@@ -150,8 +150,14 @@ export default {
   created() {
     this.roomId = this.$route.params.roomId;
   },
-  mounted() {
-    this.connectWebSocket();
+  async mounted() {
+    try {
+      await this.connectWebSocket();
+      console.log();
+      this.enterSendMessage();
+    } catch (e) {
+      console.log(e);
+    }
   },
   beforeUnmount() {
     this.stompClient.disconnectWebsocket();
@@ -159,30 +165,46 @@ export default {
   methods: {
     connectWebSocket() {
       this.stompClient = getStompClient();
-      this.stompClient.connect(
-        {
-          Authorization: `Bearer ${this.$store.getters.getAccessToken}`, // Vuex store에서 가져온 JWT 토큰
-          roomId: this.roomId,
-        },
-        (frame) => {
-          console.log("Connected: " + frame);
-          this.stompClient.subscribe(
-            `/subscribe/chat/room/${this.roomId}`,
-            (message) => {
-              const messageObject = JSON.parse(message.body);
-              this.messages.push({
-                content: messageObject.message,
-                isSent: true,
-              });
-            }
-          );
-        },
-        (error) => {
-          console.error("Connection error: " + error);
-        }
-      );
+      console.log("connectwebSocket test: ");
+      console.log(this.stompClient.status);
+      return new Promise((resolve, reject) => {
+        this.stompClient.connect(
+          {
+            Authorization: `Bearer ${this.$store.getters.getAccessToken}`, // Vuex store에서 가져온 JWT 토큰
+            roomId: this.roomId,
+          },
+          (frame) => {
+            console.log("Connected: " + frame);
+            this.stompClient.subscribe(
+              `/subscribe/chat/room/${this.roomId}`,
+              (message) => {
+                const messageObject = JSON.parse(message.body);
+                this.messages.push({
+                  content: messageObject.message,
+                  isSent: true,
+                });
+              }
+            );
+            resolve(frame);
+          },
+          (error) => {
+            console.error("Connection error: " + error);
+            reject(error);
+          }
+        );
+      });
     },
-
+    enterSendMessage() {
+      console.log("enterSendMessage");
+      const chatMessage = {
+        writer: this.$store.getters.getMember.name, // 예시로 작성자의 이름을 Vuex에서 가져온다고 가정
+        roomId: this.roomId,
+      };
+      this.stompClient.publish({
+        destination: "/publish/chat/room/enter",
+        body: JSON.stringify(chatMessage),
+      });
+    },
     change_bg_color(e) {
       // 색상 변경 로직
       const elements = document.querySelectorAll('[id^="answer_"]');
@@ -210,12 +232,10 @@ export default {
           message: this.newMessage,
           roomId: this.roomId,
         };
-
         this.stompClient.publish({
           destination: "/publish/chat/room/message",
           body: JSON.stringify(chatMessage),
         });
-
         this.newMessage = "";
       }
       this.$nextTick(() => {
