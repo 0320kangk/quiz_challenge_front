@@ -122,7 +122,7 @@
         <!-- md 이상에서는 무조건 sidebar가 보여야 한다. -->
         <div
           :class="[{ hidden: !sidebar }]"
-          class="w-full md:block p-4 bg-gray-100 rounded-3xl shadow-2xl gap-x-4"
+          class="w-full md:block p-4 bg-gray-100 rounded-3xl shadow-2xl gap-x-4 h-screen"
         >
           <div
             class="p-3 my-5 font-semibold bg-yellow-400 hover:bg-yellow-400 rounded-xl"
@@ -151,7 +151,7 @@
       </div>
       <!-- 방 목록 -->
       <div
-        class="col-span-12 m-3 p-3 md:col-span-9 w-full h-screen overflow-y-scroll bg-gray-100 rounded-2xl"
+        class="col-span-12 m-3 p-3 md:col-span-9 w-full overflow-y-scroll bg-gray-100 rounded-2xl"
       >
         <div class="grid grid-cols-2">
           <div
@@ -194,6 +194,246 @@
                     인원수
                   </div>
                   <span class="ml-2">{{ room.peopleCount }} / 4 </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-2 m-3 lg:col-span-1 bg-blue-200 p-4 rounded-3xl">
+            <div
+              @click="enterGameRoom(room.id)"
+              class="p-3 bg-blue-300 text-sm rounded-xl hover:bg-gray-400 cursor-pointer"
+            >
+              <div
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-200 text-gray-800"
+              >
+                방 이름
+              </div>
+              <span class="ml-2"> xx</span>
+              <div class="mt-2">
+                <div
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-200 text-gray-800"
+                >
+                  제목
+                </div>
+                <span class="ml-2">xx</span>
+              </div>
+              <div class="mt-2 flex justify-between">
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-gray-800"
+                  >
+                    방 상태
+                  </div>
+                  <span class="ml-2">xx</span>
+                </div>
+
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500 text-gray-800"
+                  >
+                    인원수
+                  </div>
+                  <span class="ml-2">xx / 4 </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-2 m-3 lg:col-span-1 bg-blue-200 p-4 rounded-3xl">
+            <div
+              @click="enterGameRoom(room.id)"
+              class="p-3 bg-blue-300 text-sm rounded-xl hover:bg-gray-400 cursor-pointer"
+            >
+              <div
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-200 text-gray-800"
+              >
+                방 이름
+              </div>
+              <span class="ml-2"> xx</span>
+              <div class="mt-2">
+                <div
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-200 text-gray-800"
+                >
+                  제목
+                </div>
+                <span class="ml-2">xx</span>
+              </div>
+              <div class="mt-2 flex justify-between">
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-gray-800"
+                  >
+                    방 상태
+                  </div>
+                  <span class="ml-2">xx</span>
+                </div>
+
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500 text-gray-800"
+                  >
+                    인원수
+                  </div>
+                  <span class="ml-2">xx / 4 </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-2 m-3 lg:col-span-1 bg-blue-200 p-4 rounded-3xl">
+            <div
+              @click="enterGameRoom(room.id)"
+              class="p-3 bg-blue-300 text-sm rounded-xl hover:bg-gray-400 cursor-pointer"
+            >
+              <div
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-200 text-gray-800"
+              >
+                방 이름
+              </div>
+              <span class="ml-2"> xx</span>
+              <div class="mt-2">
+                <div
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-200 text-gray-800"
+                >
+                  제목
+                </div>
+                <span class="ml-2">xx</span>
+              </div>
+              <div class="mt-2 flex justify-between">
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-gray-800"
+                  >
+                    방 상태
+                  </div>
+                  <span class="ml-2">xx</span>
+                </div>
+
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500 text-gray-800"
+                  >
+                    인원수
+                  </div>
+                  <span class="ml-2">xx / 4 </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-2 m-3 lg:col-span-1 bg-blue-200 p-4 rounded-3xl">
+            <div
+              @click="enterGameRoom(room.id)"
+              class="p-3 bg-blue-300 text-sm rounded-xl hover:bg-gray-400 cursor-pointer"
+            >
+              <div
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-200 text-gray-800"
+              >
+                방 이름
+              </div>
+              <span class="ml-2"> xx</span>
+              <div class="mt-2">
+                <div
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-200 text-gray-800"
+                >
+                  제목
+                </div>
+                <span class="ml-2">xx</span>
+              </div>
+              <div class="mt-2 flex justify-between">
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-gray-800"
+                  >
+                    방 상태
+                  </div>
+                  <span class="ml-2">xx</span>
+                </div>
+
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500 text-gray-800"
+                  >
+                    인원수
+                  </div>
+                  <span class="ml-2">xx / 4 </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-2 m-3 lg:col-span-1 bg-blue-200 p-4 rounded-3xl">
+            <div
+              @click="enterGameRoom(room.id)"
+              class="p-3 bg-blue-300 text-sm rounded-xl hover:bg-gray-400 cursor-pointer"
+            >
+              <div
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-200 text-gray-800"
+              >
+                방 이름
+              </div>
+              <span class="ml-2"> xx</span>
+              <div class="mt-2">
+                <div
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-200 text-gray-800"
+                >
+                  제목
+                </div>
+                <span class="ml-2">xx</span>
+              </div>
+              <div class="mt-2 flex justify-between">
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-gray-800"
+                  >
+                    방 상태
+                  </div>
+                  <span class="ml-2">xx</span>
+                </div>
+
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500 text-gray-800"
+                  >
+                    인원수
+                  </div>
+                  <span class="ml-2">xx / 4 </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-2 m-3 lg:col-span-1 bg-blue-200 p-4 rounded-3xl">
+            <div
+              @click="enterGameRoom(room.id)"
+              class="p-3 bg-blue-300 text-sm rounded-xl hover:bg-gray-400 cursor-pointer"
+            >
+              <div
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-200 text-gray-800"
+              >
+                방 이름
+              </div>
+              <span class="ml-2"> xx</span>
+              <div class="mt-2">
+                <div
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-200 text-gray-800"
+                >
+                  제목
+                </div>
+                <span class="ml-2">xx</span>
+              </div>
+              <div class="mt-2 flex justify-between">
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-gray-800"
+                  >
+                    방 상태
+                  </div>
+                  <span class="ml-2">xx</span>
+                </div>
+
+                <div>
+                  <div
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500 text-gray-800"
+                  >
+                    인원수
+                  </div>
+                  <span class="ml-2">xx / 4 </span>
                 </div>
               </div>
             </div>
