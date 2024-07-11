@@ -78,12 +78,14 @@
             </div>
           </div>
 
-          <div class="px-6 pt-4 pb-2">
-            <div class="h-64 bg-gray-100 flex flex-col justify-between">
+          <div class="pt-4 pb-2">
+            <div
+              class="h-64 bg-blue-200 rounded-xl flex flex-col justify-between"
+            >
               <!-- 채팅창 메시지 영역 -->
               <div
                 ref="messageContainer"
-                class="flex-grow px-4 py-8 overflow-y-auto"
+                class="flex-grow px-4 py-8 overflow-y-auto custom-scrollbar"
               >
                 <!-- 메시지 -->
                 <div
@@ -92,37 +94,44 @@
                   class="mb-4"
                 >
                   <!-- 메시지 내용 -->
-                  <div v-if="message.isSent" class="flex justify-end">
+                  <div v-if="message.isSent" class="flex flex-col items-end">
+                    <div class="text-xs mr-1 text-gray-600 mb-1">
+                      {{ message.writer }}
+                    </div>
                     <div
-                      class="max-w-xs px-4 py-2 bg-blue-500 text-white rounded-lg"
+                      class="max-w-xs px-4 py-2 bg-green-400 text-white text-sm rounded-lg"
                     >
                       {{ message.content }}
                     </div>
                   </div>
-                  <div v-else class="flex">
+                  <div v-else class="flex flex-col items-start">
+                    <div class="text-xs ml-1 text-gray-600 mb-1">
+                      {{ message.writer }}
+                    </div>
                     <div
-                      class="max-w-xs px-4 py-2 bg-white border border-gray-300 rounded-lg"
+                      class="max-w-xs px-4 py-2 bg-yellow-200 text-black text-sm rounded-lg"
                     >
                       {{ message.content }}
                     </div>
                   </div>
                 </div>
               </div>
-
               <!-- 채팅 입력창 -->
-              <div class="flex items-center bg-white border-t border-gray-300">
+              <div
+                class="grid grid-cols-12 items-center border-t border-gray-300"
+              >
                 <input
                   type="text"
                   v-model="newMessage"
                   @keyup.enter="sendMessage"
                   placeholder="메시지를 입력하세요..."
-                  class="w-full py-2 border focus:outline-none focus:border-blue-500"
+                  class="col-span-10 py-2 border focus:outline-none"
                 />
                 <button
                   @click="sendMessage"
-                  class="px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
+                  class="col-span-2 text-xs h-full text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
                 >
-                  ✉
+                  전송
                 </button>
               </div>
             </div>
@@ -132,7 +141,26 @@
     </div>
   </div>
 </template>
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
 
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  border: 3px solid transparent;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: rgba(255, 255, 255, 0.5) transparent; /* For Firefox */
+}
+</style>
 <script>
 import { getStompClient } from "@/webSocket";
 
@@ -179,9 +207,14 @@ export default {
               `/subscribe/chat/room/${this.roomId}`,
               (message) => {
                 const messageObject = JSON.parse(message.body);
+                var isSent = false;
+                if (this.$store.getters.getMember.name === messageObject.writer)
+                  isSent = true;
+
                 this.messages.push({
                   content: messageObject.message,
-                  isSent: true,
+                  writer: messageObject.writer,
+                  isSent: isSent,
                 });
               }
             );
