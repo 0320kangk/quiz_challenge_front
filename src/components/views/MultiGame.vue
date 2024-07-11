@@ -1,7 +1,7 @@
 <template>
   <div class="layout-default">
     <div class="grid grid-cols-12">
-      <div class="col-span-12 sm:col-span-8 border border-red-700">
+      <div class="col-span-12 sm:col-span-9 border border-red-700">
         <div
           class="ml-10 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
         >
@@ -20,7 +20,7 @@
         </div>
       </div>
       <div
-        class="col-span-12 sm:col-span-4 border border-red-600 flex justify-center"
+        class="col-span-12 sm:col-span-3 border border-red-600 flex justify-center"
       >
         <div class="max-w-sm rounded overflow-hidden shadow-lg">
           <div class="grid grid-cols-2 grid-rows-2">
@@ -31,7 +31,7 @@
                 alt="Sunset in the mountains"
               />
               <div
-                class="font-bold text-lg text-center bg-gray-200 rounded-full px-3 py-1"
+                class="font-bold text-center text-xs bg-gray-200 rounded-full px-3 py-1"
               >
                 name: junho <br />
                 score: 90
@@ -44,7 +44,7 @@
                 alt="Sunset in the mountains"
               />
               <div
-                class="font-bold text-lg text-center bg-gray-200 rounded-full px-3 py-1"
+                class="font-bold text-center text-xs bg-gray-200 rounded-full px-3 py-1"
               >
                 name: junho <br />
                 score: 90
@@ -52,12 +52,12 @@
             </div>
             <div class="row-span-1">
               <img
-                class="w-full"
+                class="w-full object-cover"
                 src="../../assets/character/bear.png"
                 alt="Sunset in the mountains"
               />
               <div
-                class="font-bold text-lg text-center bg-gray-200 rounded-full px-3 py-1"
+                class="font-bold text-center text-xs bg-gray-200 rounded-full px-3 py-1"
               >
                 name: junho <br />
                 score: 90
@@ -65,12 +65,12 @@
             </div>
             <div class="row-span-1">
               <img
-                class="w-full"
+                class="w-full object-cover"
                 src="../../assets/character/bear.png"
                 alt="Sunset in the mountains"
               />
               <div
-                class="font-bold text-lg text-center bg-gray-200 rounded-full px-3 py-1"
+                class="font-bold text-center text-xs bg-gray-200 rounded-full px-3 py-1"
               >
                 name: junho <br />
                 score: 90
@@ -78,10 +78,15 @@
             </div>
           </div>
 
-          <div class="pt-4 pb-2">
+          <div class="pt-2">
             <div
-              class="h-64 bg-blue-200 rounded-xl flex flex-col justify-between"
+              class="h-52 bg-blue-200 rounded-xl flex flex-col justify-between"
             >
+              <div
+                class="bg-blue-200 pl-2 text-white text-left py-2 rounded-t-xl"
+              >
+                💬 채팅
+              </div>
               <!-- 채팅창 메시지 영역 -->
               <div
                 ref="messageContainer"
@@ -99,7 +104,7 @@
                       {{ message.writer }}
                     </div>
                     <div
-                      class="max-w-xs px-4 py-2 bg-green-400 text-white text-sm rounded-lg"
+                      class="max-w-xs px-4 py-2 bg-green-400 text-white text-xs rounded-lg"
                     >
                       {{ message.content }}
                     </div>
@@ -109,7 +114,7 @@
                       {{ message.writer }}
                     </div>
                     <div
-                      class="max-w-xs px-4 py-2 bg-yellow-200 text-black text-sm rounded-lg"
+                      class="max-w-xs px-4 py-2 bg-yellow-200 text-black text-xs rounded-lg"
                     >
                       {{ message.content }}
                     </div>
@@ -125,7 +130,7 @@
                   v-model="newMessage"
                   @keyup.enter="sendMessage"
                   placeholder="메시지를 입력하세요..."
-                  class="col-span-10 py-2 border focus:outline-none"
+                  class="col-span-10 py-2 text-sm border focus:outline-none"
                 />
                 <button
                   @click="sendMessage"
@@ -216,6 +221,11 @@ export default {
                   writer: messageObject.writer,
                   isSent: isSent,
                 });
+                this.$nextTick(() => {
+                  // 채팅창 요소에 접근하여 스크롤을 아래로 내림
+                  const messageContainer = this.$refs.messageContainer;
+                  messageContainer.scrollTop = messageContainer.scrollHeight;
+                });
               }
             );
             resolve(frame);
@@ -248,17 +258,6 @@ export default {
       console.log(e.target.className);
     },
     sendMessage() {
-      // if (this.newMessage.trim() !== "") {
-      //   // 새로운 메시지를 배열에 추가
-      //   this.messages.push({
-      //     content: this.newMessage,
-      //     isSent: true, // 메시지가 보낸 것인지 여부
-      //   });
-      //   // 입력창 초기화
-      //   this.newMessage = "";
-
-      // }
-
       if (this.newMessage.trim() !== "") {
         const chatMessage = {
           writer: this.$store.getters.getMember.name, // 예시로 작성자의 이름을 Vuex에서 가져온다고 가정
@@ -271,6 +270,8 @@ export default {
         });
         this.newMessage = "";
       }
+    },
+    scrollToBottom() {
       this.$nextTick(() => {
         // 채팅창 요소에 접근하여 스크롤을 아래로 내림
         const messageContainer = this.$refs.messageContainer;
