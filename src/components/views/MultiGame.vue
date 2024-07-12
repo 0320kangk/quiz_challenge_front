@@ -178,28 +178,51 @@ export default {
       newMessage: "", // 입력된 새로운 메시지
       roomId: null,
       stompClient: null,
+      roomInfo: null,
     };
   },
+  //이것도 웹 소켓으로 해야하나?>
   created() {
     this.roomId = this.$route.params.roomId;
   },
+  // 게임 방 데이터 얻기 (웹 소켓)
+  // 웹 소켓 연결
+  //게임 시작
+  // ->>로딩 (문제 불러오기)
+  //
   async mounted() {
     try {
-      await this.connectWebSocket();
-      console.log();
+      this.roomInfo = this.requestRoomInfo();
+      await this.connectWebMessage();
+      this.requestQuizQuestion();
       this.enterSendMessage();
     } catch (e) {
       console.log(e);
     }
   },
+  /*
+  제대로 만들꺼면
+  웹 소켓을 통해 방제목이나 이런것들을 받아야함 ...
+  아니면 처음에는 요청
+  그다음에는 웹 소켓 을 통해 ?
+  */
   beforeUnmount() {
     this.stompClient.disconnectWebsocket();
   },
   methods: {
-    connectWebSocket() {
+    async requestRoomInfo() {
+      const response = await this.$axios.get(
+        `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/${this.roomId}`,
+
+        {
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    },
+    connectWebMessage() {
       this.stompClient = getStompClient();
       console.log("connectwebSocket test: ");
-      console.log(this.stompClient.status);
       return new Promise((resolve, reject) => {
         this.stompClient.connect(
           {
@@ -210,23 +233,11 @@ export default {
             console.log("Connected: " + frame);
             this.stompClient.subscribe(
               `/subscribe/chat/room/${this.roomId}`,
-              (message) => {
-                const messageObject = JSON.parse(message.body);
-                var isSent = false;
-                if (this.$store.getters.getMember.name === messageObject.writer)
-                  isSent = true;
-
-                this.messages.push({
-                  content: messageObject.message,
-                  writer: messageObject.writer,
-                  isSent: isSent,
-                });
-                this.$nextTick(() => {
-                  // 채팅창 요소에 접근하여 스크롤을 아래로 내림
-                  const messageContainer = this.$refs.messageContainer;
-                  messageContainer.scrollTop = messageContainer.scrollHeight;
-                });
-              }
+              this.receivedChatMessage
+            );
+            this.stompClient.subscribe(
+              `/subscribe/quiz/room/${this.roomId}`,
+              this.receivedQuizMessage
             );
             resolve(frame);
           },
@@ -237,6 +248,21 @@ export default {
         );
       });
     },
+
+    /*
+    1. 문제 타이머 마다 클라이언트에서 검사해
+    2. 문제 만들기 publish
+    2. 문제 요청 하면 subscribe
+    */
+    receivedQuizMessage(message) {
+      const messageObject = JSON.parse(message.body);
+      console.log("quiz Message tests: ");
+      console.log(messageObject);
+    },
+    receivedChatMessage(message) {
+      const messageObject = JSON.parse(message.body);
+      console.log(messageObject);
+    },
     enterSendMessage() {
       console.log("enterSendMessage");
       const chatMessage = {
@@ -246,6 +272,13 @@ export default {
       this.stompClient.publish({
         destination: "/publish/chat/room/enter",
         body: JSON.stringify(chatMessage),
+      });
+    },
+    requestQuizQuestion() {
+      console.log("requestQuizQuestion");
+      this.stompClient.publish({
+        destination: `/publish/api/chat/room/quiz`,
+        body: this.roomId,
       });
     },
     change_bg_color(e) {
@@ -271,6 +304,8 @@ export default {
         this.newMessage = "";
       }
     },
+
+    //요청해야함 방정보를
     scrollToBottom() {
       this.$nextTick(() => {
         // 채팅창 요소에 접근하여 스크롤을 아래로 내림
