@@ -232,6 +232,10 @@ export default {
           (frame) => {
             console.log("Connected: " + frame);
             this.stompClient.subscribe(
+              `/subscribe/notification/room/${this.roomId}`,
+              this.receivedNotificationMessage
+            );
+            this.stompClient.subscribe(
               `/subscribe/chat/room/${this.roomId}`,
               this.receivedChatMessage
             );
@@ -239,6 +243,7 @@ export default {
               `/subscribe/quiz/room/${this.roomId}`,
               this.receivedQuizMessage
             );
+
             resolve(frame);
           },
           (error) => {
@@ -261,7 +266,24 @@ export default {
     },
     receivedChatMessage(message) {
       const messageObject = JSON.parse(message.body);
-      console.log(messageObject);
+      var isSent = false;
+      if (this.$store.getters.getMember.name === messageObject.writer)
+        isSent = true;
+
+      this.messages.push({
+        content: messageObject.message,
+        writer: messageObject.writer,
+        isSent: isSent,
+      });
+      this.$nextTick(() => {
+        // 채팅창 요소에 접근하여 스크롤을 아래로 내림
+        const messageContainer = this.$refs.messageContainer;
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+      });
+    },
+    receivedNotificationMessage(message) {
+      const messageObject = JSON.parse(message.body);
+      console.log("room id: ", messageObject);
     },
     enterSendMessage() {
       console.log("enterSendMessage");
