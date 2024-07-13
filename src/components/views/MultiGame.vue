@@ -194,7 +194,7 @@ export default {
     try {
       this.roomInfo = this.requestRoomInfo();
       await this.connectWebMessage();
-      this.requestQuizQuestion();
+      // this.requestQuizQuestion();
       this.enterSendMessage();
     } catch (e) {
       console.log(e);
@@ -283,7 +283,7 @@ export default {
     },
     receivedNotificationMessage(message) {
       const messageObject = JSON.parse(message.body);
-      console.log("room id: ", messageObject);
+      console.log("console id: ", messageObject);
     },
     enterSendMessage() {
       console.log("enterSendMessage");
