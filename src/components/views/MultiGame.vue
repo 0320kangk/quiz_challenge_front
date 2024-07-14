@@ -2,6 +2,108 @@
   <div class="layout-default">
     <div class="grid grid-cols-12">
       <div class="col-span-12 sm:col-span-9 border border-red-700">
+        <!-- 게임 시작  -->
+        <div
+          v-if="
+            !roomStatus.loading &&
+            !roomStatus.gameStarted &&
+            !roomStatus.gameEnded
+          "
+          class="flex items-center justify-center h-screen"
+        >
+          <div class="text-center">
+            <h1 class="text-4xl font-bold mb-4">환영합니다!</h1>
+            <p class="text-lg mb-8">
+              게임을 시작하려면 아래의 버튼을 클릭하세요.
+            </p>
+            <button
+              @click="startGame"
+              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded"
+            >
+              게임 시작
+            </button>
+          </div>
+        </div>
+        <!-- loding  -->
+        <div
+          v-if="
+            roomStatus.loading &&
+            !roomStatus.gameStarted &&
+            !roomStatus.gameEnded
+          "
+          class="flex flex-col items-center justify-center h-screen"
+        >
+          <div class="loader rounded-full w-24 h-24 mb-4"></div>
+          <span class="text-gray-700 font-bold">Loading...</span>
+        </div>
+        <!-- 게임 문제 -->
+        <div class="md:h-full" v-if="currentQuizIndex < quizQuestions.length">
+          <div
+            class="ml-10 mr-5 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
+          >
+            <span class="text-3xl">Q.</span>
+            {{ quizQuestions[currentQuizIndex].question }}
+          </div>
+          <div v-if="isChoice4Quiz()">
+            <div
+              v-for="(option, i) in quizQuestions[currentQuizIndex].options"
+              :key="i"
+              @click="changeSelectedAnswerIndex(i)"
+              :id="'answer_' + currentQuizIndex + '_' + i"
+              :class="{
+                'bg-yellow-200': selectedAnswerIndex === i,
+                'bg-gray-200': selectedAnswerIndex !== i,
+              }"
+              class="ml-10 mr-5 my-7 p-3 cursor-pointer bg-gray-200 rounded-xl font-bold shadow-xl"
+            >
+              {{ i + 1 }}. {{ option }}
+            </div>
+          </div>
+
+          <!-- OX 퀴즈 문제 형식 -->
+          <div
+            v-else
+            class="md:h-3/5 ml-10 mr-5 mt-7 p-3 pb-10 grid grid-cols-3 gap-4"
+          >
+            <div class="p-4 flex items-center justify-center">
+              <p
+                @click="changeSelectedAnswerIndex(0)"
+                :class="{ 'text-yellow-300': selectedAnswerIndex === 0 }"
+                class="text-9xl cursor-pointer"
+              >
+                O
+              </p>
+            </div>
+            <div class="p-4 flex items-center justify-center">
+              <p class="text-9xl">/</p>
+            </div>
+            <div class="p-4 flex items-center justify-center">
+              <p
+                @click="changeSelectedAnswerIndex(1)"
+                :class="{ 'text-yellow-300': selectedAnswerIndex === 1 }"
+                class="text-9xl cursor-pointer"
+              >
+                X
+              </p>
+            </div>
+          </div>
+
+          <div class="flex justify-between">
+            <div class="text-xl ml-10 text-red-600 font-bold px-5">
+              {{ timer }}
+            </div>
+            <div
+              class="mr-5 cursor-pointer text-white font-bold bg-blue-500 hover:bg-blue-700 px-10 py-4 rounded-xl"
+              @click="nextQuestion"
+            >
+              다음 문제
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 퀴즈 문제 -->
+      <!-- <div class="col-span-12 sm:col-span-9 border border-red-700">
         <div
           class="ml-10 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
         >
@@ -18,7 +120,7 @@
         >
           스프링에서 트랜잭션 관리를 위한 이노에션은 무엇인가?
         </div>
-      </div>
+      </div> -->
       <div
         class="col-span-12 sm:col-span-3 border border-red-600 flex justify-center"
       >
@@ -147,6 +249,26 @@
   </div>
 </template>
 <style scoped>
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.loader {
+  animation: spin 1s linear infinite;
+  border: 6px solid transparent;
+  border-top: 6px solid #3490dc; /* 파란색 부분 */
+  border-right: 6px solid #3490dc; /* 파란색 부분 */
+  border-bottom: 6px solid rgba(244, 238, 238, 0.5); /* 파란색 부분 */
+  border-left: 6px solid rgba(244, 238, 238, 0.5); /* 투명 부분 */
+  border-radius: 50%;
+  width: 96px; /* 너비 */
+  height: 96px; /* 높이 */
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
@@ -169,16 +291,32 @@
 <script>
 import { getStompClient } from "@/webSocket";
 
+class RoomStatus {
+  constructor(roomId, loading, gameStarted, gameEnded) {
+    this.roomId = roomId;
+    this.loading = loading;
+    this.gameStarted = gameStarted;
+    this.gameEnded = gameEnded;
+  }
+}
+
 export default {
   name: "MultiGame",
   data() {
+    // !loading && !gameStarted && !gameEnded
     return {
       isClicked: false,
       messages: [], // 채팅 메시지를 저장할 배열
       newMessage: "", // 입력된 새로운 메시지
+      hostId: null,
       roomId: null,
       stompClient: null,
       roomInfo: null,
+      roomStatus: new RoomStatus(null, false, false, false),
+      quizQuestions: [],
+      timer: 0,
+      currentQuizIndex: 0,
+      selectedAnswerIndex: null,
     };
   },
   //이것도 웹 소켓으로 해야하나?>
@@ -191,10 +329,11 @@ export default {
   // ->>로딩 (문제 불러오기)
   //
   async mounted() {
+    this.roomStatus.roomId = this.roomId;
     try {
-      this.roomInfo = this.requestRoomInfo();
+      this.roomInfo = await this.requestRoomInfo();
+      this.roomInfo.questionCount = parseInt(this.roomInfo.questionCount);
       await this.connectWebMessage();
-      // this.requestQuizQuestion();
       this.enterSendMessage();
     } catch (e) {
       console.log(e);
@@ -243,6 +382,10 @@ export default {
               `/subscribe/quiz/room/${this.roomId}`,
               this.receivedQuizMessage
             );
+            this.stompClient.subscribe(
+              `/subscribe/status/room/${this.roomId}`,
+              this.receivedRoomStatusMessage
+            );
 
             resolve(frame);
           },
@@ -260,9 +403,16 @@ export default {
     2. 문제 요청 하면 subscribe
     */
     receivedQuizMessage(message) {
-      const messageObject = JSON.parse(message.body);
-      console.log("quiz Message tests: ");
-      console.log(messageObject);
+      const quizObject = JSON.parse(message.body);
+      console.log("quiz 문제 : " + quizObject);
+
+      this.quizQuestions = this.quizQuestions.concat(quizObject);
+      console.log("quiz 문제 수 " + this.quizQuestions.length);
+      console.log("rooInfo questionCount : " + this.roomInfo.questionCount);
+      if (this.roomInfo.questionCount === this.quizQuestions.length) {
+        this.publishRoomStatus(false, true, false); //로딩 끝, 게임 시작
+        console.log("게임을 시작합니다.");
+      }
     },
     receivedChatMessage(message) {
       const messageObject = JSON.parse(message.body);
@@ -283,7 +433,35 @@ export default {
     },
     receivedNotificationMessage(message) {
       const messageObject = JSON.parse(message.body);
-      console.log("console id: ", messageObject);
+      this.hostId = messageObject.hostId;
+      console.log("host id: ", messageObject);
+    },
+    receivedRoomStatusMessage(message) {
+      const messageObject = JSON.parse(message.body);
+      console.log("roomStatus message", messageObject);
+      this.roomStatus = messageObject;
+    },
+    requestQuizQuestion() {
+      console.log("requestQuizQuestion");
+      var chatQuizRequestDto = {
+        roomId: this.roomId,
+        quizType: this.$store.getters.getChoice_4,
+      };
+      this.stompClient.publish({
+        destination: `/publish/chat/room/quiz`,
+        body: JSON.stringify(chatQuizRequestDto),
+      });
+      chatQuizRequestDto.quizType = this.$store.getters.getOX;
+      this.stompClient.publish({
+        destination: `/publish/chat/room/quiz`,
+        body: JSON.stringify(chatQuizRequestDto),
+      });
+    },
+    shuffle(questions) {
+      for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+      }
     },
     enterSendMessage() {
       console.log("enterSendMessage");
@@ -296,21 +474,38 @@ export default {
         body: JSON.stringify(chatMessage),
       });
     },
-    requestQuizQuestion() {
-      console.log("requestQuizQuestion");
+
+    async startGame() {
+      console.log("퀴즈 게임을 만듭니다. !");
+      this.publishRoomStatus(true, false, false); // 로딩 상태
+      this.requestQuizQuestion(); //퀴즈 문제 요청
+    },
+    publishRoomStatus(loading, gameStarted, gameEnded) {
+      const roomStatusDto = new RoomStatus(
+        this.roomId,
+        loading,
+        gameStarted,
+        gameEnded
+      );
       this.stompClient.publish({
-        destination: `/publish/api/chat/room/quiz`,
-        body: this.roomId,
+        destination: "/publish/chat/room/status",
+        body: JSON.stringify(roomStatusDto),
       });
     },
-    change_bg_color(e) {
-      // 색상 변경 로직
-      const elements = document.querySelectorAll('[id^="answer_"]');
-      elements.forEach((element) => {
-        element.classList.remove("bg-yellow-200");
-      });
-      e.target.classList.add("bg-yellow-200");
-      console.log(e.target.className);
+
+    changeSelectedAnswerIndex(selectedAnswerIndex) {
+      this.selectedAnswerIndex = selectedAnswerIndex;
+      // this.selectedAnswers[this.currentQuizIndex]
+      var selectedAnswer = 0;
+      if (this.isChoice4Quiz()) {
+        selectedAnswer = selectedAnswerIndex;
+      } else {
+        selectedAnswer = this.$store.getters.getOXAnswer(
+          this.selectedAnswerIndex
+        );
+      }
+      console.log(selectedAnswer);
+      // this.selectedAnswers[this.currentQuizIndex].answer = selectedAnswer;
     },
     sendMessage() {
       if (this.newMessage.trim() !== "") {
@@ -326,7 +521,11 @@ export default {
         this.newMessage = "";
       }
     },
+    isChoice4Quiz() {
+      const quizType = this.quizQuestions[this.currentQuizIndex].quizType;
 
+      return quizType === this.$store.getters.getChoice_4;
+    },
     //요청해야함 방정보를
     scrollToBottom() {
       this.$nextTick(() => {

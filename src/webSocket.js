@@ -11,7 +11,6 @@ export function getStompClient() {
   if (!stompClient) {
     const headers = {
       Authorization: `Bearer ${store.getters.getAccessToken}`, // Vuex store에서 가져온 JWT 토큰
-      roomId: null,
     };
     const socket = new SockJS(socketUrl, null, {
       transports: ["websocket"],
@@ -23,7 +22,6 @@ export function getStompClient() {
       console.log("debug websocket");
       console.log(str);
     };
-    stompClient.connectionTimeout;
     stompClient.onStompError = (frame) => {
       console.error("Broker reported error: " + frame.headers["message"]);
       console.error("Additional details: " + frame.body);
