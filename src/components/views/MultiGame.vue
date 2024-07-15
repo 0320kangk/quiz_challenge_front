@@ -299,7 +299,13 @@ class RoomStatus {
     this.gameEnded = gameEnded;
   }
 }
-
+class Message {
+  constructor(writer, content, isSent) {
+    this.writer = writer;
+    this.content = content;
+    this.isSent = isSent;
+  }
+}
 export default {
   name: "MultiGame",
   data() {
@@ -308,7 +314,7 @@ export default {
       isClicked: false,
       messages: [], // 채팅 메시지를 저장할 배열
       newMessage: "", // 입력된 새로운 메시지
-      hostId: null,
+      hostName: null,
       roomId: null,
       stompClient: null,
       roomInfo: null,
@@ -317,6 +323,7 @@ export default {
       timer: 0,
       currentQuizIndex: 0,
       selectedAnswerIndex: null,
+      participants: [],
     };
   },
   //이것도 웹 소켓으로 해야하나?>
@@ -386,6 +393,14 @@ export default {
               `/subscribe/status/room/${this.roomId}`,
               this.receivedRoomStatusMessage
             );
+            //  this.stompClient.subscribe(
+            //   `/subscribe/score/room/${this.roomId}`,
+            //   this.receivedRoomStatusMessage
+            // );
+            this.stompClient.subscribe(
+              `/subscribe/enter/room/${this.roomId}`,
+              this.receivedEnterRoomMessage
+            );
 
             resolve(frame);
           },
@@ -402,6 +417,22 @@ export default {
     2. 문제 만들기 publish
     2. 문제 요청 하면 subscribe
     */
+    receivedEnterRoomMessage(message) {
+      const enterRoomObject = JSON.parse(message.body);
+      console.log("enter room message : ");
+      console.log(enterRoomObject);
+
+      this.addMessage(enterRoomObject.content, enterRoomObject.writer);
+      this.participants = enterRoomObject.participateNames;
+      this.hostName = enterRoomObject.hostName;
+
+      this.scrollToBottom();
+    },
+    addMessage(content, writer) {
+      var isSent = false;
+      if (this.$store.getters.getMember.name === writer) isSent = true;
+      this.messages.push(new Message(writer, content, isSent));
+    },
     receivedQuizMessage(message) {
       const quizObject = JSON.parse(message.body);
       console.log("quiz 문제 : " + quizObject);
@@ -416,25 +447,13 @@ export default {
     },
     receivedChatMessage(message) {
       const messageObject = JSON.parse(message.body);
-      var isSent = false;
-      if (this.$store.getters.getMember.name === messageObject.writer)
-        isSent = true;
-
-      this.messages.push({
-        content: messageObject.message,
-        writer: messageObject.writer,
-        isSent: isSent,
-      });
-      this.$nextTick(() => {
-        // 채팅창 요소에 접근하여 스크롤을 아래로 내림
-        const messageContainer = this.$refs.messageContainer;
-        messageContainer.scrollTop = messageContainer.scrollHeight;
-      });
+      this.addMessage(messageObject.content, messageObject.writer);
+      this.scrollToBottom();
     },
     receivedNotificationMessage(message) {
       const messageObject = JSON.parse(message.body);
-      this.hostId = messageObject.hostId;
-      console.log("host id: ", messageObject);
+      this.hostName = messageObject.hostName;
+      console.log("host name: ", messageObject);
     },
     receivedRoomStatusMessage(message) {
       const messageObject = JSON.parse(message.body);
@@ -523,7 +542,6 @@ export default {
     },
     isChoice4Quiz() {
       const quizType = this.quizQuestions[this.currentQuizIndex].quizType;
-
       return quizType === this.$store.getters.getChoice_4;
     },
     //요청해야함 방정보를
