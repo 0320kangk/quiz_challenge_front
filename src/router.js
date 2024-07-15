@@ -6,7 +6,7 @@ import SingleGame from "./components/views/SingleGame.vue";
 import MultiGame from "./components/views/MultiGame.vue";
 import GameRooms from "./components/views/GameRooms.vue";
 import Test from "./components/views/Test.vue";
-
+import Test2 from "./components/views/Test2.vue";
 import store from "./store"; // Vuex 스토어 import
 
 const router = createRouter({
@@ -42,6 +42,10 @@ const router = createRouter({
     {
       path: "/test",
       component: Test,
+    },
+    {
+      path: "/test2",
+      component: Test2,
     },
   ],
 });

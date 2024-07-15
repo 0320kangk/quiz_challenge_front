@@ -1,5 +1,28 @@
 <template>
   <div class="layout-default">
+    <!-- 모달 창 -->
+    <div
+      v-if="isAnswer"
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+    >
+      <div class="bg-white rounded-lg p-8 px-20 shadow-lg text-center">
+        <p class="text-9xl text-green-500 font-bold">O</p>
+        <h2 class="text-2xl mt-4 font-bold mb-4">정답입니다!</h2>
+      </div>
+    </div>
+
+    <!-- Incorrect Answer Modal -->
+    <div
+      v-if="isAnswer === false"
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+    >
+      <div class="bg-white rounded-lg p-8 px-20 shadow-lg text-center">
+        <p class="text-9xl text-red-500 font-bold">X</p>
+
+        <h2 class="text-2xl mt-4 font-bold mb-4">틀렸습니다!</h2>
+      </div>
+    </div>
+
     <div class="grid grid-cols-12">
       <div class="col-span-12 sm:col-span-9 border border-red-700">
         <!-- 게임 시작  -->
@@ -88,15 +111,9 @@
             </div>
           </div>
 
-          <div class="flex justify-between">
+          <div class="flex justify-start">
             <div class="text-xl ml-10 text-red-600 font-bold px-5">
               {{ timer }}
-            </div>
-            <div
-              class="mr-5 cursor-pointer text-white font-bold bg-blue-500 hover:bg-blue-700 px-10 py-4 rounded-xl"
-              @click="nextQuestion"
-            >
-              다음 문제
             </div>
           </div>
         </div>
@@ -126,7 +143,11 @@
       >
         <div class="max-w-sm rounded overflow-hidden shadow-lg">
           <div class="grid grid-cols-2 grid-rows-2">
-            <div class="row-span-1">
+            <div
+              v-for="(participant, index) in participants"
+              :key="index"
+              class="row-span-1"
+            >
               <img
                 class="w-full"
                 src="../../assets/character/bear.png"
@@ -135,47 +156,8 @@
               <div
                 class="font-bold text-center text-xs bg-gray-200 rounded-full px-3 py-1"
               >
-                name: junho <br />
-                score: 90
-              </div>
-            </div>
-            <div class="row-span-1">
-              <img
-                class="w-full"
-                src="../../assets/character/bear.png"
-                alt="Sunset in the mountains"
-              />
-              <div
-                class="font-bold text-center text-xs bg-gray-200 rounded-full px-3 py-1"
-              >
-                name: junho <br />
-                score: 90
-              </div>
-            </div>
-            <div class="row-span-1">
-              <img
-                class="w-full object-cover"
-                src="../../assets/character/bear.png"
-                alt="Sunset in the mountains"
-              />
-              <div
-                class="font-bold text-center text-xs bg-gray-200 rounded-full px-3 py-1"
-              >
-                name: junho <br />
-                score: 90
-              </div>
-            </div>
-            <div class="row-span-1">
-              <img
-                class="w-full object-cover"
-                src="../../assets/character/bear.png"
-                alt="Sunset in the mountains"
-              />
-              <div
-                class="font-bold text-center text-xs bg-gray-200 rounded-full px-3 py-1"
-              >
-                name: junho <br />
-                score: 90
+                {{ participant.name }} <br />
+                score: {{ participant.score }}
               </div>
             </div>
           </div>
@@ -306,6 +288,12 @@ class Message {
     this.isSent = isSent;
   }
 }
+class Participant {
+  constructor(name) {
+    this.name = name;
+    this.score = 0;
+  }
+}
 export default {
   name: "MultiGame",
   data() {
@@ -320,10 +308,14 @@ export default {
       roomInfo: null,
       roomStatus: new RoomStatus(null, false, false, false),
       quizQuestions: [],
+      myInfo: new Participant(this.$store.getters.getMember.name),
       timer: 0,
       currentQuizIndex: 0,
       selectedAnswerIndex: null,
+      selectedAnswer: null,
+      isAnswer: null,
       participants: [],
+      receivedScoreCount: 0,
     };
   },
   //이것도 웹 소켓으로 해야하나?>
@@ -393,10 +385,10 @@ export default {
               `/subscribe/status/room/${this.roomId}`,
               this.receivedRoomStatusMessage
             );
-            //  this.stompClient.subscribe(
-            //   `/subscribe/score/room/${this.roomId}`,
-            //   this.receivedRoomStatusMessage
-            // );
+            this.stompClient.subscribe(
+              `/subscribe/score/room/${this.roomId}`,
+              this.receivedScoreMessage
+            );
             this.stompClient.subscribe(
               `/subscribe/enter/room/${this.roomId}`,
               this.receivedEnterRoomMessage
@@ -421,18 +413,15 @@ export default {
       const enterRoomObject = JSON.parse(message.body);
       console.log("enter room message : ");
       console.log(enterRoomObject);
-
       this.addMessage(enterRoomObject.content, enterRoomObject.writer);
-      this.participants = enterRoomObject.participateNames;
+      this.participants = [];
+      for (var name of enterRoomObject.participateNames) {
+        this.participants.push(new Participant(name));
+      }
       this.hostName = enterRoomObject.hostName;
-
       this.scrollToBottom();
     },
-    addMessage(content, writer) {
-      var isSent = false;
-      if (this.$store.getters.getMember.name === writer) isSent = true;
-      this.messages.push(new Message(writer, content, isSent));
-    },
+
     receivedQuizMessage(message) {
       const quizObject = JSON.parse(message.body);
       console.log("quiz 문제 : " + quizObject);
@@ -441,9 +430,20 @@ export default {
       console.log("quiz 문제 수 " + this.quizQuestions.length);
       console.log("rooInfo questionCount : " + this.roomInfo.questionCount);
       if (this.roomInfo.questionCount === this.quizQuestions.length) {
-        this.publishRoomStatus(false, true, false); //로딩 끝, 게임 시작
-        console.log("게임을 시작합니다.");
+        //게임 시작 상태로 변경
+        console.log("게임 시작 상태로 바꾸기");
+        this.roomStatus.loading = false;
+        this.roomStatus.gameStarted = true;
+        this.roomStatus.gameEnded = false;
       }
+    },
+    receivedScoreMessage(message) {
+      const messageObject = JSON.parse(message.body);
+      const participant = this.participants.find(
+        (participant) => participant.name === messageObject.name
+      );
+      participant.score = messageObject.score;
+      this.receivedScoreCount++;
     },
     receivedChatMessage(message) {
       const messageObject = JSON.parse(message.body);
@@ -476,6 +476,11 @@ export default {
         body: JSON.stringify(chatQuizRequestDto),
       });
     },
+    addMessage(content, writer) {
+      var isSent = false;
+      if (this.$store.getters.getMember.name === writer) isSent = true;
+      this.messages.push(new Message(writer, content, isSent));
+    },
     shuffle(questions) {
       for (let i = questions.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -493,10 +498,9 @@ export default {
         body: JSON.stringify(chatMessage),
       });
     },
-
-    async startGame() {
+    startGame() {
       console.log("퀴즈 게임을 만듭니다. !");
-      this.publishRoomStatus(true, false, false); // 로딩 상태
+      this.publishRoomStatus(true, false, false); // 로딩 상태 알림
       this.requestQuizQuestion(); //퀴즈 문제 요청
     },
     publishRoomStatus(loading, gameStarted, gameEnded) {
@@ -510,21 +514,6 @@ export default {
         destination: "/publish/chat/room/status",
         body: JSON.stringify(roomStatusDto),
       });
-    },
-
-    changeSelectedAnswerIndex(selectedAnswerIndex) {
-      this.selectedAnswerIndex = selectedAnswerIndex;
-      // this.selectedAnswers[this.currentQuizIndex]
-      var selectedAnswer = 0;
-      if (this.isChoice4Quiz()) {
-        selectedAnswer = selectedAnswerIndex;
-      } else {
-        selectedAnswer = this.$store.getters.getOXAnswer(
-          this.selectedAnswerIndex
-        );
-      }
-      console.log(selectedAnswer);
-      // this.selectedAnswers[this.currentQuizIndex].answer = selectedAnswer;
     },
     sendMessage() {
       if (this.newMessage.trim() !== "") {
@@ -540,9 +529,97 @@ export default {
         this.newMessage = "";
       }
     },
+    publishMyScore() {
+      this.stompClient.publish({
+        destination: `/publish/chat/room/score/${this.roomId}`,
+        body: JSON.stringify(this.myInfo),
+      });
+    },
     isChoice4Quiz() {
       const quizType = this.quizQuestions[this.currentQuizIndex].quizType;
       return quizType === this.$store.getters.getChoice_4;
+    },
+
+    changeSelectedAnswerIndex(selectedAnswerIndex) {
+      this.selectedAnswerIndex = selectedAnswerIndex;
+      var selectedAnswer = 0;
+      if (this.isChoice4Quiz()) {
+        selectedAnswer = selectedAnswerIndex;
+      } else {
+        selectedAnswer = this.$store.getters.getOXAnswer(
+          this.selectedAnswerIndex
+        );
+      }
+      console.log(selectedAnswer);
+      this.selectedAnswer = selectedAnswer;
+    },
+    startTimer() {
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+      }
+      // 초기화
+      this.timer = 10;
+      // 1초마다 타이머 업데이트
+      this.intervalId = setInterval(() => {
+        if (this.timer > 0) {
+          this.timer--;
+        } else {
+          clearInterval(this.intervalId); // 타이머가 0이 되면 중지
+          this.nextQuestion();
+
+          //채점
+          //결과창(모달)
+          //결과 publish
+          //2초뒤 다음문제
+        }
+      }, 1000);
+    },
+    nextQuestion() {
+      //채점하기,
+      this.gradeQuizQuestion();
+      //결과 확인
+      this.isAnswer = this.checkAnswer(this.selectedAnswer);
+      //결과 publish,
+      this.publishMyScore();
+      //1초뒤에 문제 넘기기 (이 부분 문제 있을 수 있음)
+      if (this.receivedScoreCount === this.participants.length) {
+        setTimeout(() => {
+          // 다음 문제로 넘어가기
+          if (this.currentQuizIndex < this.quizQuestions.length) {
+            this.currentQuizIndex++;
+            this.selectedAnswerIndex = null; // null로 초기화,
+            this.isAnswer = null;
+            this.startTimer();
+          }
+        }, 1000);
+      }
+    },
+    gradeQuizQuestion() {
+      if (this.selectedAnswerIndex !== null) {
+        console.log(
+          "정답: " + this.quizQuestions[this.currentQuizIndex].answer
+        );
+        this.myInfo.score = this.addScore(
+          this.myInfo.score,
+          this.selectedAnswerIndex
+        );
+        console.log("점수: " + this.myInfo.score);
+      }
+    },
+    addScore(myScore, selectedAnswer) {
+      if (!this.isChoice4Quiz()) {
+        selectedAnswer = this.$store.getters.getOXAnswer(
+          this.selectedAnswerIndex
+        );
+      }
+      if (this.checkAnswer(selectedAnswer)) myScore += this.score;
+      return myScore;
+    },
+    checkAnswer(selectedAnswer) {
+      return (
+        this.quizQuestions[this.currentQuizIndex].answer ===
+        String(selectedAnswer)
+      );
     },
     //요청해야함 방정보를
     scrollToBottom() {
