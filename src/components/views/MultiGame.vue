@@ -136,7 +136,15 @@
             <p class="text-lg mb-8">당신의 점수는 {{ myInfo.score }} 입니다.</p>
             <button
               @click="startGame"
-              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded"
+              :class="[
+                'text-white font-bold py-3 px-6 rounded',
+                {
+                  'bg-blue-500 hover:bg-blue-700 cursor-pointer':
+                    hostName === myInfo.name,
+                  'bg-gray-500 cursor-not-allowed': hostName !== myInfo.name,
+                },
+              ]"
+              :disabled="hostName !== myInfo.name"
             >
               게임 다시 시작
             </button>
