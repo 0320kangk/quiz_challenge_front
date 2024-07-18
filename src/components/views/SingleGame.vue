@@ -328,6 +328,7 @@ export default {
       this.currentPage++;
     },
     nextQuestion() {
+      console.log("currentQuizIndex start Game" + this.currentQuizIndex);
       if (Math.floor(this.currentQuizIndex / 10) != this.currentPage)
         this.nextPage();
       if (this.selectedAnswerIndex !== null) {
@@ -347,13 +348,14 @@ export default {
       this.selectedAnswers[this.currentQuizIndex].isCorrect = this.checkAnswer(
         this.selectedAnswers[this.currentQuizIndex].answer
       );
-      //다음문제로 넘어가기
+      // 다음문제로 넘어가기
+      this.currentQuizIndex++;
       if (this.currentQuizIndex < this.quizQuestions.length) {
-        this.currentQuizIndex++;
+        console.log("this.currentQuizIndex : " + this.currentQuizIndex);
         this.startTimer();
       }
-      //게임 종료 후
       if (this.currentQuizIndex == this.quizQuestions.length) {
+        console.log("currentQUizIndex end Game" + this.currentQuizIndex);
         this.endGame();
       }
     },
@@ -376,6 +378,7 @@ export default {
       if (this.intervalId) {
         clearInterval(this.intervalId);
       }
+
       // 초기화
       this.timer = 10;
       // 1초마다 타이머 업데이트
@@ -384,6 +387,7 @@ export default {
           this.timer--;
         } else {
           clearInterval(this.intervalId); // 타이머가 0이 되면 중지
+
           this.nextQuestion();
         }
       }, 1000);

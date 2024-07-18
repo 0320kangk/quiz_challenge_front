@@ -41,7 +41,15 @@
             </p>
             <button
               @click="startGame"
-              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded"
+              :class="[
+                'text-white font-bold py-3 px-6 rounded',
+                {
+                  'bg-blue-500 hover:bg-blue-700 cursor-pointer':
+                    hostName === myInfo.name,
+                  'bg-gray-500 cursor-not-allowed': hostName !== myInfo.name,
+                },
+              ]"
+              :disabled="hostName !== myInfo.name"
             >
               게임 시작
             </button>
@@ -116,6 +124,22 @@
             <div class="text-xl ml-10 mb-3 text-red-600 font-bold px-5">
               {{ timer }}
             </div>
+          </div>
+        </div>
+        <!-- 게임 종료 -->
+        <div
+          v-if="roomStatus.gameEnded"
+          class="flex items-center justify-center h-screen"
+        >
+          <div class="text-center">
+            <h1 class="text-4xl font-bold mb-4">게임 종료</h1>
+            <p class="text-lg mb-8">당신의 점수는 {{ myInfo.score }} 입니다.</p>
+            <button
+              @click="startGame"
+              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded"
+            >
+              게임 다시 시작
+            </button>
           </div>
         </div>
       </div>
@@ -427,7 +451,7 @@ export default {
 
     receivedQuizMessage(message) {
       const quizObject = JSON.parse(message.body);
-      console.log("quiz 문제 : " + quizObject);
+      console.log("quiz 문제 : " + message.body);
 
       this.quizQuestions = this.quizQuestions.concat(quizObject);
       console.log("quiz 문제 수 " + this.quizQuestions.length);
@@ -570,7 +594,7 @@ export default {
           //결과 publish
           //2초뒤 다음문제
         }
-      }, 1000);
+      }, 300);
     },
     nextQuestion() {
       //채점하기,
@@ -579,7 +603,8 @@ export default {
       this.isAnswer = this.checkAnswer(this.selectedAnswer);
       //결과 publish,
       this.publishMyScore();
-      //1초뒤에 문제 넘기기 (이 부분 문제 있을 수 있음)
+      //결과 구독 후 문제 넘기기
+      this.currentQuizIndex++; //다음 문제
     },
     gradeQuizQuestion() {
       if (this.selectedAnswerIndex !== null) {
@@ -634,18 +659,31 @@ export default {
       }
     },
     receivedScoreCount(newVal) {
+      //이렇게 만들지 말고 그냥 1초 기다렸다 다음 문제 나오는게
       if (newVal === this.participants.length) {
         setTimeout(() => {
           // 다음 문제로 넘어가기
+          this.selectedAnswerIndex = null; // 선택한 답 idx 초기화
+          this.receivedScoreCount = 0;
+          this.isAnswer = null;
+          console.log("현재퀴즈 번호 : " + this.currentQuizIndex);
+
           if (this.currentQuizIndex < this.quizQuestions.length) {
-            this.currentQuizIndex++;
-            this.selectedAnswerIndex = null; // null로 초기화,
-            this.isAnswer = null;
             this.startTimer();
+          } else {
+            this.currentQuizIndex = 0;
+            this.roomStatus.gameStarted = false;
+            this.roomStatus.loading = false;
+            this.roomStatus.gameEnded = true;
           }
         }, 1000);
       }
     },
+    /*
+    지금 구현 안 된 것이
+    다시 시작, 연결 종료, 방장,중간에 사람이 나간다면?
+
+    */
   },
 };
 </script>
