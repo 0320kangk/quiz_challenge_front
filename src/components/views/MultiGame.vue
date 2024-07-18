@@ -49,18 +49,19 @@
         </div>
         <!-- loding  -->
         <div
-          v-if="
-            roomStatus.loading &&
-            !roomStatus.gameStarted &&
-            !roomStatus.gameEnded
-          "
+          v-if="roomStatus.loading"
           class="flex flex-col items-center justify-center h-screen"
         >
           <div class="loader rounded-full w-24 h-24 mb-4"></div>
           <span class="text-gray-700 font-bold">Loading...</span>
         </div>
         <!-- 게임 문제 -->
-        <div class="md:h-full" v-if="currentQuizIndex < quizQuestions.length">
+        <div
+          class="md:h-full"
+          v-if="
+            roomStatus.gameStarted && currentQuizIndex < quizQuestions.length
+          "
+        >
           <div
             class="ml-10 mr-5 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
           >
@@ -112,7 +113,7 @@
           </div>
 
           <div class="flex justify-start">
-            <div class="text-xl ml-10 text-red-600 font-bold px-5">
+            <div class="text-xl ml-10 mb-3 text-red-600 font-bold px-5">
               {{ timer }}
             </div>
           </div>
@@ -316,6 +317,7 @@ export default {
       isAnswer: null,
       participants: [],
       receivedScoreCount: 0,
+      score: 0,
     };
   },
   //이것도 웹 소켓으로 해야하나?>
@@ -332,6 +334,7 @@ export default {
     try {
       this.roomInfo = await this.requestRoomInfo();
       this.roomInfo.questionCount = parseInt(this.roomInfo.questionCount);
+      this.score = 100 / this.roomInfo.questionCount; // 문제 당 점수 할당
       await this.connectWebMessage();
       this.enterSendMessage();
     } catch (e) {
@@ -429,13 +432,6 @@ export default {
       this.quizQuestions = this.quizQuestions.concat(quizObject);
       console.log("quiz 문제 수 " + this.quizQuestions.length);
       console.log("rooInfo questionCount : " + this.roomInfo.questionCount);
-      if (this.roomInfo.questionCount === this.quizQuestions.length) {
-        //게임 시작 상태로 변경
-        console.log("게임 시작 상태로 바꾸기");
-        this.roomStatus.loading = false;
-        this.roomStatus.gameStarted = true;
-        this.roomStatus.gameEnded = false;
-      }
     },
     receivedScoreMessage(message) {
       const messageObject = JSON.parse(message.body);
@@ -443,6 +439,8 @@ export default {
         (participant) => participant.name === messageObject.name
       );
       participant.score = messageObject.score;
+      console.log("recevied score name : " + messageObject.name);
+      console.log("recevied score " + messageObject.score);
       this.receivedScoreCount++;
     },
     receivedChatMessage(message) {
@@ -582,17 +580,6 @@ export default {
       //결과 publish,
       this.publishMyScore();
       //1초뒤에 문제 넘기기 (이 부분 문제 있을 수 있음)
-      if (this.receivedScoreCount === this.participants.length) {
-        setTimeout(() => {
-          // 다음 문제로 넘어가기
-          if (this.currentQuizIndex < this.quizQuestions.length) {
-            this.currentQuizIndex++;
-            this.selectedAnswerIndex = null; // null로 초기화,
-            this.isAnswer = null;
-            this.startTimer();
-          }
-        }, 1000);
-      }
     },
     gradeQuizQuestion() {
       if (this.selectedAnswerIndex !== null) {
@@ -607,6 +594,7 @@ export default {
       }
     },
     addScore(myScore, selectedAnswer) {
+      console.log("myScore : " + myScore);
       if (!this.isChoice4Quiz()) {
         selectedAnswer = this.$store.getters.getOXAnswer(
           this.selectedAnswerIndex
@@ -628,6 +616,35 @@ export default {
         const messageContainer = this.$refs.messageContainer;
         messageContainer.scrollTop = messageContainer.scrollHeight;
       });
+    },
+  },
+  watch: {
+    quizQuestions(newVal) {
+      if (this.roomInfo.questionCount === newVal.length) {
+        //게임 시작 상태로 변경
+        console.log("게임 시작 상태로 바꾸기");
+        this.roomStatus.loading = false;
+        this.roomStatus.gameStarted = true;
+        this.roomStatus.gameEnded = false;
+      }
+    },
+    "roomStatus.gameStarted"(newVal) {
+      if (newVal) {
+        this.startTimer();
+      }
+    },
+    receivedScoreCount(newVal) {
+      if (newVal === this.participants.length) {
+        setTimeout(() => {
+          // 다음 문제로 넘어가기
+          if (this.currentQuizIndex < this.quizQuestions.length) {
+            this.currentQuizIndex++;
+            this.selectedAnswerIndex = null; // null로 초기화,
+            this.isAnswer = null;
+            this.startTimer();
+          }
+        }, 1000);
+      }
     },
   },
 };
