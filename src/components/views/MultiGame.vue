@@ -32,7 +32,7 @@
             !roomStatus.gameStarted &&
             !roomStatus.gameEnded
           "
-          class="flex items-center justify-center h-screen"
+          class="flex items-center justify-center sm:h-full h-screen"
         >
           <div class="text-center">
             <h1 class="text-4xl font-bold mb-4">환영합니다!</h1>
@@ -58,7 +58,7 @@
         <!-- loding  -->
         <div
           v-if="roomStatus.loading"
-          class="flex flex-col items-center justify-center h-screen"
+          class="flex flex-col items-center justify-center sm:h-screen h-full"
         >
           <div class="loader rounded-full w-24 h-24 mb-4"></div>
           <span class="text-gray-700 font-bold">Loading...</span>
@@ -174,7 +174,7 @@
       <div
         class="col-span-12 sm:col-span-3 border border-red-600 flex justify-center"
       >
-        <div class="max-w-sm rounded overflow-hidden shadow-lg">
+        <div class="rounded overflow-hidden shadow-lg">
           <div class="grid grid-cols-2 grid-rows-2">
             <div
               v-for="(participant, index) in participants"
@@ -197,7 +197,7 @@
 
           <div class="pt-2">
             <div
-              class="h-52 bg-blue-200 rounded-xl flex flex-col justify-between"
+              class="h-96 sm:h-64 bg-blue-200 rounded-xl flex flex-col justify-between"
             >
               <div
                 class="bg-blue-200 pl-2 text-white text-left py-2 rounded-t-xl"
