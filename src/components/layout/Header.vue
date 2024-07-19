@@ -35,12 +35,11 @@
             >
               게임소개
             </a>
-            <a
-              href="#"
+            <button
               class="font-bold py-5 px-3 text-gray-700 hover:text-gray-900"
             >
-              마이 페이지
-            </a>
+              캐릭터 선택
+            </button>
           </div>
         </div>
         <div class="font-bold hidden md:flex items-center space-x-1">
@@ -139,13 +138,12 @@
         로그아웃
       </router-link>
 
-      <a
-        href="#"
+      <button
         @click="change_menu_toggle_state"
         class="font-bold block py-2 px-4 text-sm hover:bg-gray-200"
       >
-        마이 페이지
-      </a>
+        캐릭터 선택
+      </button>
       <a
         href="#"
         @click="change_menu_toggle_state"

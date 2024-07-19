@@ -37,14 +37,32 @@
       오답 모달 테스트
     </button>
   </div>
+
+  <div>
+    <h1>Character Image</h1>
+    <button
+      @click="fetchCharacterImage"
+      class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+    >
+      캐릭터 이미지 불러오기
+    </button>
+    <div v-if="imageUrl">
+      <img :src="imageUrl" alt="Character Image" />
+    </div>
+    <div v-else>
+      <p>Loading...</p>
+    </div>
+  </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   name: "testVue2",
   data() {
     return {
       showCorrectModal: false,
       showIncorrectModal: false,
+      imageUrl: null,
     };
   },
   methods: {
@@ -57,6 +75,20 @@ export default {
     closeModal() {
       this.showCorrectModal = false;
       this.showIncorrectModal = false;
+    },
+    async fetchCharacterImage() {
+      try {
+        const response = await axios.get(
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/characterImg`,
+          {
+            responseType: "blob", // Ensures the response is a Blob (binary data)
+          }
+        );
+        const url = URL.createObjectURL(response.data);
+        this.imageUrl = url;
+      } catch (error) {
+        console.error("Failed to fetch character image", error);
+      }
     },
   },
 };
