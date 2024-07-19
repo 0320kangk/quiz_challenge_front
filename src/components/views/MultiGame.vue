@@ -58,7 +58,7 @@
         <!-- loding  -->
         <div
           v-if="roomStatus.loading"
-          class="flex flex-col items-center justify-center sm:h-screen h-full"
+          class="flex flex-col items-center justify-center sm:h-full h-screen"
         >
           <div class="loader rounded-full w-24 h-24 mb-4"></div>
           <span class="text-gray-700 font-bold">Loading...</span>
@@ -121,7 +121,7 @@
           </div>
 
           <div class="flex justify-start">
-            <div class="text-xl ml-10 mb-3 text-red-600 font-bold px-5">
+            <div class="text-xl ml-10 mb-3 mt-5 text-red-600 font-bold px-5">
               {{ timer }}
             </div>
           </div>
@@ -129,7 +129,7 @@
         <!-- 게임 종료 -->
         <div
           v-if="roomStatus.gameEnded"
-          class="flex items-center justify-center h-screen"
+          class="flex items-center justify-center sm:h-full h-screen"
         >
           <div class="text-center">
             <h1 class="text-4xl font-bold mb-4">게임 종료</h1>
@@ -307,8 +307,7 @@
 import { getStompClient } from "@/webSocket";
 
 class RoomStatus {
-  constructor(roomId, loading, gameStarted, gameEnded) {
-    this.roomId = roomId;
+  constructor(loading, gameStarted, gameEnded) {
     this.loading = loading;
     this.gameStarted = gameStarted;
     this.gameEnded = gameEnded;
@@ -339,7 +338,7 @@ export default {
       roomId: null,
       stompClient: null,
       roomInfo: null,
-      roomStatus: new RoomStatus(null, false, false, false),
+      roomStatus: new RoomStatus(false, false, false),
       quizQuestions: [],
       myInfo: new Participant(this.$store.getters.getMember.name),
       timer: 0,
@@ -477,6 +476,7 @@ export default {
     },
     receivedChatMessage(message) {
       const messageObject = JSON.parse(message.body);
+      console.log("message : ", message.body);
       this.addMessage(messageObject.content, messageObject.writer);
       this.scrollToBottom();
     },
@@ -493,16 +493,15 @@ export default {
     requestQuizQuestion() {
       console.log("requestQuizQuestion");
       var chatQuizRequestDto = {
-        roomId: this.roomId,
         quizType: this.$store.getters.getChoice_4,
       };
       this.stompClient.publish({
-        destination: `/publish/chat/room/quiz`,
+        destination: `/publish/chat/room/quiz/${this.roomId}`,
         body: JSON.stringify(chatQuizRequestDto),
       });
       chatQuizRequestDto.quizType = this.$store.getters.getOX;
       this.stompClient.publish({
-        destination: `/publish/chat/room/quiz`,
+        destination: `/publish/chat/room/quiz/${this.roomId}`,
         body: JSON.stringify(chatQuizRequestDto),
       });
     },
@@ -521,10 +520,9 @@ export default {
       console.log("enterSendMessage");
       const chatMessage = {
         writer: this.$store.getters.getMember.name, // 예시로 작성자의 이름을 Vuex에서 가져온다고 가정
-        roomId: this.roomId,
       };
       this.stompClient.publish({
-        destination: "/publish/chat/room/enter",
+        destination: `/publish/chat/room/enter/${this.roomId}`,
         body: JSON.stringify(chatMessage),
       });
     },
@@ -534,14 +532,9 @@ export default {
       this.requestQuizQuestion(); //퀴즈 문제 요청
     },
     publishRoomStatus(loading, gameStarted, gameEnded) {
-      const roomStatusDto = new RoomStatus(
-        this.roomId,
-        loading,
-        gameStarted,
-        gameEnded
-      );
+      const roomStatusDto = new RoomStatus(loading, gameStarted, gameEnded);
       this.stompClient.publish({
-        destination: "/publish/chat/room/status",
+        destination: `/publish/chat/room/status/${this.roomId}`,
         body: JSON.stringify(roomStatusDto),
       });
     },
@@ -549,11 +542,10 @@ export default {
       if (this.newMessage.trim() !== "") {
         const chatMessage = {
           writer: this.$store.getters.getMember.name, // 예시로 작성자의 이름을 Vuex에서 가져온다고 가정
-          message: this.newMessage,
-          roomId: this.roomId,
+          content: this.newMessage,
         };
         this.stompClient.publish({
-          destination: "/publish/chat/room/message",
+          destination: `/publish/chat/room/message/${this.roomId}`,
           body: JSON.stringify(chatMessage),
         });
         this.newMessage = "";
