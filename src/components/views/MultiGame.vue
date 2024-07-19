@@ -133,9 +133,11 @@
         >
           <div class="text-center">
             <h1 class="text-4xl font-bold mb-4">게임 종료</h1>
-            <p class="text-lg mb-8">당신의 점수는 {{ myInfo.score }} 입니다.</p>
+            <p class="text-lg mb-8">
+              당신의 등수는 {{ calMyRank() }}등 입니다!!
+            </p>
             <button
-              @click="startGame"
+              @click="publishInitMessage"
               :class="[
                 'text-white font-bold py-3 px-6 rounded',
                 {
@@ -152,25 +154,6 @@
         </div>
       </div>
 
-      <!-- 퀴즈 문제 -->
-      <!-- <div class="col-span-12 sm:col-span-9 border border-red-700">
-        <div
-          class="ml-10 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
-        >
-          <span class="text-3xl">Q.</span> 스프링에서 트랜택션 관리를 위한
-          이노에션은 무엇인가?
-        </div>
-        <div
-          v-for="i in 4"
-          :key="i"
-          :class="{ 'bg-yellow-200': isClicked }"
-          @click="change_bg_color"
-          :id="'answer_' + i"
-          class="ml-10 my-10 p-5 bg-gray-200 rounded-xl font-bold shadow-xl"
-        >
-          스프링에서 트랜잭션 관리를 위한 이노에션은 무엇인가?
-        </div>
-      </div> -->
       <div
         class="col-span-12 sm:col-span-3 border border-red-600 flex justify-center"
       >
@@ -190,7 +173,7 @@
                 class="font-bold text-center text-xs bg-gray-200 rounded-full px-3 py-1"
               >
                 {{ participant.name }} <br />
-                score: {{ participant.score }}
+                점수: {{ participant.score }}
               </div>
             </div>
           </div>
@@ -331,7 +314,6 @@ export default {
   data() {
     // !loading && !gameStarted && !gameEnded
     return {
-      isClicked: false,
       messages: [], // 채팅 메시지를 저장할 배열
       newMessage: "", // 입력된 새로운 메시지
       hostName: null,
@@ -403,9 +385,13 @@ export default {
           },
           (frame) => {
             console.log("Connected: " + frame);
+            // this.stompClient.subscribe(
+            //   `/subscribe/notification/room/${this.roomId}`,
+            //   this.receivedNotificationMessage
+            // );
             this.stompClient.subscribe(
-              `/subscribe/notification/room/${this.roomId}`,
-              this.receivedNotificationMessage
+              `/subscribe/init/room/${this.roomId}`,
+              this.receivedInitMessage
             );
             this.stompClient.subscribe(
               `/subscribe/chat/room/${this.roomId}`,
@@ -480,15 +466,20 @@ export default {
       this.addMessage(messageObject.content, messageObject.writer);
       this.scrollToBottom();
     },
-    receivedNotificationMessage(message) {
-      const messageObject = JSON.parse(message.body);
-      this.hostName = messageObject.hostName;
-      console.log("host name: ", messageObject);
-    },
+    // receivedNotificationMessage(message) {
+    //   const messageObject = JSON.parse(message.body);
+    //   this.hostName = messageObject.hostName;
+    //   console.log("host name: ", messageObject);
+    // },
     receivedRoomStatusMessage(message) {
       const messageObject = JSON.parse(message.body);
       console.log("roomStatus message", messageObject);
       this.roomStatus = messageObject;
+    },
+    receivedInitMessage(message) {
+      const messageObject = JSON.parse(message.body);
+      this.addMessage(messageObject.content, messageObject.writer);
+      this.restartGame();
     },
     requestQuizQuestion() {
       console.log("requestQuizQuestion");
@@ -515,6 +506,12 @@ export default {
         const j = Math.floor(Math.random() * (i + 1));
         [questions[i], questions[j]] = [questions[j], questions[i]];
       }
+    },
+    publishInitMessage() {
+      this.stompClient.publish({
+        destination: `/publish/chat/room/init/${this.roomId}`,
+        body: `${this.hostName}`,
+      });
     },
     enterSendMessage() {
       console.log("enterSendMessage");
@@ -603,8 +600,9 @@ export default {
       this.isAnswer = this.checkAnswer(this.selectedAnswer);
       //결과 publish,
       this.publishMyScore();
-      //결과 구독 후 문제 넘기기
       this.currentQuizIndex++; //다음 문제
+      //결과 구독 후 문제 넘기기
+      // this.afterLoadingScore();
     },
     gradeQuizQuestion() {
       if (this.selectedAnswerIndex !== null) {
@@ -642,7 +640,62 @@ export default {
         messageContainer.scrollTop = messageContainer.scrollHeight;
       });
     },
+
+    //전체 사람들 점수 집계 후 동작
+    afterLoadingScore() {
+      var timer = 1000; //1초
+      setTimeout(() => {
+        // 다음 문제로 넘어가기
+        this.selectedAnswerIndex = null; // 선택한 답 idx 초기화
+        this.receivedScoreCount = 0;
+        this.isAnswer = null;
+        console.log("현재퀴즈 번호 : " + this.currentQuizIndex);
+        if (this.currentQuizIndex < this.quizQuestions.length) {
+          this.startTimer();
+        } else {
+          //end
+          this.endGame();
+        }
+      }, timer);
+    },
+    endGame() {
+      this.currentQuizIndex = 0;
+      this.participants.sort((p1, p2) => p2.score - p1.score);
+      this.roomStatus.gameStarted = false;
+      this.roomStatus.loading = false;
+      this.roomStatus.gameEnded = true;
+    },
+    calMyRank() {
+      var rank = 0;
+      for (var i = 0; i < this.participants.length; i++) {
+        if (this.myInfo.name === this.participants[i].name) {
+          rank = i + 1;
+        }
+      }
+      return rank;
+    },
+    restartGame() {
+      // 다시 시작 버튼 클릭-> initGame 호출(publish) -> startGame 호출
+      this.initGame();
+      this.startGame();
+    },
+    initGame() {
+      this.newMessage = ""; // 입력된 새로운 메시지
+      this.quizQuestions = [];
+      this.myInfo.score = 0;
+      for (var participant of this.participants) {
+        participant.score = 0;
+      }
+      this.timer = 0;
+      this.currentQuizIndex = 0;
+      this.selectedAnswerIndex = null;
+      this.selectedAnswer = null;
+      this.isAnswer = null;
+      this.receivedScoreCount = 0;
+      this.roomStatus = new RoomStatus(false, false, false);
+    },
   },
+
   watch: {
     quizQuestions(newVal) {
       if (this.roomInfo.questionCount === newVal.length) {
@@ -659,30 +712,15 @@ export default {
       }
     },
     receivedScoreCount(newVal) {
-      //이렇게 만들지 말고 그냥 1초 기다렸다 다음 문제 나오는게
+      //모든 참가자들의 score를 받은후 다음 행동 실행,
       if (newVal === this.participants.length) {
-        setTimeout(() => {
-          // 다음 문제로 넘어가기
-          this.selectedAnswerIndex = null; // 선택한 답 idx 초기화
-          this.receivedScoreCount = 0;
-          this.isAnswer = null;
-          console.log("현재퀴즈 번호 : " + this.currentQuizIndex);
-
-          if (this.currentQuizIndex < this.quizQuestions.length) {
-            this.startTimer();
-          } else {
-            this.currentQuizIndex = 0;
-            this.roomStatus.gameStarted = false;
-            this.roomStatus.loading = false;
-            this.roomStatus.gameEnded = true;
-          }
-        }, 1000);
+        this.afterLoadingScore();
       }
     },
     /*
-    지금 구현 안 된 것이
-    다시 시작, 연결 종료, 방장,중간에 사람이 나간다면?
-
+    방법1. 모든 사용자들의 마지막 상태를 받는다.
+    확실하게해 end에 도달하면 publish를 받고 
+    end 상태 받은 후 등수
     */
   },
 };
