@@ -1,4 +1,37 @@
 <template>
+  <div
+    v-if="characterSelectionIsOpen"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+  >
+    <!-- 모달 컨테이너 -->
+    <div class="bg-white rounded-lg p-8">
+      <!-- 모달 헤더 -->
+      <div class="mb-6 pb-2 border-b-2">
+        <h2 class="text-lg font-semibold">캐릭터 선택 창</h2>
+      </div>
+      <!-- 모달 본문 -->
+      <div class="mb-6">
+        <div class="flex justify-center">
+          <div v-for="(characterImg, i) in characterImgs" :key="i" class="mr-3">
+            <img class="w-20 h-15 cursor-pointer" :src="characterImg.imgPath" />
+          </div>
+        </div>
+      </div>
+      <!-- 닫기 버튼 -->
+      <div class="flex">
+        <button
+          class="px-4 py-2 w-1/2 mr-2 bg-yellow-400 hover:bg-yellow-500 rounded-lg"
+        >
+          선택
+        </button>
+        <button
+          class="px-4 py-2 w-1/2 ml-2 bg-gray-300 hover:bg-gray-400 rounded-lg"
+        >
+          취소
+        </button>
+      </div>
+    </div>
+  </div>
   <nav class="bg-white-100">
     <div class="layout-default">
       <div class="flex justify-between">
@@ -36,6 +69,7 @@
               게임소개
             </a>
             <button
+              @click="changeCharacterSelectionIsOpen"
               class="font-bold py-5 px-3 text-gray-700 hover:text-gray-900"
             >
               캐릭터 선택
@@ -44,7 +78,7 @@
         </div>
         <div class="font-bold hidden md:flex items-center space-x-1">
           <router-link
-            v-if="getMember === null || getMember === ''"
+            v-if="getMember() === null || getMember() === ''"
             to="/login"
             class="py-2 px-3 hover:bg-gray-300 rounded transition duration-300"
           >
@@ -54,10 +88,10 @@
             v-else
             class="py-2 px-3 hover:bg-gray-300 rounded transition duration-300"
           >
-            {{ getMember.name }}
+            {{ getMember().name }}
           </div>
           <router-link
-            v-if="getMember === null || getMember === ''"
+            v-if="getMember() === null || getMember() === ''"
             to="/join"
             class="font-bold py-2 px-3 hover:bg-gray-300 rounded transition duration-300"
           >
@@ -113,17 +147,17 @@
     </div>
     <div :class="['md:hidden', { hidden: !menu_toggle }]">
       <router-link
-        v-if="getMember === null || getMember === ''"
+        v-if="getMember() === null || getMember() === ''"
         to="/login"
         class="font-bold block py-2 px-4 text-sm hover:bg-gray-200"
       >
         로그인
       </router-link>
       <div v-else class="font-bold block py-2 px-4 text-sm hover:bg-gray-200">
-        {{ getMember.name }}
+        {{ getMember().name }}
       </div>
       <router-link
-        v-if="getMember === null || getMember === ''"
+        v-if="getMember() === null || getMember() === ''"
         to="/join"
         class="font-bold block py-2 px-4 text-sm hover:bg-gray-200"
       >
@@ -138,12 +172,13 @@
         로그아웃
       </router-link>
 
-      <button
-        @click="change_menu_toggle_state"
+      <a
+        href="#"
+        @click="changeCharacterSelectionIsOpen"
         class="font-bold block py-2 px-4 text-sm hover:bg-gray-200"
       >
         캐릭터 선택
-      </button>
+      </a>
       <a
         href="#"
         @click="change_menu_toggle_state"
@@ -155,21 +190,23 @@
   </nav>
 </template>
 <script>
+import axios from "axios";
+
 export default {
   name: "vue_header",
 
   data() {
     return {
       menu_toggle: false,
+      characterSelectionIsOpen: false,
+      characterImgs: [],
     };
-  },
-  computed: {
-    getMember() {
-      return this.$store.getters.getMember;
-    },
   },
 
   methods: {
+    getMember() {
+      return this.$store.getters.getMember;
+    },
     checkAuth() {
       this.$store.dispatch("checkAuth");
     },
@@ -178,6 +215,26 @@ export default {
     },
     change_menu_toggle_state() {
       this.menu_toggle = !this.menu_toggle;
+    },
+    changeCharacterSelectionIsOpen() {
+      this.fetchCharacterImgs();
+      this.characterSelectionIsOpen = !this.characterSelectionIsOpen;
+    },
+    async fetchCharacterImgs() {
+      try {
+        const response = await axios.get(
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/characterImg/all`
+        );
+        this.characterImgs = response.data;
+        for (var i = 0; i < this.characterImgs.length; i++) {
+          this.characterImgs[
+            i
+          ].imgPath = `${process.env.VUE_APP_BACKEND_ORIGIN}/api/characterImg/${this.characterImgs[i].name}`;
+        }
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching character images:", error);
+      }
     },
   },
 };
