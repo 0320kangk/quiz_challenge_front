@@ -257,7 +257,7 @@ export default {
     async selectCharacter() {
       try {
         await axios.post(
-          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/characterImg/select/${
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/characterImg/select/${
             this.characterImgs[this.selectedCharacterImgIndex].name
           }`
         );
