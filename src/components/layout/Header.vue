@@ -33,7 +33,7 @@
           @click="selectCharacter()"
           class="px-4 py-2 w-1/2 mr-2 bg-yellow-400 hover:bg-yellow-500 rounded-lg"
         >
-          선택
+          캐릭터 선택
         </button>
         <button
           @click="changeCharacterSelectionIsOpen()"
@@ -261,8 +261,14 @@ export default {
             this.characterImgs[this.selectedCharacterImgIndex].name
           }`
         );
+        this.$store.dispatch(
+          "updateMemberCharacterName",
+          this.characterImgs[this.selectedCharacterImgIndex].name
+        );
+        this.changeCharacterSelectionIsOpen();
       } catch (e) {
         alert("인증 혹은 서버에 문제가 있습니다.");
+        this.changeCharacterSelectionIsOpen();
       }
     },
   },

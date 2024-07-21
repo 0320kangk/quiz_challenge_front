@@ -18,6 +18,9 @@ const mutations = {
   setMember(state, member) {
     state.member = member;
   },
+  setMemberCharacterName(state, characterName){
+    state.member.characterName = characterName;
+  },
   setAuthenticated(state, status) {
     state.isAuthenticated = status;
   },
@@ -108,6 +111,10 @@ const actions = {
       throw error;
     }
   },
+  updateMemberCharacterName({ commit }, characterName) {
+    // 여기서 필요한 비동기 작업이나 추가 로직을 처리할 수 있습니다.
+    commit('setMemberCharacterName', characterName);
+  }
 };
 const getters = {
   getAccessToken(state) {
