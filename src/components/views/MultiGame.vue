@@ -166,7 +166,7 @@
             >
               <img
                 class="w-full"
-                src="../../assets/character/bear.png"
+                :src="getCharacterImgPath(index)"
                 alt="Sunset in the mountains"
               />
               <div
@@ -304,9 +304,10 @@ class Message {
   }
 }
 class Participant {
-  constructor(name) {
+  constructor(name, characterName) {
     this.name = name;
     this.score = 0;
+    this.characterName = characterName;
   }
 }
 export default {
@@ -322,7 +323,10 @@ export default {
       roomInfo: null,
       roomStatus: new RoomStatus(false, false, false),
       quizQuestions: [],
-      myInfo: new Participant(this.$store.getters.getMember.name),
+      myInfo: new Participant(
+        this.$store.getters.getMember.name,
+        this.$store.getters.getMember.characterName
+      ),
       timer: 0,
       currentQuizIndex: 0,
       selectedAnswerIndex: null,
@@ -435,8 +439,10 @@ export default {
       console.log(enterRoomObject);
       this.addMessage(enterRoomObject.content, enterRoomObject.writer);
       this.participants = [];
-      for (var name of enterRoomObject.participateNames) {
-        this.participants.push(new Participant(name));
+      for (var participate of enterRoomObject.participates) {
+        this.participants.push(
+          new Participant(participate.name, participate.characterName)
+        );
       }
       this.hostName = enterRoomObject.hostName;
       this.scrollToBottom();
@@ -515,12 +521,12 @@ export default {
     },
     enterSendMessage() {
       console.log("enterSendMessage");
-      const chatMessage = {
+      const myInfoMessage = {
         writer: this.$store.getters.getMember.name, // 예시로 작성자의 이름을 Vuex에서 가져온다고 가정
       };
       this.stompClient.publish({
         destination: `/publish/chat/room/enter/${this.roomId}`,
-        body: JSON.stringify(chatMessage),
+        body: JSON.stringify(myInfoMessage),
       });
     },
     startGame() {
@@ -631,6 +637,9 @@ export default {
         this.quizQuestions[this.currentQuizIndex].answer ===
         String(selectedAnswer)
       );
+    },
+    getCharacterImgPath(index) {
+      return `${process.env.VUE_APP_BACKEND_ORIGIN}/api/characterImg/${this.participants[index].characterName}`;
     },
     //요청해야함 방정보를
     scrollToBottom() {

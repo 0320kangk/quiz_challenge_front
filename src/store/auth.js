@@ -123,9 +123,11 @@ const getters = {
   getMember(state) {
     return state.member;
   },
+  
   getRefreshToken(state) {
     return state.refreshToken;
   },
+
 };
 
 export default {
