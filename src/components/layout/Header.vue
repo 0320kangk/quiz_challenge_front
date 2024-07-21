@@ -13,21 +13,33 @@
       <div class="mb-6">
         <div class="flex justify-center">
           <div v-for="(characterImg, i) in characterImgs" :key="i" class="mr-3">
-            <img class="w-20 h-15 cursor-pointer" :src="characterImg.imgPath" />
+            <img
+              :class="[
+                'w-20 h-15',
+                {
+                  'border-4 border-blue-500 rounded-md':
+                    selectedCharacterImgIndex === i,
+                },
+              ]"
+              @click="selectImage(i)"
+              :src="characterImg.imgPath"
+            />
           </div>
         </div>
       </div>
-      <!-- 닫기 버튼 -->
+      <!-- 선택 버튼 -->
       <div class="flex">
         <button
+          @click="selectCharacter()"
           class="px-4 py-2 w-1/2 mr-2 bg-yellow-400 hover:bg-yellow-500 rounded-lg"
         >
           선택
         </button>
         <button
+          @click="changeCharacterSelectionIsOpen()"
           class="px-4 py-2 w-1/2 ml-2 bg-gray-300 hover:bg-gray-400 rounded-lg"
         >
-          취소
+          닫기
         </button>
       </div>
     </div>
@@ -200,6 +212,7 @@ export default {
       menu_toggle: false,
       characterSelectionIsOpen: false,
       characterImgs: [],
+      selectedCharacterImgIndex: null, // 선택된 이미지의 인덱스를 저장
     };
   },
 
@@ -213,6 +226,7 @@ export default {
     logout() {
       this.$store.dispatch("logout");
     },
+
     change_menu_toggle_state() {
       this.menu_toggle = !this.menu_toggle;
     },
@@ -220,6 +234,7 @@ export default {
       this.fetchCharacterImgs();
       this.characterSelectionIsOpen = !this.characterSelectionIsOpen;
     },
+
     async fetchCharacterImgs() {
       try {
         const response = await axios.get(
@@ -234,6 +249,20 @@ export default {
         console.log(response.data);
       } catch (error) {
         console.error("Error fetching character images:", error);
+      }
+    },
+    selectImage(index) {
+      this.selectedCharacterImgIndex = index; // 클릭된 이미지의 인덱스를 설정
+    },
+    async selectCharacter() {
+      try {
+        await axios.post(
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/characterImg/select/${
+            this.characterImgs[this.selectedCharacterImgIndex].name
+          }`
+        );
+      } catch (e) {
+        alert("인증 혹은 서버에 문제가 있습니다.");
       }
     },
   },
