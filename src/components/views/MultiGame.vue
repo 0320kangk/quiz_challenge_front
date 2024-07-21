@@ -389,10 +389,10 @@ export default {
           },
           (frame) => {
             console.log("Connected: " + frame);
-            // this.stompClient.subscribe(
-            //   `/subscribe/notification/room/${this.roomId}`,
-            //   this.receivedNotificationMessage
-            // );
+            this.stompClient.subscribe(
+              `/subscribe/exit/room/${this.roomId}`,
+              this.receivedExitMessage
+            );
             this.stompClient.subscribe(
               `/subscribe/init/room/${this.roomId}`,
               this.receivedInitMessage
@@ -437,7 +437,7 @@ export default {
       const enterRoomObject = JSON.parse(message.body);
       console.log("enter room message : ");
       console.log(enterRoomObject);
-      this.addMessage(enterRoomObject.content, enterRoomObject.writer);
+      this.addContent(enterRoomObject.content, enterRoomObject.writer);
       this.participants = [];
       for (var participate of enterRoomObject.participates) {
         this.participants.push(
@@ -469,14 +469,18 @@ export default {
     receivedChatMessage(message) {
       const messageObject = JSON.parse(message.body);
       console.log("message : ", message.body);
-      this.addMessage(messageObject.content, messageObject.writer);
+      this.addContent(messageObject.content, messageObject.writer);
       this.scrollToBottom();
     },
-    // receivedNotificationMessage(message) {
-    //   const messageObject = JSON.parse(message.body);
-    //   this.hostName = messageObject.hostName;
-    //   console.log("host name: ", messageObject);
-    // },
+    receivedExitMessage(message) {
+      const messageObject = JSON.parse(message.body);
+      this.hostName = messageObject.hostName;
+      console.log("exitMessage: ", messageObject);
+      this.participants = this.participants.filter(
+        (participant) => participant.name !== messageObject.leftPerson
+      );
+      this.addContent(messageObject.content, messageObject.leftPerson);
+    },
     receivedRoomStatusMessage(message) {
       const messageObject = JSON.parse(message.body);
       console.log("roomStatus message", messageObject);
@@ -484,7 +488,7 @@ export default {
     },
     receivedInitMessage(message) {
       const messageObject = JSON.parse(message.body);
-      this.addMessage(messageObject.content, messageObject.writer);
+      this.addContent(messageObject.content, messageObject.writer);
       this.restartGame();
     },
     requestQuizQuestion() {
@@ -502,7 +506,7 @@ export default {
         body: JSON.stringify(chatQuizRequestDto),
       });
     },
-    addMessage(content, writer) {
+    addContent(content, writer) {
       var isSent = false;
       if (this.$store.getters.getMember.name === writer) isSent = true;
       this.messages.push(new Message(writer, content, isSent));
