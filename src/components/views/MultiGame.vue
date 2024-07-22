@@ -318,9 +318,9 @@ class Participant {
   }
 }
 class RoomInfo {
-  constructor(name, title, questionCount, quizLevel) {
+  constructor(name, theme, questionCount, quizLevel) {
     this.name = name;
-    (this.title = title),
+    (this.theme = theme),
       (this.quizQuestions = questionCount),
       (this.quizLevel = quizLevel);
   }

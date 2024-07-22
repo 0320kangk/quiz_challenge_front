@@ -281,7 +281,7 @@ export default {
     async requestQuizQuestion(quizType) {
       try {
         if (
-          !history.state.title ||
+          !history.state.theme ||
           !history.state.level ||
           !history.state.questionCount ||
           !quizType
@@ -292,7 +292,7 @@ export default {
         const response = await this.$axios.post(
           `${process.env.VUE_APP_BACKEND_ORIGIN}/api/chatGpt/chat/completion/content`,
           {
-            title: history.state.title,
+            theme: history.state.theme,
             quizLevel: history.state.level,
             count: history.state.questionCount / 2,
             quizType: quizType,

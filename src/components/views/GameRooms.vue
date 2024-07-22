@@ -24,10 +24,10 @@
               />
             </div>
             <div class="flex items-center mt-5">
-              <label for="title" class="w-1/5">제목</label>
+              <label for="theme" class="w-1/5">제목</label>
               <select
-                v-model="roomFormData.title"
-                id="title"
+                v-model="roomFormData.theme"
+                id="theme"
                 class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
               >
                 <option hidden disabled value="">제목을 선택하세요.</option>
@@ -148,7 +148,7 @@
                 >
                   제목
                 </div>
-                <span class="ml-2">{{ room.title }}</span>
+                <span class="ml-2">{{ room.theme }}</span>
               </div>
               <div class="mt-2 flex justify-between">
                 <div>
@@ -210,7 +210,7 @@ export default {
       //원하는 만큼 데이터를 추가할 수 있습니다.
       roomFormData: {
         roomName: "",
-        title: "",
+        theme: "",
         questionCount: "",
         quizLevel: "",
       },
@@ -241,7 +241,7 @@ export default {
           {
             roomName: this.roomFormData.roomName,
             questionCount: this.roomFormData.questionCount,
-            title: this.roomFormData.title,
+            theme: this.roomFormData.theme,
             quizLevel: this.roomFormData.quizLevel,
           }
         );
@@ -270,7 +270,7 @@ export default {
     open_modal() {
       this.isOpen = true; // 모달 열기
       this.roomFormData.roomName = "";
-      this.roomFormData.title = "";
+      this.roomFormData.theme = "";
       this.roomFormData.questionCount = "";
     },
     close_modal() {

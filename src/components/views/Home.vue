@@ -13,10 +13,10 @@
       <div class="mb-6">
         <form>
           <div class="flex items-center mt-5">
-            <label for="title" class="w-1/5">주제 </label>
+            <label for="theme" class="w-1/5">주제 </label>
             <select
-              v-model="singleGameData.title"
-              id="title"
+              v-model="singleGameData.theme"
+              id="theme"
               class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
             >
               <option hidden disabled value="">제목을 선택하세요.</option>
@@ -117,7 +117,7 @@ export default {
     return {
       isOpen: false,
       singleGameData: {
-        title: "",
+        theme: "",
         questionCount: "",
         level: "",
       },
@@ -126,13 +126,13 @@ export default {
   methods: {
     singleGameOpenModal() {
       this.isOpen = true; // 모달 열기
-      this.singleGameData.title = "";
+      this.singleGameData.theme = "";
       this.singleGameData.questionCount = "";
       this.singleGameData.level = "";
     },
     singleGamePlay() {
       if (
-        this.singleGameData.title !== "" &&
+        this.singleGameData.theme !== "" &&
         this.singleGameData.questionCount !== "" &&
         this.singleGameData.level !== ""
       ) {
@@ -149,7 +149,7 @@ export default {
     },
     openModal() {
       this.isOpen = true; // 모달 열기
-      this.singleGameData.title = "";
+      this.singleGameData.theme = "";
       this.singleGameData.questionCount = "";
     },
     closeModal() {
