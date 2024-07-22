@@ -98,18 +98,12 @@
           class="w-full md:block p-4 bg-gray-100 rounded-3xl shadow-2xl gap-x-4 h-144"
         >
           <div
-            class="p-3 my-5 font-semibold bg-yellow-400 hover:bg-yellow-400 rounded-xl"
+            v-for="(theme, index) in themes"
+            :key="index"
+            class="p-3 my-5 hover:bg-yellow-400 rounded-xl cursor-pointer"
           >
-            All
+            {{ theme }}
           </div>
-          <div class="p-3 my-5 hover:bg-yellow-400 rounded-xl">All</div>
-
-          <div class="p-3 my-5 hover:bg-yellow-400 rounded-xl">All</div>
-
-          <div class="p-3 my-5 hover:bg-yellow-400 rounded-xl">All</div>
-          <div class="p-3 my-5 hover:bg-yellow-400 rounded-xl">All</div>
-
-          <div class="p-3 my-5 hover:bg-yellow-400 rounded-xl">All</div>
         </div>
 
         <div class="text-center mt-4">
@@ -207,6 +201,7 @@ export default {
       isOpen: false, // 모달이 열려있는지 여부
       sidebar: false,
       rooms: [],
+      themes: [],
       //원하는 만큼 데이터를 추가할 수 있습니다.
       roomFormData: {
         roomName: "",
@@ -217,19 +212,35 @@ export default {
     };
   },
   async mounted() {
-    const response = await this.findGameRooms();
-    this.rooms = response.data;
+    this.rooms = await this.findGameRooms();
+    this.themes = await this.findAllTheme();
     console.log(this.rooms);
   },
   methods: {
+    async findAllTheme() {
+      try {
+        const response = await this.$axios.get(
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/quizTheme/all`
+        );
+        console.log("find Theme");
+        console.log(response.data);
+        return response.data;
+      } catch (e) {
+        alert("퀴즈 테마 가져오기 실패");
+        return e;
+      }
+    },
     //방불러오기, 방 만들기
     async findGameRooms() {
       try {
         const response = await this.$axios.get(
           `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/all`
         );
-        return response;
+        console.log("방 가져오기 ");
+        console.log(response.data);
+        return response.data;
       } catch (e) {
+        alert("방 목록 가져오기 실패");
         return e;
       }
     },
