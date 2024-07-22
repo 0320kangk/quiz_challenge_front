@@ -100,7 +100,13 @@
           <div
             v-for="(theme, index) in themes"
             :key="index"
-            class="p-3 my-5 hover:bg-yellow-400 rounded-xl cursor-pointer"
+            :class="[
+              'p-3 my-5  rounded-xl cursor-pointer hover:bg-yellow-400 hover:font-bold',
+              {
+                'bg-yellow-400 font-bold': selectedThemeIndex === index,
+              },
+            ]"
+            @click="selectedTheme(index)"
           >
             {{ theme }}
           </div>
@@ -122,7 +128,7 @@
       >
         <div class="grid grid-cols-2">
           <div
-            v-for="(room, index) in rooms"
+            v-for="(room, index) in filterRooms()"
             :key="index"
             class="col-span-2 m-3 lg:col-span-1 bg-blue-200 p-4 rounded-3xl"
           >
@@ -201,7 +207,7 @@ export default {
       isOpen: false, // 모달이 열려있는지 여부
       sidebar: false,
       rooms: [],
-      themes: [],
+      themes: ["ALL"],
       //원하는 만큼 데이터를 추가할 수 있습니다.
       roomFormData: {
         roomName: "",
@@ -209,11 +215,13 @@ export default {
         questionCount: "",
         quizLevel: "",
       },
+      selectedThemeIndex: 0,
     };
   },
   async mounted() {
     this.rooms = await this.findGameRooms();
     this.themes = await this.findAllTheme();
+    this.themes.unshift("ALL");
     console.log(this.rooms);
   },
   methods: {
@@ -222,8 +230,7 @@ export default {
         const response = await this.$axios.get(
           `${process.env.VUE_APP_BACKEND_ORIGIN}/api/quizTheme/all`
         );
-        console.log("find Theme");
-        console.log(response.data);
+
         return response.data;
       } catch (e) {
         alert("퀴즈 테마 가져오기 실패");
@@ -289,6 +296,18 @@ export default {
     },
     open_sidebar() {
       this.sidebar = !this.sidebar;
+    },
+    selectedTheme(index) {
+      this.selectedThemeIndex = index;
+    },
+    filterRooms() {
+      const selectedTheme = this.themes[this.selectedThemeIndex];
+      if (selectedTheme === "ALL") {
+        return this.rooms;
+      }
+      return this.rooms.filter(
+        (room) => room.theme === this.themes[this.selectedThemeIndex]
+      );
     },
   },
 };
