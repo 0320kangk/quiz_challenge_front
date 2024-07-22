@@ -24,11 +24,15 @@
     </div>
     <div class="grid grid-cols-12">
       <div class="col-span-12 sm:col-span-9 border border-red-700">
-        <span class="text-xl font-bold">방 제목 : {{ roomInfo.name }}</span>
+        <span class="display: inline-block text-2xl font-semibold m-3"
+          >방 이름 : {{ roomInfo.name }}</span
+        >
       </div>
     </div>
     <div class="grid grid-cols-12">
-      <div class="col-span-12 sm:col-span-9 border border-red-700">
+      <div
+        class="col-span-12 sm:col-span-9 bg-gray-50 border rounded-md border-red-700"
+      >
         <!-- 게임 시작  -->
         <div
           v-if="

@@ -5,7 +5,12 @@
         <!-- 게임 시작  -->
         <div class="flex items-center justify-center h-screen">
           <div class="text-center">
-            <h1 class="text-4xl font-bold mb-4">환영합니다!</h1>
+            <img
+              class="layout-default h-64 w-full"
+              src="../../assets/quiz4.png"
+              alt="quiz image"
+            />
+            <h1 class="text-4xl font-bold mb-4 mt-4">환영합니다!</h1>
             <p class="text-lg mb-8">
               게임을 시작하려면 아래의 버튼을 클릭하세요.
             </p>

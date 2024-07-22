@@ -4,7 +4,7 @@
     class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
   >
     <!-- 모달 컨테이너 -->
-    <div class="w-full bg-white rounded-lg p-8 sm:w-2/5">
+    <div class="bg-white rounded-lg p-8 w-96">
       <!-- 모달 헤더 -->
       <div class="mb-6 pb-2 border-b-2">
         <h2 class="text-lg font-semibold">게임 설정</h2>
@@ -69,8 +69,12 @@
       </div>
     </div>
   </div>
-  <img class="h-64 w-full" src="../../assets/quiz.png" alt="quiz image" />
-  <div class="layout-default py-4 my-7">
+  <img
+    class="layout-default h-64 w-full"
+    src="../../assets/quiz4.png"
+    alt="quiz image"
+  />
+  <div class="layout-default py-2 my-7">
     <div class="pb-5 border-b-4 border-b-yellow-800 font-bold text-4xl">
       🕹 게임하기
     </div>
@@ -88,14 +92,15 @@
     <div class="flex justify-between flex-wrap">
       <button
         @click="singleGameOpenModal"
-        class="btn flex-shrink-0 w-full sm:w-auto mb-4 sm:mb-0 inline-block bg-blue-500 hover:bg-blue-700 text-white"
+        class="btn flex-shrink-0 w-full sm:w-auto mb-4 sm:mb-0 inline-block bg-indigo-400 hover:bg-indigo-500 text-white"
       >
         <span class="text-9xl">🎮</span>
         <div class="mt-6 text-4xl">싱글 플레이</div>
       </button>
+
       <router-link
         to="/gameRooms"
-        class="btn text-4xl flex-shrink-0 w-full sm:w-auto inline-block bg-green-500 hover:bg-green-700 text-white"
+        class="btn text-4xl flex-shrink-0 w-full sm:w-auto inline-block bg-amber-800 hover:bg-amber-900 text-white"
       >
         <span class="text-9xl">⚔</span>
         <div class="mt-6 text-4xl">멀티 플레이</div>

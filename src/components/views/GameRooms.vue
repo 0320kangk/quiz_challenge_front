@@ -84,8 +84,11 @@
   </div>
   <!-- 사이드 바 -->
   <div class="layout-default">
+    <span class="display: inline-block text-2xl font-semibold m-3"
+      >📑 게임 방 목록</span
+    >
     <div class="grid grid-cols-12">
-      <div class="col-span-12 md:col-span-3 m-3 h-">
+      <div class="col-span-12 md:col-span-3 m-3">
         <button
           @click="open_sidebar"
           class="md:hidden p-3 w-full font-semibold text-white bg-blue-300 rounded-3xl shadow-2xl"
@@ -95,7 +98,7 @@
         <!-- md 이상에서는 무조건 sidebar가 보여야 한다. -->
         <div
           :class="[{ hidden: !sidebar }]"
-          class="w-full md:block p-4 bg-gray-100 rounded-3xl shadow-2xl gap-x-4 h-144"
+          class="w-full md:block md:h-144 p-4 bg-gray-100 rounded-3xl shadow-2xl gap-x-4"
         >
           <div
             v-for="(theme, index) in themes"
