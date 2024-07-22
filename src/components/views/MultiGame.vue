@@ -22,7 +22,11 @@
         <h2 class="text-2xl mt-4 font-bold mb-4">틀렸습니다!</h2>
       </div>
     </div>
-
+    <div class="grid grid-cols-12">
+      <div class="col-span-12 sm:col-span-9 border border-red-700">
+        <span class="text-xl font-bold">방 제목 : {{ roomInfo.name }}</span>
+      </div>
+    </div>
     <div class="grid grid-cols-12">
       <div class="col-span-12 sm:col-span-9 border border-red-700">
         <!-- 게임 시작  -->
@@ -172,6 +176,8 @@
               <div
                 class="font-bold text-center text-xs bg-gray-200 rounded-full px-3 py-1"
               >
+                {{ participant.name === hostName ? "👑" : "" }}
+
                 {{ participant.name }} <br />
                 점수: {{ participant.score }}
               </div>
@@ -288,6 +294,7 @@
 </style>
 <script>
 import { getStompClient } from "@/webSocket";
+import axios from "axios";
 
 class RoomStatus {
   constructor(loading, gameStarted, gameEnded) {
@@ -310,6 +317,14 @@ class Participant {
     this.characterName = characterName;
   }
 }
+class RoomInfo {
+  constructor(name, title, questionCount, quizLevel) {
+    this.name = name;
+    (this.title = title),
+      (this.quizQuestions = questionCount),
+      (this.quizLevel = quizLevel);
+  }
+}
 export default {
   name: "MultiGame",
   data() {
@@ -320,7 +335,7 @@ export default {
       hostName: null,
       roomId: null,
       stompClient: null,
-      roomInfo: null,
+      roomInfo: new RoomInfo(null, null, null, null),
       roomStatus: new RoomStatus(false, false, false),
       quizQuestions: [],
       myInfo: new Participant(
@@ -340,6 +355,7 @@ export default {
   //이것도 웹 소켓으로 해야하나?>
   created() {
     this.roomId = this.$route.params.roomId;
+    this.roomStatus.roomId = this.roomId;
   },
   // 게임 방 데이터 얻기 (웹 소켓)
   // 웹 소켓 연결
@@ -347,7 +363,6 @@ export default {
   // ->>로딩 (문제 불러오기)
   //
   async mounted() {
-    this.roomStatus.roomId = this.roomId;
     try {
       this.roomInfo = await this.requestRoomInfo();
       this.roomInfo.questionCount = parseInt(this.roomInfo.questionCount);
@@ -369,7 +384,7 @@ export default {
   },
   methods: {
     async requestRoomInfo() {
-      const response = await this.$axios.get(
+      const response = await axios.get(
         `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/${this.roomId}`,
 
         {
@@ -535,8 +550,18 @@ export default {
     },
     startGame() {
       console.log("퀴즈 게임을 만듭니다. !");
+      this.changeGameRoomStatusPlaying(); // 방 상태 변경 playing
       this.publishRoomStatus(true, false, false); // 로딩 상태 알림
       this.requestQuizQuestion(); //퀴즈 문제 요청
+    },
+    changeGameRoomStatusPlaying() {
+      try {
+        axios.post(
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/playing/${this.roomId}`
+        );
+      } catch (e) {
+        console.log(e);
+      }
     },
     publishRoomStatus(loading, gameStarted, gameEnded) {
       const roomStatusDto = new RoomStatus(loading, gameStarted, gameEnded);

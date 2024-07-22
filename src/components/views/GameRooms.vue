@@ -1,43 +1,4 @@
 <template>
-  <!-- <table class="min-w-full divide-y divide-gray-200">
-          <thead>
-            <tr>
-              <th
-                class="px-6 py-4 bg-blue-200 text-left rounded-tl-lg text-xl leading-4 font-bold text-gray-500 uppercase tracking-wider"
-              >
-                카테고리
-              </th>
-              <th
-                class="px-6 py-3 bg-blue-200 text-left text-xl leading-4 font-bold text-gray-500 uppercase tracking-wider"
-              >
-                상태
-              </th>
-              <th
-                class="px-6 py-3 bg-blue-200 text-left text-xl leading-4 font-bold text-gray-500 uppercase tracking-wider"
-              >
-                방 제목
-              </th>
-              <th
-                class="px-6 py-3 bg-blue-200 text-left text-xl rounded-tr-lg leading-4 font-bold text-gray-500 uppercase tracking-wider"
-              >
-                인원
-              </th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr
-              v-for="(room, index) in tableData"
-              :key="index"
-              class="hover:bg-gray-300"
-            >
-              <td class="px-6 py-3">{{ room.category }}</td>
-              <td class="px-6 py-3">{{ room.status }}</td>
-              <td class="px-6 py-3">{{ room.title }}</td>
-              <td class="px-6 py-3">{{ room.members }}</td>
-            </tr>
-          </tbody>
-        </table> -->
-
   <div>
     <!-- 배경 오버레이 -->
     <div
@@ -89,10 +50,10 @@
               </select>
             </div>
             <div class="flex items-center mt-5">
-              <label for="level" class="w-1/5">난이도</label>
+              <label for="quizLevel" class="w-1/5">난이도</label>
               <select
-                v-model="roomFormData.level"
-                id="level"
+                v-model="roomFormData.quizLevel"
+                id="quizLevel"
                 class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
               >
                 <option disabled hidden value="">난이도 선택</option>
@@ -237,6 +198,7 @@
 </style>
 
 <script>
+import axios from "axios";
 export default {
   name: "GameRooms",
 
@@ -250,7 +212,7 @@ export default {
         roomName: "",
         title: "",
         questionCount: "",
-        level: "",
+        quizLevel: "",
       },
     };
   },
@@ -273,15 +235,16 @@ export default {
     },
     async createGameRoom() {
       try {
+        console.log();
         const response = await this.$axios.post(
           `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/create`,
           {
             roomName: this.roomFormData.roomName,
             questionCount: this.roomFormData.questionCount,
             title: this.roomFormData.title,
+            quizLevel: this.roomFormData.quizLevel,
           }
         );
-        //
         this.enterGameRoom(response.data.roomId);
         console.log(response);
       } catch (e) {
@@ -289,10 +252,20 @@ export default {
         console.log("게임방 생성 실패");
       }
     },
-    enterGameRoom(roomId) {
-      console.log(this.$store.getters.getMember.email);
-
-      this.$router.push(`/multiGame/room/${roomId}`);
+    async enterGameRoom(roomId) {
+      const responseData = await axios.get(
+        `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/status/${roomId}`
+      );
+      console.log(responseData.data);
+      const roomStatus = responseData.data;
+      //대기 상태
+      console.log("roomStatus : " + roomStatus);
+      if (roomStatus === "WAITING") {
+        this.$router.push(`/multiGame/room/${roomId}`);
+      } else if (roomStatus === "PLAYING") {
+        //게임 중
+        alert("현재 방은 게임중입니다.");
+      }
     },
     open_modal() {
       this.isOpen = true; // 모달 열기
