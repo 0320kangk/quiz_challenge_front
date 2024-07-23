@@ -3,23 +3,30 @@
     <div class="grid grid-cols-12">
       <div v-if="!gameStarted && !gameEnded" class="col-span-12">
         <!-- 게임 시작  -->
-        <div class="flex items-center justify-center h-screen">
+        <div
+          class="flex items-center justify-center h-screen sm:border-8 sm:border-wood-dark sm:rounded-md sm:p-8"
+        >
           <div class="text-center">
             <img
               class="layout-default h-64 w-full"
               src="../../assets/quiz4.png"
               alt="quiz image"
             />
-            <h1 class="text-4xl font-bold mb-4 mt-4">환영합니다!</h1>
-            <p class="text-lg mb-8">
+            <div
+              @click="startGame"
+              class="text-8xl PatricianCapitals-font cursor-pointer hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105 mb-2"
+            >
+              GAME START
+            </div>
+            <!-- <p class="text-lg mb-8">
               게임을 시작하려면 아래의 버튼을 클릭하세요.
             </p>
             <button
               @click="startGame"
-              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded"
+              class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105"
             >
-              게임 시작
-            </button>
+              Game Start
+            </button> -->
           </div>
         </div>
       </div>
@@ -183,6 +190,12 @@
 </template>
 
 <style scoped>
+@import "@/assets/styles.css";
+
+.PatricianCapitals-font {
+  font-family: "PatricianCapitals", sans-serif;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);

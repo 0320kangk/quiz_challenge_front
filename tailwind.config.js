@@ -10,7 +10,11 @@ module.exports = {
         160: "40rem",
         // 필요에 따라 더 많은 높이 값을 추가할 수 있습니다.
       },
+      colors: {
+        'wood-dark': '#8B4513', // 다크 브라운 색상 추가
+      },
     },
+    
   },
   variants: {
     extend: {},
