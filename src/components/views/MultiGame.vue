@@ -10,7 +10,6 @@
         <h2 class="text-2xl mt-4 font-bold mb-4">정답입니다!</h2>
       </div>
     </div>
-
     <!-- Incorrect Answer Modal -->
     <div
       v-if="isAnswer === false"
@@ -23,18 +22,16 @@
       </div>
     </div>
     <div class="grid grid-cols-12">
-      <div class="col-span-12 sm:col-span-9 border border-red-700">
+      <div class="col-span-12 sm:col-span-9">
         <span class="display: inline-block text-2xl font-semibold m-3"
           >방 이름 : {{ roomInfo.name }}</span
         >
       </div>
     </div>
     <div class="grid grid-cols-12">
-      <div
-        class="col-span-12 sm:col-span-9 bg-gray-50 border rounded-md border-red-700"
-      >
+      <div class="col-span-12 sm:col-span-9 rounded-md">
         <!-- 게임 시작  -->
-        <div
+        <!-- <div
           v-if="
             !roomStatus.loading &&
             !roomStatus.gameStarted &&
@@ -62,7 +59,31 @@
               게임 시작
             </button>
           </div>
+        </div> -->
+        <div
+          v-if="
+            !roomStatus.loading &&
+            !roomStatus.gameStarted &&
+            !roomStatus.gameEnded
+          "
+          class="flex items-center justify-center h-screen"
+        >
+          <div class="text-center">
+            <img
+              class="layout-default h-64 w-full"
+              src="../../assets/quiz4.png"
+              alt="quiz image"
+            />
+            <div
+              @click="startGame"
+              class="text-5xl mt-20 sm:text-7xl lg:text-8xl my-2 PatricianCapitals-font cursor-pointer hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105"
+              :disabled="hostName !== myInfo.name"
+            >
+              GAME START
+            </div>
+          </div>
         </div>
+
         <!-- loding  -->
         <div
           v-if="roomStatus.loading"
@@ -103,7 +124,7 @@
           <!-- OX 퀴즈 문제 형식 -->
           <div
             v-else
-            class="md:h-3/5 ml-10 mr-5 mt-7 p-3 pb-10 grid grid-cols-3 gap-4"
+            class="md:h-3/5 ml-10 mr-5 mt-7 p-3 pb-10 grid grid-cols-3 gap-4 bg-gray-100 shadow-xl rounded-xl"
           >
             <div class="p-4 flex items-center justify-center">
               <p
@@ -128,43 +149,41 @@
             </div>
           </div>
 
-          <div class="flex justify-start">
+          <!-- <div class="flex justify-start">
             <div class="text-xl ml-10 mb-3 mt-5 text-red-600 font-bold px-5">
+              {{ timer }}
+            </div>
+          </div> -->
+          <div class="flex justify-start place-items-center mt-5">
+            <div class="text-xl ml-10 text-red-600 font-bold px-5">
               {{ timer }}
             </div>
           </div>
         </div>
+
         <!-- 게임 종료 -->
         <div
           v-if="roomStatus.gameEnded"
           class="flex items-center justify-center sm:h-full h-screen"
         >
           <div class="text-center">
-            <h1 class="text-4xl font-bold mb-4">게임 종료</h1>
-            <p class="text-lg mb-8">
+            <h1 class="text-4xl sm:text-8xl font-bold mb-4">게임 종료</h1>
+            <p class="text-xl sm:text-4xl my-8">
               당신의 등수는 {{ calMyRank() }}등 입니다!!
             </p>
-            <button
+
+            <div
               @click="publishInitMessage"
-              :class="[
-                'text-white font-bold py-3 px-6 rounded',
-                {
-                  'bg-blue-500 hover:bg-blue-700 cursor-pointer':
-                    hostName === myInfo.name,
-                  'bg-gray-500 cursor-not-allowed': hostName !== myInfo.name,
-                },
-              ]"
               :disabled="hostName !== myInfo.name"
+              class="text-4xl sm:text-7xl PatricianCapitals-font cursor-pointer hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105 mb-2"
             >
-              게임 다시 시작
-            </button>
+              GAME RESTART
+            </div>
           </div>
         </div>
       </div>
 
-      <div
-        class="col-span-12 sm:col-span-3 border border-red-600 flex justify-center"
-      >
+      <div class="col-span-12 sm:col-span-3 flex justify-center">
         <div class="rounded overflow-hidden shadow-lg">
           <div class="grid grid-cols-2 grid-rows-2">
             <div
@@ -257,6 +276,9 @@
   </div>
 </template>
 <style scoped>
+.PatricianCapitals-font {
+  font-family: "PatricianCapitals", sans-serif;
+}
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -331,6 +353,7 @@ class RoomInfo {
 }
 export default {
   name: "MultiGame",
+
   data() {
     // !loading && !gameStarted && !gameEnded
     return {

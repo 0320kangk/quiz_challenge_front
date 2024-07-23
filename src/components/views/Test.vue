@@ -14,7 +14,7 @@
             />
             <div
               @click="startGame"
-              class="text-8xl PatricianCapitals-font cursor-pointer hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105 mb-2"
+              class="text-5xl sm:text-7xl lg:text-8xl PatricianCapitals-font cursor-pointer hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105 my-2"
             >
               GAME START
             </div>
@@ -30,9 +30,10 @@
           </div>
         </div>
       </div>
+
       <div
         v-if="gameStarted && !gameEnded"
-        class="col-span-12 md:col-span-9 border border-red-600"
+        class="col-span-12 md:col-span-9 sm:border-4 sm:border-wood-dark"
       >
         <!-- 게임 문제  -->
         <div class="md:h-full" v-if="currentQuizIndex < quizQuestions.length">
@@ -61,7 +62,7 @@
           <!-- OX 퀴즈 문제 형식 -->
           <div
             v-else
-            class="sm:h-3/5 ml-10 mr-5 mt-7 p-3 pb-10 grid grid-cols-3 gap-4"
+            class="sm:h-3/5 ml-10 mr-5 mt-7 p-3 pb-10 grid grid-cols-3 gap-4 bg-gray-100 shadow-xl rounded-xl"
           >
             <div class="p-4 flex items-center justify-center">
               <p
@@ -86,12 +87,12 @@
             </div>
           </div>
 
-          <div class="flex justify-between">
+          <div class="flex justify-between mt-5">
             <div class="text-xl ml-10 text-red-600 font-bold px-5">
               {{ timer }}
             </div>
             <div
-              class="mr-5 cursor-pointer text-white font-bold bg-blue-500 hover:bg-blue-700 px-10 py-4 rounded-xl"
+              class="mr-5 cursor-pointer px-10 py-4 bg-green-500 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105"
               @click="nextQuestion"
             >
               다음 문제
@@ -103,9 +104,9 @@
       <!-- 답안 표 -->
       <div
         v-if="gameStarted && !gameEnded"
-        class="col-span-12 md:col-span-3 border border-red-600"
+        class="col-span-12 md:col-span-3 sm:border-4 sm:border-l-0 sm:border-wood-dark"
       >
-        <div class="max-w-full rounded overflow-hidden shadow-lg">
+        <div class="max-w-full mt-7 rounded overflow-hidden shadow-lg">
           <!-- 문제 결과 표 -->
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -175,14 +176,16 @@
         class="col-span-12 flex items-center justify-center h-screen"
       >
         <div class="text-center">
-          <h1 class="text-4xl font-bold mb-4">게임 종료!</h1>
-          <p class="text-lg mb-8">당신의 점수는 {{ totalScore }} 점입니다.</p>
-          <button
+          <h1 class="text-4xl sm:text-8xl font-bold mb-4">게임 종료!</h1>
+          <p class="text-xl sm:text-4xl my-8">
+            당신의 점수는 {{ totalScore }} 점입니다.
+          </p>
+          <div
             @click="restartGame"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded"
+            class="text-4xl sm:text-7xl PatricianCapitals-font cursor-pointer hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105 mb-2"
           >
-            다시 시작
-          </button>
+            GAME RESTART
+          </div>
         </div>
       </div>
     </div>

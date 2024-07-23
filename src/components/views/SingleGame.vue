@@ -1,5 +1,8 @@
 <template>
   <div class="layout-default">
+    <span class="display: inline-block text-2xl font-semibold m-3"
+      >📕 테마: {{ this.qusetionData.theme }}
+    </span>
     <div
       v-if="!loading && !gameStarted"
       class="flex flex-col items-center justify-center h-screen"
@@ -7,29 +10,31 @@
       <div class="loader rounded-full w-24 h-24 mb-4"></div>
       <span class="text-gray-700 font-bold">Loading...</span>
     </div>
+
     <div class="grid grid-cols-12">
       <div v-if="loading && !gameStarted && !gameEnded" class="col-span-12">
         <!-- 게임 시작  -->
-        <div class="flex items-center justify-center h-screen">
+
+        <div
+          class="flex items-center justify-center h-screen sm:border-8 sm:border-wood-dark sm:rounded-md"
+        >
           <div class="text-center">
-            <h1 class="text-4xl font-bold mb-4">환영합니다!</h1>
-            <p class="text-lg mb-8">
-              게임을 시작하려면 아래의 버튼을 클릭하세요.
-            </p>
-            <button
+            <img
+              class="layout-default h-64 w-full"
+              src="../../assets/quiz4.png"
+              alt="quiz image"
+            />
+            <div
               @click="startGame"
-              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded"
+              class="text-5xl sm:text-7xl lg:text-8xl my-2 PatricianCapitals-font cursor-pointer hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105"
             >
-              게임 시작
-            </button>
+              GAME START
+            </div>
           </div>
         </div>
       </div>
 
-      <div
-        v-if="gameStarted && !gameEnded"
-        class="col-span-12 md:col-span-9 border border-red-600"
-      >
+      <div v-if="gameStarted && !gameEnded" class="col-span-12 md:col-span-9">
         <!-- 게임 문제  -->
         <div class="md:h-full" v-if="currentQuizIndex < quizQuestions.length">
           <div
@@ -48,7 +53,7 @@
                 'bg-yellow-200': selectedAnswerIndex === i,
                 'bg-gray-200': selectedAnswerIndex !== i,
               }"
-              class="ml-10 mr-5 my-7 p-3 cursor-pointer bg-gray-200 rounded-xl font-bold shadow-xl"
+              class="ml-10 mr-5 my-10 p-3 cursor-pointer bg-gray-200 rounded-xl font-bold shadow-xl"
             >
               {{ i + 1 }}. {{ option }}
             </div>
@@ -57,7 +62,7 @@
           <!-- OX 퀴즈 문제 형식 -->
           <div
             v-else
-            class="md:h-3/5 ml-10 mr-5 mt-7 p-3 pb-10 grid grid-cols-3 gap-4"
+            class="md:h-3/5 ml-10 mr-5 mt-7 p-3 pb-10 grid grid-cols-3 gap-4 bg-gray-100 shadow-xl rounded-xl"
           >
             <div class="p-4 flex items-center justify-center">
               <p
@@ -82,12 +87,12 @@
             </div>
           </div>
 
-          <div class="flex justify-between">
+          <div class="flex justify-between place-items-center mt-5">
             <div class="text-xl ml-10 text-red-600 font-bold px-5">
               {{ timer }}
             </div>
             <div
-              class="mr-5 cursor-pointer text-white font-bold bg-blue-500 hover:bg-blue-700 px-10 py-4 rounded-xl"
+              class="mr-5 cursor-pointer px-10 py-4 bg-green-500 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105"
               @click="nextQuestion"
             >
               다음 문제
@@ -98,7 +103,7 @@
 
       <div
         v-if="gameStarted && !gameEnded"
-        class="col-span-12 md:col-span-3 w-full border border-red-600 flex flex-col justify-center"
+        class="col-span-12 md:col-span-3 w-full flex flex-col justify-center"
       >
         <div class="max-w-full rounded overflow-hidden shadow-lg">
           <!-- 문제 결과 표 -->
@@ -171,14 +176,16 @@
         class="col-span-12 flex items-center justify-center h-screen"
       >
         <div class="text-center">
-          <h1 class="text-4xl font-bold mb-4">게임 종료!</h1>
-          <p class="text-lg mb-8">당신의 점수는 {{ totalScore }} 점입니다.</p>
-          <button
+          <h1 class="text-4xl sm:text-8xl font-bold mb-4">게임 종료!</h1>
+          <p class="text-xl sm:text-4xl my-8">
+            당신의 점수는 {{ totalScore }} 점입니다.
+          </p>
+          <div
             @click="restartGame"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded"
+            class="text-4xl sm:text-7xl PatricianCapitals-font cursor-pointer hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105 mb-2"
           >
-            다시 시작
-          </button>
+            GAME RESTART
+          </div>
         </div>
       </div>
     </div>
@@ -186,6 +193,10 @@
 </template>
 
 <style scoped>
+.PatricianCapitals-font {
+  font-family: "PatricianCapitals", sans-serif;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -208,6 +219,13 @@
 }
 </style>
 <script>
+class QuestionData {
+  constructor(theme, questionCount, level) {
+    this.theme = theme;
+    this.questionCount = questionCount;
+    this.level = level;
+  }
+}
 export default {
   name: "SingleGame",
   data() {
@@ -227,10 +245,16 @@ export default {
       selectedAnswers: [],
       currentPage: 0,
       perPage: 10,
+      qusetionData: new QuestionData(
+        history.state.theme,
+        history.state.questionCount,
+        history.state.level
+      ),
     };
   },
   async mounted() {
     // 두 비동기 함수 호출 및 결과를 기다림
+
     const choiceQuestionPromise = this.requestQuizQuestion(
       this.$store.getters.getChoice_4
     );
@@ -281,9 +305,9 @@ export default {
     async requestQuizQuestion(quizType) {
       try {
         if (
-          !history.state.theme ||
-          !history.state.level ||
-          !history.state.questionCount ||
+          !this.qusetionData.theme ||
+          !this.qusetionData.level ||
+          !this.qusetionData.questionCount ||
           !quizType
         ) {
           throw new Error("게임 실행에 필요한 값이 없습니다.");
@@ -292,9 +316,9 @@ export default {
         const response = await this.$axios.post(
           `${process.env.VUE_APP_BACKEND_ORIGIN}/api/chatGpt/chat/completion/content`,
           {
-            theme: history.state.theme,
-            quizLevel: history.state.level,
-            count: history.state.questionCount / 2,
+            theme: this.qusetionData.theme,
+            quizLevel: this.qusetionData.level,
+            count: this.qusetionData.questionCount / 2,
             quizType: quizType,
           },
           {
