@@ -66,7 +66,7 @@
             !roomStatus.gameStarted &&
             !roomStatus.gameEnded
           "
-          class="flex items-center justify-center h-screen shadow-lg rounded-md"
+          class="flex items-center justify-center shadow-lg rounded-md"
         >
           <div class="text-center">
             <img
@@ -183,91 +183,85 @@
         </div>
       </div>
 
-      <div class="col-span-12 sm:col-span-3 mt-7 flex justify-center">
+      <div class="col-span-12 sm:col-span-3 mt-7 flex flex-col justify-start">
         <div class="rounded overflow-hidden shadow-lg">
-          <div class="grid grid-cols-2 grid-rows-2">
-            <div
-              v-for="(participant, index) in participants"
-              :key="index"
-              class="row-span-1"
-            >
-              <img
-                class="w-full"
-                :src="getCharacterImgPath(index)"
-                alt="Sunset in the mountains"
-              />
-              <div
-                class="font-bold text-center text-xs bg-gray-200 rounded-full px-3 py-1"
-              >
+          <div
+            class="flex items-center mb-4"
+            v-for="(participant, index) in participants"
+            :key="index"
+          >
+            <img
+              class="w-16 h-16 rounded-full"
+              :src="getCharacterImgPath(index)"
+              alt="Sunset in the mountains"
+            />
+            <div class="ml-4">
+              <h2 class="text-xl font-bold">
                 {{ participant.name === hostName ? "👑" : "" }}
-
-                {{ participant.name }} <br />
-                점수: {{ participant.score }}
-              </div>
+                {{ participant.name }}
+              </h2>
+              <p>점수: {{ participant.score }}</p>
             </div>
           </div>
-
-          <div class="pt-2">
+        </div>
+        <!-- 채팅창 메시지 영역 -->
+        <div class="flex-1 h-full flex flex-col justify-end shadow-lg">
+          <div class="h-96 sm:h-48 bg-blue-200 rounded-xl flex flex-col">
             <div
-              class="h-96 sm:h-48 bg-blue-200 rounded-xl flex flex-col justify-between"
+              class="bg-blue-200 pl-2 text-white text-left py-2 rounded-t-xl"
             >
+              💬 채팅
+            </div>
+            <div
+              ref="messageContainer"
+              class="flex-grow px-4 py-8 overflow-y-auto custom-scrollbar"
+            >
+              <!-- 메시지 -->
               <div
-                class="bg-blue-200 pl-2 text-white text-left py-2 rounded-t-xl"
+                v-for="(message, index) in messages"
+                :key="index"
+                class="mb-4"
               >
-                💬 채팅
-              </div>
-              <!-- 채팅창 메시지 영역 -->
-              <div
-                ref="messageContainer"
-                class="flex-grow px-4 py-8 overflow-y-auto custom-scrollbar"
-              >
-                <!-- 메시지 -->
-                <div
-                  v-for="(message, index) in messages"
-                  :key="index"
-                  class="mb-4"
-                >
-                  <!-- 메시지 내용 -->
-                  <div v-if="message.isSent" class="flex flex-col items-end">
-                    <div class="text-xs mr-1 text-gray-600 mb-1">
-                      {{ message.writer }}
-                    </div>
-                    <div
-                      class="max-w-xs px-4 py-2 bg-green-400 text-white text-xs rounded-lg"
-                    >
-                      {{ message.content }}
-                    </div>
+                <!-- 메시지 내용 -->
+                <div v-if="message.isSent" class="flex flex-col items-end">
+                  <div class="text-xs mr-1 text-gray-600 mb-1">
+                    {{ message.writer }}
                   </div>
-                  <div v-else class="flex flex-col items-start">
-                    <div class="text-xs ml-1 text-gray-600 mb-1">
-                      {{ message.writer }}
-                    </div>
-                    <div
-                      class="max-w-xs px-4 py-2 bg-yellow-200 text-black text-xs rounded-lg"
-                    >
-                      {{ message.content }}
-                    </div>
+                  <div
+                    class="max-w-xs px-4 py-2 bg-green-400 text-white text-xs rounded-lg"
+                  >
+                    {{ message.content }}
+                  </div>
+                </div>
+                <div v-else class="flex flex-col items-start">
+                  <div class="text-xs ml-1 text-gray-600 mb-1">
+                    {{ message.writer }}
+                  </div>
+                  <div
+                    class="max-w-xs px-4 py-2 bg-yellow-200 text-black text-xs rounded-lg"
+                  >
+                    {{ message.content }}
                   </div>
                 </div>
               </div>
-              <!-- 채팅 입력창 -->
-              <div
-                class="grid grid-cols-12 items-center border-t border-gray-300"
+            </div>
+            <!-- 채팅 입력창 -->
+            <div
+              class="grid grid-cols-12 items-center border-t border-gray-300"
+            >
+              <input
+                type="text"
+                v-model="newMessage"
+                @keyup.enter="sendMessage"
+                placeholder="메시지를 입력하세요..."
+                class="col-span-10 py-2 text-sm border focus:outline-none"
+              />
+              <button
+                @click="sendMessage"
+                class="col-span-2 text-xs h-full text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
               >
-                <input
-                  type="text"
-                  v-model="newMessage"
-                  @keyup.enter="sendMessage"
-                  placeholder="메시지를 입력하세요..."
-                  class="col-span-10 py-2 text-sm border focus:outline-none"
-                />
-                <button
-                  @click="sendMessage"
-                  class="col-span-2 text-xs h-full text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
-                >
-                  전송
-                </button>
-              </div>
+                전송
+              </button>
             </div>
           </div>
         </div>
