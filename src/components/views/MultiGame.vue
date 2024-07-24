@@ -23,50 +23,21 @@
     </div>
     <div class="grid grid-cols-12">
       <div class="col-span-12 sm:col-span-9">
-        <span class="display: inline-block text-2xl font-semibold m-3"
-          >방 이름 : {{ roomInfo.name }}</span
-        >
+        <span class="display: inline-block text-sm font-semibold m-3"
+          >방 이름 : {{ roomInfo.name }} | 테마 : {{ roomInfo.theme }} | 남은
+          문제 : {{ this.roomInfo.questionCount - currentQuizIndex }}
+        </span>
       </div>
     </div>
     <div class="grid grid-cols-12">
       <div class="col-span-12 sm:col-span-9 rounded-md">
-        <!-- 게임 시작  -->
-        <!-- <div
-          v-if="
-            !roomStatus.loading &&
-            !roomStatus.gameStarted &&
-            !roomStatus.gameEnded
-          "
-          class="flex items-center justify-center sm:h-full h-screen"
-        >
-          <div class="text-center">
-            <h1 class="text-4xl font-bold mb-4">환영합니다!</h1>
-            <p class="text-lg mb-8">
-              게임을 시작하려면 아래의 버튼을 클릭하세요.
-            </p>
-            <button
-              @click="startGame"
-              :class="[
-                'text-white font-bold py-3 px-6 rounded',
-                {
-                  'bg-blue-500 hover:bg-blue-700 cursor-pointer':
-                    hostName === myInfo.name,
-                  'bg-gray-500 cursor-not-allowed': hostName !== myInfo.name,
-                },
-              ]"
-              :disabled="hostName !== myInfo.name"
-            >
-              게임 시작
-            </button>
-          </div>
-        </div> -->
         <div
           v-if="
             !roomStatus.loading &&
             !roomStatus.gameStarted &&
             !roomStatus.gameEnded
           "
-          class="flex items-center justify-center shadow-lg rounded-md"
+          class="flex items-center justify-center shadow-lg rounded-md h-screen"
         >
           <div class="text-center">
             <img
@@ -124,7 +95,7 @@
           <!-- OX 퀴즈 문제 형식 -->
           <div
             v-else
-            class="md:h-3/5 ml-10 mr-5 mt-7 p-3 pb-10 grid grid-cols-3 gap-4 bg-gray-100 shadow-xl rounded-xl"
+            class="md:h-3/5 ml-10 mr-5 mt-7 p-3 pt-16 pb-28 grid grid-cols-3 gap-4 bg-gray-100 shadow-xl rounded-xl"
           >
             <div class="p-4 flex items-center justify-center">
               <p
@@ -205,7 +176,7 @@
           </div>
         </div>
         <!-- 채팅창 메시지 영역 -->
-        <div class="flex-1 h-full flex flex-col justify-end shadow-lg">
+        <div class="flex-1 flex flex-col justify-end h-full shadow-lg">
           <div class="h-96 sm:h-48 bg-blue-200 rounded-xl flex flex-col">
             <div
               class="bg-blue-200 pl-2 text-white text-left py-2 rounded-t-xl"

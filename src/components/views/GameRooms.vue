@@ -127,8 +127,17 @@
       </div>
       <!-- 방 목록 -->
       <div
-        class="col-span-12 m-3 p-3 md:col-span-9 w-full h-160 overflow-y-scroll bg-gray-100 rounded-2xl"
+        :class="[
+          `col-span-12 m-3 p-3 md:col-span-9 w-full h-160 overflow-y-scroll bg-gray-100 rounded-2xl`,
+          { 'flex items-center justify-center': rooms.length == 0 },
+        ]"
       >
+        <div
+          v-if="rooms.length === 0"
+          class="text-gray-400 text-2xl sm:text-4xl"
+        >
+          😢 현재 방이 없습니다.
+        </div>
         <div class="grid grid-cols-2">
           <div
             v-for="(room, index) in filterRooms()"
