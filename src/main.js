@@ -10,6 +10,9 @@ const app = createApp(App);
 app.config.globalProperties.$axios = axios;
 // app.config.globalProperties.$backend_origin = "http://localhost:8080";
 
+
+
+
 app.use(router).use(store).mount("#app");
 
 // if (store.state.token !== null) {

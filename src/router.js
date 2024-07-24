@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
+import ErrorPage from "./components/views/Error.vue"
+
 import Home from "./components/views/Home.vue";
 import Login from "./components/views/Login.vue";
 import Join from "./components/views/Join.vue";
@@ -9,7 +11,6 @@ import Test from "./components/views/Test.vue";
 import Test2 from "./components/views/Test2.vue";
 import Test3 from "./components/views/Test3.vue";
 import store from "./store"; // Vuex 스토어 import
-
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -52,6 +53,7 @@ const router = createRouter({
       path: "/test3",
       component: Test3,
     },
+    { path: '/:pathMatch(.*)*', name: 'error', component: ErrorPage, query: { errorCode: '404', errorMessage: '페이지를 찾을 수 없습니다.' } }
   ],
 });
 

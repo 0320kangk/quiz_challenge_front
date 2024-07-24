@@ -3,6 +3,7 @@ import auth from "./auth";
 import quiz from "./quiz";
 import createPersistedState from "vuex-persistedstate";
 import axios from "axios";
+import router from '../router';
 
 const store = createStore({
   modules: {
@@ -48,10 +49,18 @@ axios.interceptors.response.use(
         // return Promise.resolve();
       } catch (e) {
         store.dispatch("logout");
-
         return Promise.reject(e);
       }
     }
+  // 500 에러 처리
+
+    router.push({
+      name: 'error',
+      query: {
+        errorCode: error.response.status,
+        errorMessage: error.message,
+      },
+    });
     return Promise.reject(error);
   }
 );
