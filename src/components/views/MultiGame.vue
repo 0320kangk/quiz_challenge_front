@@ -5,7 +5,7 @@
       v-if="isAnswer"
       class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
     >
-      <div class="bg-white rounded-lg p-8 px-20 shadow-lg text-center">
+      <div class="bg-white rounded shadow-lg p-8 px-20 text-center">
         <p class="text-9xl text-green-500 font-bold">O</p>
         <h2 class="text-2xl mt-4 font-bold mb-4">정답입니다!</h2>
       </div>
@@ -66,7 +66,7 @@
             !roomStatus.gameStarted &&
             !roomStatus.gameEnded
           "
-          class="flex items-center justify-center h-screen"
+          class="flex items-center justify-center h-screen shadow-lg rounded-md"
         >
           <div class="text-center">
             <img
@@ -87,7 +87,7 @@
         <!-- loding  -->
         <div
           v-if="roomStatus.loading"
-          class="flex flex-col items-center justify-center sm:h-full h-screen"
+          class="flex flex-col items-center justify-center sm:h-full h-screen rounded shadow-lg"
         >
           <div class="loader rounded-full w-24 h-24 mb-4"></div>
           <span class="text-gray-700 font-bold">Loading...</span>
@@ -183,7 +183,7 @@
         </div>
       </div>
 
-      <div class="col-span-12 sm:col-span-3 flex justify-center">
+      <div class="col-span-12 sm:col-span-3 mt-7 flex justify-center">
         <div class="rounded overflow-hidden shadow-lg">
           <div class="grid grid-cols-2 grid-rows-2">
             <div
@@ -209,7 +209,7 @@
 
           <div class="pt-2">
             <div
-              class="h-96 sm:h-64 bg-blue-200 rounded-xl flex flex-col justify-between"
+              class="h-96 sm:h-48 bg-blue-200 rounded-xl flex flex-col justify-between"
             >
               <div
                 class="bg-blue-200 pl-2 text-white text-left py-2 rounded-t-xl"
@@ -497,6 +497,10 @@ export default {
       this.quizQuestions = this.quizQuestions.concat(quizObject);
       console.log("quiz 문제 수 " + this.quizQuestions.length);
       console.log("rooInfo questionCount : " + this.roomInfo.questionCount);
+
+      if (this.quizQuestions.length === this.roomInfo.questionCount) {
+        this.shuffle(this.quizQuestions);
+      }
     },
     receivedScoreMessage(message) {
       const messageObject = JSON.parse(message.body);

@@ -7,6 +7,7 @@ import MultiGame from "./components/views/MultiGame.vue";
 import GameRooms from "./components/views/GameRooms.vue";
 import Test from "./components/views/Test.vue";
 import Test2 from "./components/views/Test2.vue";
+import Test3 from "./components/views/Test3.vue";
 import store from "./store"; // Vuex 스토어 import
 
 const router = createRouter({
@@ -46,6 +47,10 @@ const router = createRouter({
     {
       path: "/test2",
       component: Test2,
+    },
+    {
+      path: "/test3",
+      component: Test3,
     },
   ],
 });
