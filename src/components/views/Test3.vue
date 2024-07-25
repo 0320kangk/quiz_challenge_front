@@ -20,7 +20,7 @@
       <!-- 유저 프로필 -->
       <div class="flex items-center mb-4">
         <img
-          src="@/assets/character/bear.png"
+          src="@/assets/images/character/bear.png"
           alt="Profile"
           class="w-16 h-16 rounded-full"
         />

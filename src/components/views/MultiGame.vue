@@ -23,7 +23,8 @@
     </div>
     <div class="grid grid-cols-12">
       <div class="col-span-12 sm:col-span-9">
-        <span class="display: inline-block text-sm font-semibold m-3"
+        <span
+          class="display: inline-block text-xs sm:text-2xl font-semibold m-3"
           >방 이름 : {{ roomInfo.name }} | 테마 : {{ roomInfo.theme }} | 남은
           문제 : {{ this.roomInfo.questionCount - currentQuizIndex }}
         </span>
@@ -42,7 +43,7 @@
           <div class="text-center">
             <img
               class="layout-default h-64 w-full"
-              src="../../assets/quiz4.png"
+              src="@/assets/images/quiz.png"
               alt="quiz image"
             />
             <div
@@ -157,7 +158,7 @@
       <div class="col-span-12 sm:col-span-3 mt-7 flex flex-col justify-start">
         <div class="rounded overflow-hidden shadow-lg">
           <div
-            class="flex items-center mb-4"
+            class="flex items-center mb-5"
             v-for="(participant, index) in participants"
             :key="index"
           >
@@ -507,15 +508,17 @@ export default {
       var chatQuizRequestDto = {
         quizType: this.$store.getters.getChoice_4,
       };
-      this.stompClient.publish({
-        destination: `/publish/chat/room/quiz/${this.roomId}`,
-        body: JSON.stringify(chatQuizRequestDto),
-      });
-      chatQuizRequestDto.quizType = this.$store.getters.getOX;
-      this.stompClient.publish({
-        destination: `/publish/chat/room/quiz/${this.roomId}`,
-        body: JSON.stringify(chatQuizRequestDto),
-      });
+      if (this.stompClient && this.stompClient.connected) {
+        this.stompClient.publish({
+          destination: `/publish/chat/room/quiz/${this.roomId}`,
+          body: JSON.stringify(chatQuizRequestDto),
+        });
+        chatQuizRequestDto.quizType = this.$store.getters.getOX;
+        this.stompClient.publish({
+          destination: `/publish/chat/room/quiz/${this.roomId}`,
+          body: JSON.stringify(chatQuizRequestDto),
+        });
+      }
     },
     addContent(content, writer) {
       var isSent = false;
@@ -529,20 +532,24 @@ export default {
       }
     },
     publishInitMessage() {
-      this.stompClient.publish({
-        destination: `/publish/chat/room/init/${this.roomId}`,
-        body: `${this.hostName}`,
-      });
+      if (this.stompClient && this.stompClient.connected) {
+        this.stompClient.publish({
+          destination: `/publish/chat/room/init/${this.roomId}`,
+          body: `${this.hostName}`,
+        });
+      }
     },
     enterSendMessage() {
       console.log("enterSendMessage");
       const myInfoMessage = {
         writer: this.$store.getters.getMember.name, // 예시로 작성자의 이름을 Vuex에서 가져온다고 가정
       };
-      this.stompClient.publish({
-        destination: `/publish/chat/room/enter/${this.roomId}`,
-        body: JSON.stringify(myInfoMessage),
-      });
+      if (this.stompClient && this.stompClient.connected) {
+        this.stompClient.publish({
+          destination: `/publish/chat/room/enter/${this.roomId}`,
+          body: JSON.stringify(myInfoMessage),
+        });
+      }
     },
     startGame() {
       console.log("퀴즈 게임을 만듭니다. !");
@@ -561,10 +568,12 @@ export default {
     },
     publishRoomStatus(loading, gameStarted, gameEnded) {
       const roomStatusDto = new RoomStatus(loading, gameStarted, gameEnded);
-      this.stompClient.publish({
-        destination: `/publish/chat/room/status/${this.roomId}`,
-        body: JSON.stringify(roomStatusDto),
-      });
+      if (this.stompClient && this.stompClient.connected) {
+        this.stompClient.publish({
+          destination: `/publish/chat/room/status/${this.roomId}`,
+          body: JSON.stringify(roomStatusDto),
+        });
+      }
     },
     sendMessage() {
       if (this.newMessage.trim() !== "") {
@@ -572,18 +581,23 @@ export default {
           writer: this.$store.getters.getMember.name, // 예시로 작성자의 이름을 Vuex에서 가져온다고 가정
           content: this.newMessage,
         };
-        this.stompClient.publish({
-          destination: `/publish/chat/room/message/${this.roomId}`,
-          body: JSON.stringify(chatMessage),
-        });
+        if (this.stompClient && this.stompClient.connected) {
+          this.stompClient.publish({
+            destination: `/publish/chat/room/message/${this.roomId}`,
+            body: JSON.stringify(chatMessage),
+          });
+        }
+
         this.newMessage = "";
       }
     },
     publishMyScore() {
-      this.stompClient.publish({
-        destination: `/publish/chat/room/score/${this.roomId}`,
-        body: JSON.stringify(this.myInfo),
-      });
+      if (this.stompClient && this.stompClient.connected) {
+        this.stompClient.publish({
+          destination: `/publish/chat/room/score/${this.roomId}`,
+          body: JSON.stringify(this.myInfo),
+        });
+      }
     },
     isChoice4Quiz() {
       const quizType = this.quizQuestions[this.currentQuizIndex].quizType;
@@ -622,7 +636,7 @@ export default {
           //결과 publish
           //2초뒤 다음문제
         }
-      }, 300);
+      }, 1000);
     },
     nextQuestion() {
       //채점하기,

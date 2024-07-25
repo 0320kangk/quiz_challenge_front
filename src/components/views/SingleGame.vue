@@ -21,7 +21,7 @@
           <div class="text-center">
             <img
               class="layout-default h-64 w-full"
-              src="../../assets/quiz4.png"
+              src="@/assets/images/quiz.png"
               alt="quiz image"
             />
             <div

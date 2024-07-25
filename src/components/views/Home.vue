@@ -69,16 +69,17 @@
       </div>
     </div>
   </div>
-  <img
-    class="layout-default h-64 w-full"
-    src="../../assets/quiz4.png"
-    alt="quiz image"
-  />
-  <div class="layout-default py-2 my-7">
-    <div class="pb-5 border-b-4 border-b-yellow-800 font-bold text-4xl">
-      🕹 게임하기
-    </div>
-    <!-- <div class="p-3 mt-3">
+  <div class="min-h-screen bg-gray-50 p-4">
+    <img
+      class="layout-default h-40 sm:h-64 w-full"
+      src="@/assets/images/quiz_gray-50.png"
+      alt="quiz image"
+    />
+    <div class="layout-default py-2 my-7">
+      <div class="pb-5 border-b-4 border-b-yellow-800 font-bold text-4xl">
+        🕹 게임하기
+      </div>
+      <!-- <div class="p-3 mt-3">
       <span class="pb-1 font-bold text-2xl border-b-4 border-gray-600"
         >🎮 싱글 플레이
       </span>
@@ -89,30 +90,31 @@
       >
     </div> -->
 
-    <div class="flex justify-between flex-wrap">
-      <button
-        @click="singleGameOpenModal"
-        class="btn flex-shrink-0 w-full sm:w-auto mb-4 sm:mb-0 inline-block bg-indigo-400 hover:bg-indigo-500 text-white"
-      >
-        <span class="text-9xl">🎮</span>
-        <div class="mt-6 text-4xl">싱글 플레이</div>
-      </button>
+      <div class="flex justify-between flex-wrap">
+        <button
+          @click="singleGameOpenModal"
+          class="btn flex-col justify-center items-center flex-shrink-0 w-11/24 sm:w-auto mb-4 sm:mb-0 bg-indigo-400 hover:bg-indigo-500 text-white"
+        >
+          <span class="text-5xl sm:text-9xl">🎮</span>
+          <div class="mt-6 text-xl sm:text-4xl">싱글 플레이</div>
+        </button>
 
-      <router-link
-        to="/gameRooms"
-        class="btn text-4xl flex-shrink-0 w-full sm:w-auto inline-block bg-amber-800 hover:bg-amber-900 text-white"
-      >
-        <span class="text-9xl">⚔</span>
-        <div class="mt-6 text-4xl">멀티 플레이</div>
-      </router-link>
+        <router-link
+          to="/gameRooms"
+          class="btn flex flex-col justify-center items-center flex-shrink-0 w-11/24 custom-w sm:w-auto bg-amber-800 hover:bg-amber-900 text-white"
+        >
+          <span class="text-5xl sm:text-9xl">⚔</span>
+          <div class="mt-6 text-xl sm:text-4xl">멀티 플레이</div>
+        </router-link>
+      </div>
+      <!-- ... -->
     </div>
-    <!-- ... -->
   </div>
 </template>
 
 <style>
 .btn {
-  @apply font-bold my-5 text-center  py-20 sm:px-32 rounded-3xl shadow-2xl;
+  @apply font-bold my-5 py-10 sm:py-10 sm:px-10 md:px-16 lg:py-20 lg:px-32 rounded-3xl shadow-2xl;
 }
 </style>
 <script>
