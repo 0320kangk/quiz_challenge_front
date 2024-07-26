@@ -38,7 +38,7 @@
             !roomStatus.gameStarted &&
             !roomStatus.gameEnded
           "
-          class="flex items-center justify-center shadow-lg rounded-md h-screen"
+          class="flex items-center justify-center shadow-lg rounded-md py-10"
         >
           <div class="text-center">
             <img
@@ -59,7 +59,7 @@
         <!-- loding  -->
         <div
           v-if="roomStatus.loading"
-          class="flex flex-col items-center justify-center sm:h-full h-screen rounded shadow-lg"
+          class="flex flex-col items-center justify-center py-10 sm:h-full rounded shadow-lg"
         >
           <div class="loader rounded-full w-24 h-24 mb-4"></div>
           <span class="text-gray-700 font-bold">Loading...</span>
