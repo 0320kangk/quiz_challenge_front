@@ -12,7 +12,6 @@ import Header from "./components/layout/Header.vue";
 
 import "./index.css";
 
-console.log(Header);
 export default {
   name: "App",
   components: {
