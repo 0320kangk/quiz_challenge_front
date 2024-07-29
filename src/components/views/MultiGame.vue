@@ -718,11 +718,11 @@ export default {
         )
         .then((response) => {
           // 요청 성공 시 처리
-          console.log("Request successful:", response.data);
+          console.log("방 상태 waiting 변경 성공:", response.data);
         })
         .catch((error) => {
           // 요청 실패 시 처리
-          console.error("Request failed:", error);
+          console.error("방 상태 변경 실패:", error);
         });
     },
     calMyRank() {
