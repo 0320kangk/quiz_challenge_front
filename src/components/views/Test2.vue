@@ -79,7 +79,7 @@ export default {
     async fetchCharacterImage() {
       try {
         const response = await axios.get(
-          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/characterImg`,
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/characterImg`,
           {
             responseType: "blob", // Ensures the response is a Blob (binary data)
           }

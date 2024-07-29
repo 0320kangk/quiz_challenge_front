@@ -378,7 +378,7 @@ export default {
   methods: {
     async requestRoomInfo() {
       const response = await axios.get(
-        `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/${this.roomId}`,
+        `${process.env.VUE_APP_BACKEND_ORIGIN}/gameRoom/${this.roomId}`,
 
         {
           withCredentials: true,
@@ -560,7 +560,7 @@ export default {
     changeGameRoomStatusPlaying() {
       try {
         axios.post(
-          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/playing/${this.roomId}`
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/gameRoom/playing/${this.roomId}`
         );
       } catch (e) {
         console.log(e);
@@ -678,7 +678,7 @@ export default {
       );
     },
     getCharacterImgPath(index) {
-      return `${process.env.VUE_APP_BACKEND_ORIGIN}/api/characterImg/${this.participants[index].characterName}`;
+      return `${process.env.VUE_APP_BACKEND_ORIGIN}/characterImg/${this.participants[index].characterName}`;
     },
     //요청해야함 방정보를
     scrollToBottom() {
@@ -712,6 +712,18 @@ export default {
       this.roomStatus.gameStarted = false;
       this.roomStatus.loading = false;
       this.roomStatus.gameEnded = true;
+      axios
+        .post(
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/gameRoom/waiting/${this.roomId}`
+        )
+        .then((response) => {
+          // 요청 성공 시 처리
+          console.log("Request successful:", response.data);
+        })
+        .catch((error) => {
+          // 요청 실패 시 처리
+          console.error("Request failed:", error);
+        });
     },
     calMyRank() {
       var rank = 0;

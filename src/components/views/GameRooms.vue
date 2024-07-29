@@ -240,7 +240,7 @@ export default {
     async findAllTheme() {
       try {
         const response = await this.$axios.get(
-          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/quizTheme/all`
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/quizTheme/all`
         );
 
         return response.data;
@@ -253,7 +253,7 @@ export default {
     async findGameRooms() {
       try {
         const response = await this.$axios.get(
-          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/all`
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/gameRoom/all`
         );
         console.log("방 가져오기 ");
         console.log(response.data);
@@ -267,7 +267,7 @@ export default {
       try {
         console.log();
         const response = await this.$axios.post(
-          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/create`,
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/gameRoom/create`,
           {
             roomName: this.roomFormData.roomName,
             questionCount: this.roomFormData.questionCount,
@@ -284,7 +284,7 @@ export default {
     },
     async enterGameRoom(roomId) {
       const responseData = await axios.get(
-        `${process.env.VUE_APP_BACKEND_ORIGIN}/api/gameRoom/status/${roomId}`
+        `${process.env.VUE_APP_BACKEND_ORIGIN}/gameRoom/status/${roomId}`
       );
       console.log(responseData.data);
       const roomStatus = responseData.data;

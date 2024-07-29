@@ -314,7 +314,7 @@ export default {
         }
 
         const response = await this.$axios.post(
-          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/chatGpt/chat/completion/content`,
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/chatGpt/chat/completion/content`,
           {
             theme: this.qusetionData.theme,
             quizLevel: this.qusetionData.level,

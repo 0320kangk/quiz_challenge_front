@@ -38,7 +38,7 @@ const actions = {
   login({ commit }, { email, password }) {
     return axios
       .post(
-        `${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/login`,
+        `${process.env.VUE_APP_BACKEND_ORIGIN}/auth/login`,
         {
           email,
           password,
@@ -67,7 +67,7 @@ const actions = {
   async fetchMember({ commit, state }) {
     if (state.accessToken) {
       try {
-        const response = await axios.get(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/member`, {
+        const response = await axios.get(`${process.env.VUE_APP_BACKEND_ORIGIN}/member`, {
           withCredentials: true,
         });
         commit("setMember", response.data);
@@ -81,7 +81,7 @@ const actions = {
   async refreshToken({ commit, state }) {
     try {
       const response = await axios.post(
-        `${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/refresh`,
+        `${process.env.VUE_APP_BACKEND_ORIGIN}/auth/refresh`,
         {
           refreshToken: state.refreshToken,
         },
@@ -101,7 +101,7 @@ const actions = {
   async checkAuth({ commit }) {
     console.log("test checkauth");
     try {
-      const response = await axios.post(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth`);
+      const response = await axios.post(`${process.env.VUE_APP_BACKEND_ORIGIN}/auth`);
       commit("setAuthenticated", true);
       // 여기서 필요하다면 response.data를 처리할 수 있음
       return response; // 필요에 따라 반환값을 사용할 수 있음

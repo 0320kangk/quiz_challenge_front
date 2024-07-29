@@ -238,13 +238,13 @@ export default {
     async fetchCharacterImgs() {
       try {
         const response = await axios.get(
-          `${process.env.VUE_APP_BACKEND_ORIGIN}/api/characterImg/all`
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/characterImg/all`
         );
         this.characterImgs = response.data;
         for (var i = 0; i < this.characterImgs.length; i++) {
           this.characterImgs[
             i
-          ].imgPath = `${process.env.VUE_APP_BACKEND_ORIGIN}/api/characterImg/${this.characterImgs[i].name}`;
+          ].imgPath = `${process.env.VUE_APP_BACKEND_ORIGIN}/characterImg/${this.characterImgs[i].name}`;
         }
         console.log(response.data);
       } catch (error) {

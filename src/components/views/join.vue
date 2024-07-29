@@ -123,7 +123,7 @@ export default {
         this.passwordMismatch = false;
         // 여기서 submit을 처리합니다.
         this.$axios
-          .post(`${process.env.VUE_APP_BACKEND_ORIGIN}/api/join`, {
+          .post(`${process.env.VUE_APP_BACKEND_ORIGIN}/join`, {
             name: this.member_name,
             email: this.email,
             passwordOrigin: this.password_origin,

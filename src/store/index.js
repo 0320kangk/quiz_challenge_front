@@ -22,7 +22,7 @@ axios.interceptors.request.use(
     // 요청 URL이 /api/auth/refresh인 경우 refreshToken을 사용
     const accessToken = store.getters.getAccessToken;
     if (
-      config.url === `${process.env.VUE_APP_BACKEND_ORIGIN}/api/auth/refresh`
+      config.url === `${process.env.VUE_APP_BACKEND_ORIGIN}/auth/refresh`
     ) {
       const refreshToken = store.getters.getRefreshToken;
       console.log("refreshToken : " + refreshToken);
