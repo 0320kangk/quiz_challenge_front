@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import ErrorPage from "./components/views/Error.vue"
+import ErrorPage from "./components/views/Error.vue";
 
 import Home from "./components/views/Home.vue";
 import Login from "./components/views/Login.vue";
 import Join from "./components/views/Join.vue";
+
 import SingleGame from "./components/views/SingleGame.vue";
 import MultiGame from "./components/views/MultiGame.vue";
 import GameRooms from "./components/views/GameRooms.vue";
@@ -53,7 +54,12 @@ const router = createRouter({
       path: "/test3",
       component: Test3,
     },
-    { path: '/:pathMatch(.*)*', name: 'error', component: ErrorPage, query: { errorCode: '404', errorMessage: '페이지를 찾을 수 없습니다.' } }
+    {
+      path: "/:pathMatch(.*)*",
+      name: "error",
+      component: ErrorPage,
+      query: { errorCode: "404", errorMessage: "페이지를 찾을 수 없습니다." },
+    },
   ],
 });
 
