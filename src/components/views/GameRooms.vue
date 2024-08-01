@@ -31,9 +31,16 @@
                 class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
               >
                 <option hidden disabled value="">제목을 선택하세요.</option>
+                <option
+                  v-for="(theme, index) in themes"
+                  :key="index"
+                  :value="formattedTheme(theme)"
+                >
+                  {{ theme }}
+                </option>
 
-                <option value="SPRINGFRAMEWORK">Spring framework</option>
-                <option value="JAVA">Java</option>
+                <!-- <option value="SPRINGFRAMEWORK">Spring framework</option>
+                <option value="JAVA">Java</option> -->
               </select>
             </div>
             <div class="flex items-center mt-5">
@@ -101,7 +108,7 @@
           class="w-full md:block md:h-144 p-4 bg-gray-100 rounded-3xl shadow-2xl gap-x-4"
         >
           <div
-            v-for="(theme, index) in themes"
+            v-for="(theme, index) in sideBarThemes"
             :key="index"
             :class="[
               'p-3 my-5  rounded-xl cursor-pointer hover:bg-yellow-400 hover:font-bold',
@@ -128,7 +135,7 @@
       <!-- 방 목록 -->
       <div
         :class="[
-          `col-span-12 m-3 p-3 md:col-span-9 w-full h-160 overflow-y-scroll bg-gray-100 rounded-2xl`,
+          `col-span-12 my-3 p-3  md:col-span-9 w-full h-160 overflow-y-scroll bg-gray-100 rounded-2xl`,
           { 'flex items-center justify-center': rooms.length == 0 },
         ]"
       >
@@ -219,7 +226,8 @@ export default {
       isOpen: false, // 모달이 열려있는지 여부
       sidebar: false,
       rooms: [],
-      themes: ["ALL"],
+      themes: [],
+      sideBarThemes: [],
       //원하는 만큼 데이터를 추가할 수 있습니다.
       roomFormData: {
         roomName: "",
@@ -233,7 +241,8 @@ export default {
   async mounted() {
     this.rooms = await this.findGameRooms();
     this.themes = await this.findAllTheme();
-    this.themes.unshift("ALL");
+    this.sideBarThemes = Array.from(this.themes);
+    this.sideBarThemes.unshift("ALL");
     console.log(this.rooms);
   },
   methods: {
@@ -320,6 +329,9 @@ export default {
       return this.rooms.filter(
         (room) => room.theme === this.themes[this.selectedThemeIndex]
       );
+    },
+    formattedTheme(theme) {
+      return theme.replace(/\s+/g, "").toUpperCase();
     },
   },
 };
