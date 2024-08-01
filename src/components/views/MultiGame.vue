@@ -38,7 +38,7 @@
             !roomStatus.gameStarted &&
             !roomStatus.gameEnded
           "
-          class="flex items-center justify-center shadow-lg rounded-md py-10"
+          class="flex items-center justify-center shadow-lg rounded-md"
         >
           <div class="text-center">
             <img
@@ -72,7 +72,7 @@
           "
         >
           <div
-            class="md:ml-10 md:mr-5 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
+            class="md:ml-3 md:mr-5 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
           >
             <span class="text-3xl">Q.</span>
             {{ quizQuestions[currentQuizIndex].question }}
@@ -87,7 +87,7 @@
                 'bg-yellow-200': selectedAnswerIndex === i,
                 'bg-gray-200': selectedAnswerIndex !== i,
               }"
-              class="md:ml-10 md:mr-5 my-5 md:my-7 p-3 cursor-pointer bg-gray-200 rounded-xl font-bold shadow-xl"
+              class="md:ml-3 md:mr-5 my-5 md:my-7 p-3 cursor-pointer bg-gray-200 rounded-xl font-bold shadow-xl"
             >
               {{ i + 1 }}. {{ option }}
             </div>
@@ -96,7 +96,7 @@
           <!-- OX 퀴즈 문제 형식 -->
           <div
             v-else
-            class="md:h-3/5 md:ml-10 md:mr-5 mt-7 p-3 pt-16 pb-28 grid grid-cols-3 gap-4 bg-gray-100 shadow-xl rounded-xl"
+            class="md:h-3/5 md:ml-3 md:mr-5 mt-7 p-3 pt-16 pb-28 grid grid-cols-3 gap-4 bg-gray-100 shadow-xl rounded-xl"
           >
             <div class="p-4 flex items-center justify-center">
               <p
@@ -127,16 +127,17 @@
             </div>
           </div> -->
           <div class="flex justify-start place-items-center mt-5">
-            <div class="text-xl md:ml-10 text-red-600 font-bold px-5">
+            <div class="text-xl md:ml-3 text-red-600 font-bold px-5">
               {{ timer }}
             </div>
           </div>
         </div>
 
         <!-- 게임 종료 -->
+
         <div
           v-if="roomStatus.gameEnded"
-          class="flex items-center justify-center h-screen"
+          class="flex items-center justify-center p- bg-gray-100 py-40 shadow-xl rounded-xl"
         >
           <div class="text-center">
             <h1 class="text-4xl md:text-8xl font-bold mb-4">게임 종료</h1>
@@ -178,7 +179,7 @@
         </div>
         <!-- 채팅창 메시지 영역 -->
         <div class="flex-1 flex flex-col justify-end h-full shadow-lg">
-          <div class="h-96 md:h-48 bg-blue-200 rounded-xl flex flex-col">
+          <div class="h-96 md:h-52 bg-blue-200 rounded-xl flex flex-col">
             <div
               class="bg-blue-200 pl-2 text-white text-left py-2 rounded-t-xl"
             >
@@ -622,7 +623,7 @@ export default {
         clearInterval(this.intervalId);
       }
       // 초기화
-      this.timer = 10;
+      this.timer = 2;
       // 1초마다 타이머 업데이트
       this.intervalId = setInterval(() => {
         if (this.timer > 0) {

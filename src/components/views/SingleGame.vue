@@ -26,7 +26,7 @@
             />
             <div
               @click="startGame"
-              class="text-5xl sm:text-7xl lg:text-8xl my-2 PatricianCapitals-font cursor-pointer hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105"
+              class="text-5xl sm:text-8xl my-2 PatricianCapitals-font cursor-pointer hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105"
             >
               GAME START
             </div>
@@ -38,7 +38,7 @@
         <!-- 게임 문제  -->
         <div class="md:h-full" v-if="currentQuizIndex < quizQuestions.length">
           <div
-            class="ml-10 mr-5 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
+            class="md:ml-3 md:mr-5 mt-7 p-3 pb-10 bg-gray-200 rounded-xl font-bold shadow-xl"
           >
             <span class="text-3xl">Q.</span>
             {{ quizQuestions[currentQuizIndex].question }}
@@ -53,7 +53,7 @@
                 'bg-yellow-200': selectedAnswerIndex === i,
                 'bg-gray-200': selectedAnswerIndex !== i,
               }"
-              class="ml-10 mr-5 my-10 p-3 cursor-pointer bg-gray-200 rounded-xl font-bold shadow-xl"
+              class="md:ml-3 md:mr-5 my-5 md:my-10 p-3 cursor-pointer bg-gray-200 rounded-xl font-bold shadow-xl"
             >
               {{ i + 1 }}. {{ option }}
             </div>
@@ -62,7 +62,7 @@
           <!-- OX 퀴즈 문제 형식 -->
           <div
             v-else
-            class="md:h-3/5 ml-10 mr-5 mt-7 p-3 pb-10 grid grid-cols-3 gap-4 bg-gray-100 shadow-xl rounded-xl"
+            class="md:h-3/5 md:ml-3 md:mr-5 mt-7 p-3 pb-10 grid grid-cols-3 gap-4 bg-gray-100 shadow-xl rounded-xl"
           >
             <div class="p-4 flex items-center justify-center">
               <p
@@ -88,11 +88,11 @@
           </div>
 
           <div class="flex justify-between place-items-center mt-5">
-            <div class="text-xl ml-10 text-red-600 font-bold px-5">
+            <div class="text-xl ml-3 text-red-600 font-bold px-5">
               {{ timer }}
             </div>
             <div
-              class="mr-5 cursor-pointer px-10 py-4 bg-green-500 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105"
+              class="mr-5 cursor-pointer px-10 py-4 mb-5 md:mb-0 bg-green-500 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105"
               @click="nextQuestion"
             >
               다음 문제
@@ -171,9 +171,29 @@
         </div>
       </div>
       <!-- 게임 종료 -->
+      <!-- <div
+          v-if="roomStatus.gameEnded"
+          class="flex items-center justify-center  bg-gray-100 py-40 shadow-xl rounded-xl"
+        >
+          <div class="text-center">
+            <h1 class="text-4xl md:text-8xl font-bold mb-4">게임 종료</h1>
+            <p class="text-2xl md:text-4xl my-8">
+              당신의 점수는 {{ totalScore }} 점입니다.
+            </p>
+
+            <div
+              @click="publishInitMessage"
+              :disabled="hostName !== myInfo.name"
+              class="text-5xl md:text-7xl PatricianCapitals-font cursor-pointer hover:shadow-xl transition duration-200 ease-in-out transform hover:scale-105 mb-2"
+            >
+              GAME RESTART
+            </div>
+          </div>
+        </div> -->
+
       <div
         v-if="gameEnded"
-        class="col-span-12 flex items-center justify-center h-screen"
+        class="col-span-12 flex items-center justify-center h-screen shadow-xl rounded-xl bg-gray-200"
       >
         <div class="text-center">
           <h1 class="text-4xl sm:text-8xl font-bold mb-4">게임 종료!</h1>

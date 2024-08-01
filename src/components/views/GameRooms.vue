@@ -24,13 +24,13 @@
               />
             </div>
             <div class="flex items-center mt-5">
-              <label for="theme" class="w-1/5">제목</label>
+              <label for="theme" class="w-1/5">테마</label>
               <select
                 v-model="roomFormData.theme"
                 id="theme"
                 class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
               >
-                <option hidden disabled value="">제목을 선택하세요.</option>
+                <option hidden disabled value="">테마를 선택하세요.</option>
                 <option
                   v-for="(theme, index) in themes"
                   :key="index"

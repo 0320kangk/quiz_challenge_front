@@ -13,16 +13,20 @@
       <div class="mb-6">
         <form>
           <div class="flex items-center mt-5">
-            <label for="theme" class="w-1/5">주제 </label>
+            <label for="theme" class="w-1/5">테마 </label>
             <select
               v-model="singleGameData.theme"
               id="theme"
               class="p-2 w-4/5 text-sm border border-gray-500 rounded-lg focus:outline-gray-700"
             >
-              <option hidden disabled value="">제목을 선택하세요.</option>
-
-              <option value="Spring framework">Spring framework</option>
-              <option value="Java">Java</option>
+              <option hidden disabled value="">테마를 선택하세요.</option>
+              <option
+                v-for="(theme, index) in themes"
+                :key="index"
+                :value="theme"
+              >
+                {{ theme }}
+              </option>
             </select>
           </div>
           <div class="flex items-center mt-5">
@@ -123,12 +127,16 @@ export default {
   data() {
     return {
       isOpen: false,
+      themes: [],
       singleGameData: {
         theme: "",
         questionCount: "",
         level: "",
       },
     }; // 모달이 열려있는지 여부
+  },
+  async mounted() {
+    this.themes = await this.findAllTheme();
   },
   methods: {
     singleGameOpenModal() {
@@ -161,6 +169,17 @@ export default {
     },
     closeModal() {
       this.isOpen = false; // 모달 닫기
+    },
+    async findAllTheme() {
+      try {
+        const response = await this.$axios.get(
+          `${process.env.VUE_APP_BACKEND_ORIGIN}/quizTheme/all`
+        );
+        return response.data;
+      } catch (e) {
+        alert("퀴즈 테마 가져오기 실패");
+        return e;
+      }
     },
   },
 };
