@@ -14,7 +14,7 @@ app.config.globalProperties.$axios = axios;
 
 
 app.use(router).use(store).mount("#app");
-
+//git push, web hock test
 // if (store.state.token !== null) {
 //   axios.defaults.headers.common["Authorization"] =
 //     "Bearer " + this.$store.state.token;
