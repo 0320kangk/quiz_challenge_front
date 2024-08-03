@@ -38,7 +38,7 @@
             !roomStatus.gameStarted &&
             !roomStatus.gameEnded
           "
-          class="flex items-center justify-center shadow-lg rounded-md"
+          class="flex items-center justify-center shadow-lg rounded-md py-16"
         >
           <div class="text-center">
             <img
