@@ -96,6 +96,6 @@
 
 </br></br>
 
-## 📱 프로젝트 UI (PC)
+## 💻 프로젝트 UI (PC)
 
 ![proejct_ui_3](readMeImg/project_ui_3.png)
