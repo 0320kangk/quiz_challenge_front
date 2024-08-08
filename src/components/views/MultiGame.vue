@@ -137,7 +137,7 @@
 
         <div
           v-if="roomStatus.gameEnded"
-          class="flex items-center justify-center p- bg-gray-100 py-40 shadow-xl rounded-xl"
+          class="flex items-center justify-center bg-gray-100 py-40 shadow-xl rounded-xl"
         >
           <div class="text-center">
             <h1 class="text-4xl md:text-8xl font-bold mb-4">게임 종료</h1>
@@ -156,7 +156,9 @@
         </div>
       </div>
 
-      <div class="col-span-12 md:col-span-3 mt-7 flex flex-col justify-start">
+      <div
+        class="col-span-12 md:col-span-3 md:ml-2 mt-7 flex flex-col justify-start"
+      >
         <div class="rounded overflow-hidden shadow-lg">
           <div
             class="flex items-center mb-5"
@@ -623,7 +625,7 @@ export default {
         clearInterval(this.intervalId);
       }
       // 초기화
-      this.timer = 2;
+      this.timer = 10;
       // 1초마다 타이머 업데이트
       this.intervalId = setInterval(() => {
         if (this.timer > 0) {
