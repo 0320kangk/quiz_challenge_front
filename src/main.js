@@ -1,7 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router.js";
-import "./index.css";
 import axios from "axios";
 import store from "./store"; // Vuex 스토어 임포트
 
